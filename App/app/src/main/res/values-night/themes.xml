@@ -5,6 +5,6 @@
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="colorPrimary">@color/beige</item>
         <item name="colorPrimaryVariant">@color/beige</item>
-        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorOnPrimary">@color/beige</item>
     </style>
 </resources>

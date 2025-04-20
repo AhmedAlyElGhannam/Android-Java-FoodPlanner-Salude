@@ -1,4 +1,4 @@
-package com.example.salude.splash_screen.view;
+package com.example.salude.features.splash_screen.view;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;

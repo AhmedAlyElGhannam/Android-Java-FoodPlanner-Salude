@@ -20,8 +20,8 @@ public interface LoginContract {
 
     interface Model {
         // caller: presenter, callee: model
-        void userAccountLogin(String email, String password, RegistrationContract.OnRegistrationFinishedListener listener); // call presenter stuff
-        void userGoogleLogin(RegistrationContract.OnRegistrationFinishedListener listener);
+        void userAccountLogin(String email, String password, LoginContract.OnLoginFinishedListener listener); // call presenter stuff
+        void userGoogleLogin(String idToken, LoginContract.OnLoginFinishedListener listener);
     }
 
     interface OnLoginFinishedListener {

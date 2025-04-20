@@ -19,6 +19,8 @@ import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFireba
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.model.authentication.login.LoginAuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class LoginAuthFirebaseActivity extends AppCompatActivity implements LoginContract.View {
     TextInputEditText editTextMail;
@@ -29,6 +31,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     TextView forgotPassTxt;
     ProgressBar progressBar;
     LoginAuthFirebasePresenter presenter;
+    FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -36,6 +39,9 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
         // inflate login screen xml layout
         setContentView(R.layout.login_screen);
+
+        // create an instance of firebase
+        mAuth = FirebaseAuth.getInstance();
 
         // create an object of login presenter
         presenter = new LoginAuthFirebasePresenter(this, LoginAuthRepository.getInstance());
@@ -92,6 +98,18 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
             forgotPassTxt click handler
             TODO
         */
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currUser = mAuth.getCurrentUser();
+        // if user is already logged in --> go to home page
+        if (currUser != null) {
+            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

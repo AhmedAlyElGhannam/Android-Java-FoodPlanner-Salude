@@ -4,30 +4,39 @@ import com.example.salude.contracts.LoginContract;
 
 public class LoginAuthFirebasePresenter implements LoginContract.Presenter, LoginContract.OnLoginFinishedListener {
     LoginContract.View view;
-    LoginContract.Model model;
+    LoginContract.Model repo;
 
-    public LoginAuthFirebasePresenter(LoginContract.View _view, LoginContract.Model _model) {
+    public LoginAuthFirebasePresenter(LoginContract.View _view, LoginContract.Model _repo) {
         view = _view;
-        model = _model;
+        repo = _repo;
     }
 
     @Override
     public void callLoginModelAction(String email, String password) {
-
+        if (repo != null) {
+            repo.userAccountLogin(email, password, this);
+        }
     }
 
     @Override
     public void callLoginWithGoogleModelAction() {
-
+        if (repo != null) {
+            // needs more logic
+            repo.userGoogleLogin("", this);
+        }
     }
 
     @Override
     public void OnLoginSuccess() {
-
+        if (view != null) {
+            view.onSuccessUIAction();
+        }
     }
 
     @Override
     public void OnLoginFailure(String err) {
-
+        if (view != null) {
+            view.onErrorUIAction("");
+        }
     }
 }

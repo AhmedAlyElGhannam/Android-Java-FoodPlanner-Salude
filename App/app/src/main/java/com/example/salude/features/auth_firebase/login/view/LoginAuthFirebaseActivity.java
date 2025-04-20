@@ -19,6 +19,7 @@ import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFireba
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.model.authentication.login.LoginAuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -36,6 +37,9 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        // initialize firebase
+//        FirebaseApp.initializeApp(this);
 
         // inflate login screen xml layout
         setContentView(R.layout.login_screen);

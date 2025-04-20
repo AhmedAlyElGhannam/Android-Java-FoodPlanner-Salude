@@ -93,7 +93,6 @@
         android:textSize="16sp"
         android:textStyle="bold"
         app:icon="@drawable/google__g__logo"
-        app:iconTint=""
         app:iconPadding="12dp"
         app:iconGravity="textStart"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogin"

@@ -14,14 +14,17 @@ public interface LoginContract {
     interface Presenter {
         // caller: view, callee: presenter
         void callLoginModelAction(String email, String password);
+        void callLoginWithGoogleModelAction();
+
     }
 
     interface Model {
         // caller: presenter, callee: model
-        void userLogin(String email, String password, RegistrationContract.OnRegistrationFinishedListener listener); // call presenter stuff
+        void userAccountLogin(String email, String password, RegistrationContract.OnRegistrationFinishedListener listener); // call presenter stuff
+        void userGoogleLogin(RegistrationContract.OnRegistrationFinishedListener listener);
     }
 
-    interface OnRegistrationFinishedListener {
+    interface OnLoginFinishedListener {
         // caller: model, callee: presenter
         public void OnLoginSuccess();
         // caller: model, callee: presenter

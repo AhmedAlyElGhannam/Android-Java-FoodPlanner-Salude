@@ -29,18 +29,17 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
     Button registerBtn;
     ProgressBar progressBar;
 
-
-    FirebaseAuth mAuth;
+    RegisterAuthFirebasePresenter presenter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // inflate registeration screen xml layout
+        // inflate registration screen xml layout
         setContentView(R.layout.registeration_screen);
 
         // create an object of register presenter
-        RegisterAuthFirebasePresenter presenter = new RegisterAuthFirebasePresenter(this, RegistrationAuthRepository.getInstance());
+        presenter = new RegisterAuthFirebasePresenter(this, RegistrationAuthRepository.getInstance());
 
         // get references to UI elements by id
         registerBtn = findViewById(R.id.registerBtn);
@@ -73,9 +72,10 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
 
                 if (password.equals(confirmedPassword)) {
                     presenter.callRegisterModelAction(email, password);
+                }
+                else {
                     Toast.makeText(RegisterAuthFirebaseActivity.this, "Re-entered password does not match the original. Try again.", Toast.LENGTH_LONG).show();
                 }
-                else {}
 
                 return;
             }

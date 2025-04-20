@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -26,6 +27,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
     TextInputEditText editTextPassword;
     TextInputEditText editTextConfirmPassword;
     Button registerBtn;
+    ProgressBar progressBar;
 
 
     FirebaseAuth mAuth;
@@ -45,6 +47,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
         editTextMail = findViewById(R.id.inputEmail);
         editTextPassword = findViewById(R.id.inputPassword);
         editTextConfirmPassword = findViewById(R.id.inputConfirmPassword);
+        progressBar = findViewById(R.id.progressBar);
 
         // registerBtn click handler
         registerBtn.setOnClickListener(new View.OnClickListener() {
@@ -77,6 +80,16 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
                 return;
             }
         });
+    }
+
+    @Override
+    public void showProgress() {
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

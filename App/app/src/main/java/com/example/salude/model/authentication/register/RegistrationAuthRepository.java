@@ -24,6 +24,7 @@ public class RegistrationAuthRepository implements RegistrationContract.Model {
 
     @Override
     public void registerUser(String email, String password, RegistrationContract.OnRegistrationFinishedListener listener) {
+        // create an object from FirebaseAuth singleton class
         FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
         mAuth.createUserWithEmailAndPassword(email, password)

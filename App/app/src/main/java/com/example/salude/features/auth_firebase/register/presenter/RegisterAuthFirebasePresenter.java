@@ -15,6 +15,7 @@ public class RegisterAuthFirebasePresenter implements RegistrationContract.Prese
     @Override
     public void callRegisterModelAction(String email, String password) {
         if (repo != null) {
+            view.showProgress();
             repo.registerUser(email, password, this);
         }
         else {
@@ -25,6 +26,7 @@ public class RegisterAuthFirebasePresenter implements RegistrationContract.Prese
     @Override
     public void OnRegistrationSuccess() {
         if (repo != null) {
+            view.hideProgress();
             view.onSuccessUIAction();
         }
         else {
@@ -35,6 +37,7 @@ public class RegisterAuthFirebasePresenter implements RegistrationContract.Prese
     @Override
     public void OnRegistrationFailure(String err) {
         if (repo != null) {
+            view.hideProgress();
             view.onErrorUIAction(err);
         }
         else {

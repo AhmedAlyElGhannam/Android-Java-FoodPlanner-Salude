@@ -1,6 +1,6 @@
 package com.example.salude.contracts;
 
-public interface RegistrationContract {
+public interface LoginContract {
     interface View {
         // methods to show and hide progress bar
         void showProgress();
@@ -13,18 +13,18 @@ public interface RegistrationContract {
 
     interface Presenter {
         // caller: view, callee: presenter
-        void callRegisterModelAction(String email, String password);
+        void callLoginModelAction(String email, String password);
     }
 
     interface Model {
         // caller: presenter, callee: model
-        void registerUser(String email, String password, OnRegistrationFinishedListener listener); // call presenter stuff
+        void userLogin(String email, String password, RegistrationContract.OnRegistrationFinishedListener listener); // call presenter stuff
     }
 
     interface OnRegistrationFinishedListener {
         // caller: model, callee: presenter
-        public void OnRegistrationSuccess();
+        public void OnLoginSuccess();
         // caller: model, callee: presenter
-        public void OnRegistrationFailure(String err);
+        public void OnLoginFailure(String err);
     }
 }

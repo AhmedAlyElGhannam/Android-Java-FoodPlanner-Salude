@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Salude"
         tools:targetApi="31">
         <activity
-            android:name=".splash_screen.view.SplashScreenActivity"
+            android:name=".features.splash_screen.view.SplashScreenActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,6 +23,8 @@
         </activity>
         <!--  MUST add other activities here  -->
         <activity android:name=".MainActivity"></activity>
+        <activity android:name=".features.auth_firebase.login.view.LoginAuthFirebaseActivity"></activity>
+        <activity android:name=".features.auth_firebase.register.view.RegisterAuthFirebaseActivity"></activity>
     </application>
 
 </manifest>

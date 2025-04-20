@@ -1,5 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.gms.google.services)
+//    id("com.android.application")
+//    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -38,11 +42,27 @@ dependencies {
     implementation(libs.activity)
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment)
+    implementation(libs.firebase.auth)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 
     // lottie
-    implementation("com.airbnb.android:lottie:6.4.0")
+    implementation(libs.lottie)
 
+    // firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.google.firebase.auth)
+    implementation (libs.firebase.firestore)
+    implementation(libs.firebase.analytics)
+
+    // sign in using google with firebase
+    implementation(libs.credentials)
+    implementation(libs.credentials.play.services.auth)
+    implementation(libs.googleid)
+    implementation(libs.play.services.auth)
+
+
+    // glide
+    implementation(libs.glide)
 }

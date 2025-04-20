@@ -1,6 +1,7 @@
 package com.example.salude.features.auth_firebase.login.presenter;
 
 import com.example.salude.contracts.LoginContract;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class LoginAuthFirebasePresenter implements LoginContract.Presenter, LoginContract.OnLoginFinishedListener {
     LoginContract.View view;
@@ -19,10 +20,10 @@ public class LoginAuthFirebasePresenter implements LoginContract.Presenter, Logi
     }
 
     @Override
-    public void callLoginWithGoogleModelAction() {
+    public void callLoginWithGoogleModelAction(GoogleSignInClient googleSignInClient) {
         if (repo != null) {
             // needs more logic
-            repo.userGoogleLogin("", this);
+//            repo.userGoogleLogin("", this);
         }
     }
 

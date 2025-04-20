@@ -1,5 +1,8 @@
 package com.example.salude.contracts;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+
 public interface LoginContract {
     interface View {
         // methods to show and hide progress bar
@@ -14,7 +17,7 @@ public interface LoginContract {
     interface Presenter {
         // caller: view, callee: presenter
         void callLoginModelAction(String email, String password);
-        void callLoginWithGoogleModelAction();
+        void callLoginWithGoogleModelAction(GoogleSignInClient googleSignInClient);
 
     }
 

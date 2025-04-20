@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_title">Login</string>
+    <string name="app_name">Salude</string>
+    <string name="app_title">Welcome to Salude! Login to Continue</string>
+    <string name="signup">Sign Up to Continue</string>
     <string name="don_t_have_account">Don\'t have account?</string>
     <string name="create_a_new_account">Create a new account</string>
     <string name="forgot_password">Forgot Password?</string>
-    <string name="login">LOGIN</string>
-    <string name="login_with_github">Login with GitHub</string>
+    <string name="login">Login</string>
+    <string name="login_with_github">Login with Google</string>
     <string name="password">Password</string>
     <string name="username">Username</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="email">Email</string>
+    <string name="client_id_google">416045091648-fhe3o55nlnscjapk68lh7edlu7covmku.apps.googleusercontent.com</string>
 </resources>

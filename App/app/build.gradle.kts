@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.gms.google.services)
+//    id("com.android.application")
+//    id("com.google.gms.google-services")
+
 }
 
 android {
@@ -51,10 +54,15 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.google.firebase.auth)
     implementation (libs.firebase.firestore)
+    implementation(libs.firebase.analytics)
 
     // sign in using google with firebase
     implementation(libs.credentials)
     implementation(libs.credentials.play.services.auth)
     implementation(libs.googleid)
+    implementation(libs.play.services.auth)
 
+
+    // glide
+    implementation(libs.glide)
 }

@@ -24,6 +24,7 @@ import com.example.salude.R;
 import com.example.salude.contracts.LoginContract;
 import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFirebasePresenter;
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
+import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.model.authentication.login.LoginAuthRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -186,7 +187,8 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     @Override
     public void onSuccessUIAction() {
         // proceed to app home page
-        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
+        //Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
+        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
         startActivity(intent);
         finish();
     }

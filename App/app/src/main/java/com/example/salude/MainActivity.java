@@ -28,7 +28,10 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         FirebaseUser user = auth.getCurrentUser();
-        txt.setText(user.getEmail());
+        if (user != null) {
+            txt.setText(user.getEmail());
+            String name = user.getDisplayName();
+        }
 
         btn.setOnClickListener(new View.OnClickListener() {
             @Override

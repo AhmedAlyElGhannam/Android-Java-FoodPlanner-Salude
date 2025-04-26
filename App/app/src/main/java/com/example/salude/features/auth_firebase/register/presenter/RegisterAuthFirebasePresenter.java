@@ -13,10 +13,10 @@ public class RegisterAuthFirebasePresenter implements RegistrationContract.Prese
     }
 
     @Override
-    public void callRegisterModelAction(String email, String password) {
+    public void callRegisterModelAction(String name, String email, String password) {
         if (repo != null) {
             view.showProgress();
-            repo.registerUser(email, password, this);
+            repo.registerUser(name, email, password, this);
         }
         else {
             Log.i("RegPresenter", "callRegisterModelAction: " + "repo is null!");

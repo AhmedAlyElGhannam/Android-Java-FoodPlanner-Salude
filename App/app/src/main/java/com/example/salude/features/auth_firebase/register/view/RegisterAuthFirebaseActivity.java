@@ -47,11 +47,18 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
         editTextPassword = findViewById(R.id.inputPassword);
         editTextConfirmPassword = findViewById(R.id.inputConfirmPassword);
         progressBar = findViewById(R.id.progressBar);
+        TextInputEditText editTextUsername = findViewById(R.id.txtUsername);
 
         // registerBtn click handler
         registerBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String name = String.valueOf(editTextName.getText());
+                if (TextUtils.isEmpty(name)) {
+                    Toast.makeText(RegisterAuthFirebaseActivity.this, "Please enter your username.", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 String email = String.valueOf(editTextMail.getText());
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(RegisterAuthFirebaseActivity.this, "Please enter your email.", Toast.LENGTH_LONG).show();
@@ -71,7 +78,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
                 }
 
                 if (password.equals(confirmedPassword)) {
-                    presenter.callRegisterModelAction(email, password);
+                    presenter.callRegisterModelAction(name, email, password);
                 }
                 else {
                     Toast.makeText(RegisterAuthFirebaseActivity.this, "Re-entered password does not match the original. Try again.", Toast.LENGTH_LONG).show();

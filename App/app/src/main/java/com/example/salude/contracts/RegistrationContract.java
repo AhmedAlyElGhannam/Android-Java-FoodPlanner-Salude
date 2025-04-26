@@ -13,12 +13,12 @@ public interface RegistrationContract {
 
     interface Presenter {
         // caller: view, callee: presenter
-        void callRegisterModelAction(String email, String password);
+        void callRegisterModelAction(String name, String email, String password);
     }
 
     interface Model {
         // caller: presenter, callee: model
-        void registerUser(String email, String password, OnRegistrationFinishedListener listener); // call presenter stuff
+        void registerUser(String name, String email, String password, OnRegistrationFinishedListener listener); // call presenter stuff
     }
 
     interface OnRegistrationFinishedListener {

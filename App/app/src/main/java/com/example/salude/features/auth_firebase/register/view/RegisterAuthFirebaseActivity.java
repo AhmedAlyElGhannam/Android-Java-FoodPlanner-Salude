@@ -16,6 +16,7 @@ import com.example.salude.R;
 import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
 import com.example.salude.features.auth_firebase.register.presenter.RegisterAuthFirebasePresenter;
+import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.features.splash_screen.view.SplashScreenActivity;
 import com.example.salude.model.authentication.register.RegistrationAuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
@@ -47,7 +48,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
         editTextPassword = findViewById(R.id.inputPassword);
         editTextConfirmPassword = findViewById(R.id.inputConfirmPassword);
         progressBar = findViewById(R.id.progressBar);
-        TextInputEditText editTextUsername = findViewById(R.id.txtUsername);
+        editTextName = findViewById(R.id.inputUsername);
 
         // registerBtn click handler
         registerBtn.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +103,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
     @Override
     public void onSuccessUIAction() {
         // return to login page
-        Intent intent = new Intent(RegisterAuthFirebaseActivity.this, LoginAuthFirebaseActivity.class);
+        Intent intent = new Intent(RegisterAuthFirebaseActivity.this, MainScreenActivity.class);
         startActivity(intent);
         finish();
     }

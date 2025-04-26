@@ -1,4 +1,4 @@
-package com.example.salude.features.auth_firebase.register.view;
+package com.example.salude.features.main_screen.view;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;

@@ -8,7 +8,6 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.salude.features.auth_firebase.register.view.*;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainScreenActivity extends AppCompatActivity {

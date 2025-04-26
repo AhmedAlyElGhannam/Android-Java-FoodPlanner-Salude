@@ -5,9 +5,23 @@
     android:layout_height="match_parent">
 
     <TextView
-        android:text="Profile Fragment"
+        android:id="@+id/usernameTxt"
+        android:layout_width="207dp"
+        android:layout_height="40dp"
+        android:textColor="#000"
+        android:textSize="22sp" />
+
+    <TextView
+        android:id="@+id/emailTxt"
         android:textSize="22sp"
         android:textColor="#000"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/logoutBtn"
+        android:layout_width="249dp"
+        android:layout_height="wrap_content"
+        android:text="Logout" />
+
 </LinearLayout>

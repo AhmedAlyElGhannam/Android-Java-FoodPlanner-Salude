@@ -18,7 +18,7 @@ public abstract class RoomLocalDB extends RoomDatabase {
     private RoomLocalDB() {}
 
     public static RoomLocalDB getInstance(Context context) {
-        // maybe make it synchron
+        // maybe make it synchronized
         if (db == null) {
             db = Room.databaseBuilder(context.getApplicationContext(), RoomLocalDB.class, "meals").build();
         }

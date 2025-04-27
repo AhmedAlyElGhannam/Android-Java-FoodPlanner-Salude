@@ -11,16 +11,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.salude.MainActivity;
 import com.example.salude.R;
 import com.example.salude.contracts.RegistrationContract;
-import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
 import com.example.salude.features.auth_firebase.register.presenter.RegisterAuthFirebasePresenter;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
-import com.example.salude.features.splash_screen.view.SplashScreenActivity;
-import com.example.salude.model.authentication.register.RegistrationAuthRepository;
+import com.example.salude.model.remote.firebase.register.RegistrationAuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class RegisterAuthFirebaseActivity extends AppCompatActivity implements RegistrationContract.View {
     TextInputEditText editTextName;

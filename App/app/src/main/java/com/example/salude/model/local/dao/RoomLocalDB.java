@@ -15,8 +15,6 @@ public abstract class RoomLocalDB extends RoomDatabase {
 
     private static RoomLocalDB db;
 
-    private RoomLocalDB() {}
-
     public static RoomLocalDB getInstance(Context context) {
         // maybe make it synchronized
         if (db == null) {

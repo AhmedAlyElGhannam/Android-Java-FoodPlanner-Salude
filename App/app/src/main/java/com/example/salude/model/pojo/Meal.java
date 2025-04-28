@@ -139,7 +139,7 @@ public class Meal {
     }
 
 
-    public String setPlannedMealDate() {
+    public String getPlannedMealDate() {
         return plannedMealDate;
     }
 

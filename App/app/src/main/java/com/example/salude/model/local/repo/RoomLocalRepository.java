@@ -12,7 +12,7 @@ import com.example.salude.model.pojo.Meal;
 import java.util.List;
 
 public class RoomLocalRepository {
-    static class RoomLocalFavouriteRepository {
+    public static class RoomLocalFavouriteRepository {
         private final MealDAO.FavouriteMealDAO dao;
         private static RoomLocalFavouriteRepository repo = null;
 
@@ -37,12 +37,13 @@ public class RoomLocalRepository {
                 @Override
                 public void run() {
                     // add to favs
-                    if (!dao.isMealInDB(meal.getIdMeal())) {
+                    if (dao.isMealInDB(meal.getIdMeal())) {
+                        dao.updateMealFavouriteStatus(meal.getIdMeal(), true);
+                    }
+                    else {
+                        meal.setIsFavouriteMeal(true);
                         dao.insertFavouriteMeal(meal);
                     }
-
-                    // set meal as favourite
-                    dao.updateMealFavouriteStatus(meal.getIdMeal(), true);
                 }
             }).start();
         }
@@ -51,16 +52,19 @@ public class RoomLocalRepository {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    // set meal as favourite
-                    dao.updateMealFavouriteStatus(meal.getIdMeal(), false);
-                    // add to favs
-                    dao.removeMealFromFavourites(meal);
+                    if (dao.isMealInDB(meal.getIdMeal())) {
+                        dao.updateMealFavouriteStatus(meal.getIdMeal(), false);
+                    }
+                    else {
+                        meal.setIsFavouriteMeal(false);
+                        dao.removeMealFromFavourites(meal);
+                    }
                 }
             }).start();
         }
     }
 
-    static class RoomLocalPlannedRepository {
+    public static class RoomLocalPlannedRepository {
         private final MealDAO.PlannedMealDAO dao;
         private static RoomLocalPlannedRepository repo = null;
 
@@ -84,11 +88,13 @@ public class RoomLocalRepository {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    meal.setPlannedMealDate(date);
-                    if (!dao.isMealInDB(meal.getIdMeal())) {
+                    if (dao.isMealInDB(meal.getIdMeal())) {
+                        dao.updateMealPlannedStatus(meal.getIdMeal(), date);
+                    }
+                    else {
+                        meal.setPlannedMealDate(date);
                         dao.insertPlannedMeal(meal);
                     }
-//                    dao.updateMealPlannedStatus(meal.getIdMeal(), date);
                 }
             }).start();
         }
@@ -97,8 +103,13 @@ public class RoomLocalRepository {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    meal.setPlannedMealDate("");
-//                    dao.updateMealPlannedStatus(meal.getIdMeal(), "");
+                    if (dao.isMealInDB(meal.getIdMeal())) {
+                        dao.updateMealPlannedStatus(meal.getIdMeal(), "");
+                    }
+                    else {
+                        meal.setPlannedMealDate("");
+                        dao.removeMealFromPlanned(meal);
+                    }
                 }
             }).start();
         }

@@ -62,7 +62,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // proceed to app home page
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
                                 startActivity(intent);
                                 finish();
 //                                mAuth = FirebaseAuth.getInstance();
@@ -164,7 +164,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         FirebaseUser currUser = mAuth.getCurrentUser();
         // if user is already logged in --> go to home page
         if (currUser != null) {
-            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
             startActivity(intent);
             finish();
         }

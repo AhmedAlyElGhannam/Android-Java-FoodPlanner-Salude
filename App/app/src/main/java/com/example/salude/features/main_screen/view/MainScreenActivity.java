@@ -8,6 +8,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
+import com.example.salude.model.local.dao.RoomLocalDB;
+import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.pojo.Meal;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainScreenActivity extends AppCompatActivity {
@@ -23,6 +26,26 @@ public class MainScreenActivity extends AppCompatActivity {
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#1E88E5")); // same blue hue as nav bar
 
+        Meal testMeal = new Meal();
+
+        testMeal.setIdMeal("test_123");
+        testMeal.setStrMeal("YasTest Favorite Meal");
+        testMeal.setStrCategory("Test Category");
+        testMeal.setIdMeal("planned_123");
+        testMeal.setStrMeal("Christmas Dinner");
+        testMeal.setStrCategory("Holiday");
+
+        RoomLocalRepository.RoomLocalPlannedRepository repo1 =
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(this).getPlannedMealDAO());
+
+        repo1.addToPlannedMeals(testMeal, "haha");
+
+        RoomLocalRepository.RoomLocalFavouriteRepository repo2 =
+                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(this).getFavouriteMealDAO());
+
+        repo2.addMealToFavourites(testMeal);
+
+        repo1.removeFromPlannedMeals(testMeal);
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 

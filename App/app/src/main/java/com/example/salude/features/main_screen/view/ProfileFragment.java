@@ -45,6 +45,13 @@ public class ProfileFragment extends Fragment {
 
         }
 
+        Meal meal = new Meal();
+        meal.setIdMeal("1");
+        meal.setIsFavouriteMeal(true);
+        meal.setPlannedMealDate("28/8/1995");
+
+
+
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

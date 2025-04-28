@@ -1,4 +1,4 @@
-package com.example.salude.model.local;
+package com.example.salude.model.local.dao;
 
 import android.content.Context;
 
@@ -24,4 +24,5 @@ public abstract class RoomLocalDB extends RoomDatabase {
         }
         return db;
     }
+
 }

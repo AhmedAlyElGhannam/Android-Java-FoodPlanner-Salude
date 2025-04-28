@@ -1,4 +1,4 @@
-package com.example.salude.model.local;
+package com.example.salude.model.local.dao;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -35,6 +35,10 @@ public interface MealDAO {
         @Query("UPDATE meals SET isFavouriteMeal = :state WHERE idMeal = :id")
         void updateMealFavouriteStatus(String id, boolean state);
 
+        // if meal exists in db
+        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
+        boolean isMealInDB(String id);
+
     }
 
     @Dao
@@ -58,6 +62,10 @@ public interface MealDAO {
         // statUpdate
         @Query("UPDATE meals SET plannedMealDate = :date WHERE idMeal = :id")
         void updateMealPlannedStatus(String id, String date);
+
+        // if meal exists in db
+        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
+        boolean isMealInDB(String id);
     }
 
 

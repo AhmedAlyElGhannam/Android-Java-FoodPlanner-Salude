@@ -3,6 +3,7 @@ package com.example.salude.features.main_screen.view;
 import com.example.salude.R;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,7 +12,12 @@ import androidx.fragment.app.Fragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Meal;
+import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
+import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
+import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity {
 
@@ -35,17 +41,30 @@ public class MainScreenActivity extends AppCompatActivity {
         testMeal.setStrMeal("Christmas Dinner");
         testMeal.setStrCategory("Holiday");
 
-        RoomLocalRepository.RoomLocalPlannedRepository repo1 =
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(this).getPlannedMealDAO());
+//        RoomLocalRepository.RoomLocalPlannedRepository repo1 =
+//                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(this).getPlannedMealDAO());
+//
+//        repo1.addToPlannedMeals(testMeal, "haha");
+//
+//        RoomLocalRepository.RoomLocalFavouriteRepository repo2 =
+//                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(this).getFavouriteMealDAO());
+//
+//        repo2.addMealToFavourites(testMeal);
+//
+//        repo1.removeFromPlannedMeals(testMeal);
 
-        repo1.addToPlannedMeals(testMeal, "haha");
 
-        RoomLocalRepository.RoomLocalFavouriteRepository repo2 =
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(this).getFavouriteMealDAO());
+        RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()).getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+            @Override
+            public void onSuccess(List<Meal> meals) {
+                Log.i("TAG", "onSuccess: " + meals.get(0).getStrMeal());
+            }
 
-        repo2.addMealToFavourites(testMeal);
-
-        repo1.removeFromPlannedMeals(testMeal);
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "onFailure: failed because no");
+            }
+        });
 
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
 

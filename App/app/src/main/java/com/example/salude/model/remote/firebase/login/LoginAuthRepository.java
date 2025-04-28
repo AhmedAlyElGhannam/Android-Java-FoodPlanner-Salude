@@ -1,11 +1,10 @@
-package com.example.salude.model.authentication.login;
+package com.example.salude.model.remote.firebase.login;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.salude.contracts.LoginContract;
-import com.example.salude.contracts.RegistrationContract;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;

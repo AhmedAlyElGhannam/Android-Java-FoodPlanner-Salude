@@ -18,14 +18,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.bumptech.glide.Glide;
-import com.example.salude.MainActivity;
 import com.example.salude.R;
 import com.example.salude.contracts.LoginContract;
 import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFirebasePresenter;
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
-import com.example.salude.model.authentication.login.LoginAuthRepository;
+import com.example.salude.model.remote.firebase.login.LoginAuthRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -39,8 +37,6 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
-
-import java.util.Objects;
 
 public class LoginAuthFirebaseActivity extends AppCompatActivity implements LoginContract.View {
     TextInputEditText editTextMail;
@@ -66,7 +62,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             if (task.isSuccessful()) {
                                 // proceed to app home page
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
                                 startActivity(intent);
                                 finish();
 //                                mAuth = FirebaseAuth.getInstance();
@@ -168,7 +164,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         FirebaseUser currUser = mAuth.getCurrentUser();
         // if user is already logged in --> go to home page
         if (currUser != null) {
-            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
+            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
             startActivity(intent);
             finish();
         }

@@ -1,4 +1,4 @@
-package com.example.salude.model.authentication.register;
+package com.example.salude.model.remote.firebase.register;
 
 import android.util.Log;
 

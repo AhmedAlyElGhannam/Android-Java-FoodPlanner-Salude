@@ -16,6 +16,7 @@ navigationFragment = "2.8.9"
 firebaseAuth = "23.2.0"
 googleGmsGoogleServices = "4.4.2"
 playServicesAuth = "21.3.0"
+roomRuntime = "2.7.1"
 
 [libraries]
 com-google-firebase-firebase-auth = { module = "com.google.firebase:firebase-auth" }
@@ -38,6 +39,7 @@ constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayo
 navigation-fragment = { group = "androidx.navigation", name = "navigation-fragment", version.ref = "navigationFragment" }
 firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version.ref = "firebaseAuth" }
 play-services-auth = { module = "com.google.android.gms:play-services-auth", version.ref = "playServicesAuth" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomRuntime" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

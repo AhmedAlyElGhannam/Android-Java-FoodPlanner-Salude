@@ -9,7 +9,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.example.salude.MainActivity;
 import com.example.salude.R;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
 import com.google.firebase.FirebaseApp;

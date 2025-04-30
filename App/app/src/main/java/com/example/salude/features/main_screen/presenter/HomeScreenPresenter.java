@@ -34,31 +34,41 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
         if (savedDate.equals(today)) {
             // get meal from shared preferences instead of fetching a new one
-            Meal savedMeal = new Gson().fromJson(sharedPreferences.getString("mealOfTheDay", null), Meal.class);
-            view.showMealOfTheDay(savedMeal);
-        }
-        else {
-            repo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
-                @Override
-                public void onSuccess(List<Meal> meals) {
-                    if (meals != null && !meals.isEmpty()) {
-                        Meal todaysMeal = meals.get(0);
-                        view.showMealOfTheDay(todaysMeal);
-
-                        // save meal and current date
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString("mealOfTheDay", new Gson().toJson(todaysMeal));
-                        editor.putString("meal_date", sharedPreferences.getString("mealOfTheDay", null));
-                        editor.apply();
+            String mealJson = sharedPreferences.getString("mealOfTheDay", null);
+            if (mealJson != null) {
+                try {
+                    Meal savedMeal = new Gson().fromJson(mealJson, Meal.class);
+                    if (savedMeal != null) {
+                        view.showMealOfTheDay(savedMeal);
+                        return; // Exit after showing saved meal
                     }
+                } catch (Exception e) {
+                    Log.e("HomeScreenPresenter", "Error parsing saved meal", e);
                 }
-
-                @Override
-                public void onFailure(String err) {
-
-                }
-            });
+            }
         }
+
+        // If we get here, either date doesn't match or no saved meal exists
+        repo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+            @Override
+            public void onSuccess(List<Meal> meals) {
+                if (meals != null && !meals.isEmpty()) {
+                    Meal todaysMeal = meals.get(0);
+                    view.showMealOfTheDay(todaysMeal);
+
+                    // save meal and current date
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("mealOfTheDay", new Gson().toJson(todaysMeal));
+                    editor.putString("mealDate", today); // Store today's date
+                    editor.apply();
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.e("HomeScreenPresenter", "Failed to get meal of the day: " + err);
+            }
+        });
     }
 
     @Override

@@ -9,8 +9,7 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.features.main_screen.view.home.HomeFragment;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;

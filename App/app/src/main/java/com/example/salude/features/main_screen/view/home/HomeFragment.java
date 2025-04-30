@@ -1,0 +1,120 @@
+package com.example.salude.features.main_screen.view.home;
+
+import android.annotation.SuppressLint;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.salude.R;
+import com.example.salude.contracts.HomeScreenContract;
+import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.model.pojo.Category;
+import com.example.salude.model.pojo.Meal;
+import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
+import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+
+import java.util.ArrayList;
+import java.util.List;
+import com.bumptech.glide.Glide;
+
+public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener{
+    HomeScreenContract.Presenter presenter;
+    HomeFragmentMealAdapter adapter;
+//    RecyclerView mealOfTheDayRecyclerView;
+    RecyclerView mealCategoriesRecyclerView;
+
+    ImageButton addToFavBtn;
+    ImageButton addToCalBtn;
+    ImageView mealThumbnailImg;
+    TextView mealNameTxt;
+    TextView mealCategoryTxt;
+    TextView mealCountryTxt;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view =  inflater.inflate(R.layout.fragment_home, container, false);
+
+        addToFavBtn = view.findViewById(R.id.btnAddToFavourites);
+        addToCalBtn = view.findViewById(R.id.btnAddToCalendar);
+        mealThumbnailImg = view.findViewById(R.id.imgMeal);
+        mealNameTxt = view.findViewById(R.id.txtMealName);
+        mealCategoryTxt = view.findViewById(R.id.txtCategory);
+        mealCountryTxt = view.findViewById(R.id.txtCountry);
+        mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
+
+        return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mealCategoriesRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
+        layoutManager2.setOrientation(RecyclerView.HORIZONTAL);
+        mealCategoriesRecyclerView.setLayoutManager(layoutManager2);
+
+
+        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()), getContext());
+        adapter = new HomeFragmentMealAdapter(getContext(), new ArrayList<>(), null, null, null);
+        mealCategoriesRecyclerView.setAdapter(adapter);
+        presenter.getAllCategories();
+        presenter.getMealOfTheDay();
+
+        addToFavBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+
+        addToCalBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showMealOfTheDay(Meal meal) {
+        mealNameTxt.setText(meal.getStrMeal());
+        mealCategoryTxt.setText(meal.getStrCategory());
+        mealCountryTxt.setText(meal.getStrArea());
+        Glide.with(getContext()).load(meal.getStrMealThumb()).into(mealThumbnailImg);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showMealCategories(List<Category> categories) {
+        adapter.setCategories(categories);
+        adapter.notifyDataSetChanged();
+    }
+
+
+    @Override
+    public void onFavouriteClickListener() {
+
+    }
+
+    @Override
+    public void onMealItemClickListener() {
+
+    }
+
+    @Override
+    public void onPlannedClickListener() {
+
+    }
+}

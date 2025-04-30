@@ -40,7 +40,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
                     Meal savedMeal = new Gson().fromJson(mealJson, Meal.class);
                     if (savedMeal != null) {
                         view.showMealOfTheDay(savedMeal);
-                        return; // Exit after showing saved meal
+                        return;
                     }
                 } catch (Exception e) {
                     Log.e("HomeScreenPresenter", "Error parsing saved meal", e);

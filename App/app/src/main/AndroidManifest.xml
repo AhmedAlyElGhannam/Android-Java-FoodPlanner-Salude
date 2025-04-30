@@ -22,10 +22,10 @@
             </intent-filter>
         </activity>
         <!--  MUST add other activities here  -->
-        <activity android:name=".MainActivity"></activity>
         <activity android:name=".features.main_screen.view.MainScreenActivity"></activity>
         <activity android:name=".features.auth_firebase.login.view.LoginAuthFirebaseActivity"></activity>
         <activity android:name=".features.auth_firebase.register.view.RegisterAuthFirebaseActivity"></activity>
+        <activity android:name=".features.mealdetails.view.MealDetailsActivity"></activity>
     </application>
 
 </manifest>

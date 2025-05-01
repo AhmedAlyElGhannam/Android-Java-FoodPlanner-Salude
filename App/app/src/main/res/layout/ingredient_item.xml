@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/categoryItemLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <!-- Category Image -->
+    <ImageView
+        android:id="@+id/imgIngredient"
+        android:layout_width="187dp"
+        android:layout_height="131dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Category Name -->
+    <TextView
+        android:id="@+id/txtIngredientName"
+        android:layout_width="189dp"
+        android:layout_height="23dp"
+        android:layout_marginTop="4dp"
+        android:fontFamily="sans-serif-medium"
+        android:text="Ingredient Name"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceBody1"
+        android:textColor="@color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/imgIngredient" />
+
+    <!-- Category Description -->
+    <TextView
+        android:id="@+id/txtIngredientPortion"
+        android:layout_width="180dp"
+        android:layout_height="15dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="sans-serif"
+        android:text="Portion Size"
+        android:textAlignment="center"
+        android:textAppearance="?attr/textAppearanceCaption"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtIngredientName" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

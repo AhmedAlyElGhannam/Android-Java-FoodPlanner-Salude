@@ -14,7 +14,7 @@ public interface RemoteRetrofitService {
     @GET("random.php")
     Call<MealResponse> getMealOfTheDay();
 
-    @GET("list.php?c=list")
+    @GET("categories.php")
     Call<CategoryResponse> getAllMealCategories();
 
     @GET("list.php?a=list")

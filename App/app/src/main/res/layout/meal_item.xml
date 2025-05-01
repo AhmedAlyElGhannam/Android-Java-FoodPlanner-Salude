@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="@string/add_to_calendar"
-        android:src="@drawable/ic_calendar"
+        android:src="@drawable/ic_calendar_border"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -51,8 +51,6 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
     private RecyclerView rvIngredients;
     private IngredientsAdapter adapter;
     private MealDetailsPresenter presenter;
-    RoomLocalRepository.RoomLocalFavouriteRepository repo;
-    RoomLocalRepository.RoomLocalPlannedRepository planRepo;
 
     @Nullable
     @Override
@@ -62,10 +60,6 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
         presenter = new MealDetailsPresenter(this,
                 RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()));
-//        /*****************************MOVE TO PRESENTER**********************************/
-//        repo = RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO());
-//        planRepo = RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO());
-//        /*****************************MOVE TO PRESENTER**********************************/
 
         // Retrieve the Meal object from the Bundle
         if (getArguments() != null) {
@@ -95,45 +89,6 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        /*****************************MOVE TO PRESENTER**********************************/
-//        repo.getListOfFavouriteMeals().observe(getViewLifecycleOwner(), meals -> {
-//            boolean isFavorite = false;
-//            if (meals != null) {
-//                for (Meal m : meals) {
-//                    if (m.getIdMeal().equals(meal.getIdMeal())) {
-//                        isFavorite = true;
-//                        break;
-//                    }
-//                }
-//            }
-//            meal.setIsFavouriteMeal(isFavorite);
-//            btnFavorite.setImageResource(
-//                    meal.getIsFavouriteMeal() ?
-//                            R.drawable.ic_favorite_filled :
-//                            R.drawable.ic_favorite_border
-//            );
-//        });
-//
-//        planRepo.getListOfPlannedMeals().observe(getViewLifecycleOwner(), meals -> {
-//            boolean isPlanned = false;
-//            String plannedDate = null;
-//            if (meals != null) {
-//                for (Meal m : meals) {
-//                    if (m.getIdMeal().equals(meal.getIdMeal())) {
-//                        isPlanned = true;
-//                        plannedDate = m.getPlannedMealDate();
-//                        break;
-//                    }
-//                }
-//            }
-//            meal.setPlannedMealDate(plannedDate);
-//            btnAddToCalendar.setImageResource(
-//                    (plannedDate != null) ?
-//                            R.drawable.ic_calendar_filled :
-//                            R.drawable.ic_calendar_border
-//            );
-//        });
-//        /*****************************MOVE TO PRESENTER**********************************/
         presenter.checkFavoriteStatus(meal);
         presenter.checkPlannedStatus(meal);
 

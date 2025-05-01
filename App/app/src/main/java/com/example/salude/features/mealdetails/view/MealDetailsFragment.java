@@ -14,13 +14,16 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
+import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
+import com.example.salude.features.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
@@ -34,11 +37,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MealDetailsFragment extends Fragment {
+public class MealDetailsFragment extends Fragment implements MealDetailsContract.View {
 
     Meal meal;
     private ImageView ivMeal;
-    private ImageButton btnFavorite, btnAddToCalendar;
+    private ImageButton btnFavorite;
+    private ImageButton btnAddToCalendar;
     private TextView tvMealName;
     private TextView tvCategory;
     private TextView tvArea;
@@ -48,14 +52,20 @@ public class MealDetailsFragment extends Fragment {
     private IngredientsAdapter adapter;
     private MealDetailsPresenter presenter;
     RoomLocalRepository.RoomLocalFavouriteRepository repo;
+    RoomLocalRepository.RoomLocalPlannedRepository planRepo;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.full_meal_details, container, false);
 
-        repo = RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO());
-
+        presenter = new MealDetailsPresenter(this,
+                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()));
+//        /*****************************MOVE TO PRESENTER**********************************/
+//        repo = RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO());
+//        planRepo = RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO());
+//        /*****************************MOVE TO PRESENTER**********************************/
 
         // Retrieve the Meal object from the Bundle
         if (getArguments() != null) {
@@ -85,24 +95,47 @@ public class MealDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        repo.getListOfFavouriteMeals().observe(getViewLifecycleOwner(), meals -> {
-            boolean isFavorite = false;
-            if (meals != null) {
-                for (Meal m : meals) {
-                    if (m.getIdMeal().equals(meal.getIdMeal())) {
-                        isFavorite = true;
-                        break;
-                    }
-                }
-            }
-            meal.setIsFavouriteMeal(isFavorite);
-            btnFavorite.setImageResource(
-                    meal.getIsFavouriteMeal() ?
-                            R.drawable.ic_favorite_filled :
-                            R.drawable.ic_favorite_border
-            );
-        });
-
+//        /*****************************MOVE TO PRESENTER**********************************/
+//        repo.getListOfFavouriteMeals().observe(getViewLifecycleOwner(), meals -> {
+//            boolean isFavorite = false;
+//            if (meals != null) {
+//                for (Meal m : meals) {
+//                    if (m.getIdMeal().equals(meal.getIdMeal())) {
+//                        isFavorite = true;
+//                        break;
+//                    }
+//                }
+//            }
+//            meal.setIsFavouriteMeal(isFavorite);
+//            btnFavorite.setImageResource(
+//                    meal.getIsFavouriteMeal() ?
+//                            R.drawable.ic_favorite_filled :
+//                            R.drawable.ic_favorite_border
+//            );
+//        });
+//
+//        planRepo.getListOfPlannedMeals().observe(getViewLifecycleOwner(), meals -> {
+//            boolean isPlanned = false;
+//            String plannedDate = null;
+//            if (meals != null) {
+//                for (Meal m : meals) {
+//                    if (m.getIdMeal().equals(meal.getIdMeal())) {
+//                        isPlanned = true;
+//                        plannedDate = m.getPlannedMealDate();
+//                        break;
+//                    }
+//                }
+//            }
+//            meal.setPlannedMealDate(plannedDate);
+//            btnAddToCalendar.setImageResource(
+//                    (plannedDate != null) ?
+//                            R.drawable.ic_calendar_filled :
+//                            R.drawable.ic_calendar_border
+//            );
+//        });
+//        /*****************************MOVE TO PRESENTER**********************************/
+        presenter.checkFavoriteStatus(meal);
+        presenter.checkPlannedStatus(meal);
 
         rvIngredients.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
@@ -133,25 +166,20 @@ public class MealDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // save fav in db (toggle to undo it)
-                if (meal.getIsFavouriteMeal()) {
-                    // set it to false and remove its flag + make button hollow
-                    repo.removeMealFromFavourites(meal);
-                    Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    // set it to true and set its flag + make button filled
-                    repo.addMealToFavourites(meal);
-                    Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
-                }
+                presenter.toggleFavorite(meal);
             }
         });
 
         btnAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // open calendar dialog
-                // save date in db
-                Toast.makeText(getContext(), "Meal Added to Calendar", Toast.LENGTH_SHORT).show();
+                if (meal.getPlannedMealDate() == null) {
+                    DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate
+                            -> presenter.togglePlanned(meal, selectedDate));
+                }
+                else {
+                    presenter.togglePlanned(meal, null);
+                }
             }
         });
     }
@@ -187,4 +215,38 @@ public class MealDetailsFragment extends Fragment {
         Matcher matcher = Pattern.compile(pattern).matcher(url);
         return matcher.find() ? matcher.group() : null;
     }
+
+    @Override
+    public void updateFavoriteButton(boolean isFavorite) {
+        btnFavorite.setImageResource(
+                isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
+        );
+
+        if (isFavorite) {
+            Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    public void updateCalendarButton(boolean isPlanned) {
+        btnAddToCalendar.setImageResource(
+                isPlanned ? R.drawable.ic_calendar_filled : R.drawable.ic_calendar_border
+        );
+        if (isPlanned) {
+            Toast.makeText(getContext(), "Meal Scheduled for " + meal.getPlannedMealDate(), Toast.LENGTH_SHORT).show();
+        }
+        else {
+            Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @NonNull
+    @Override
+    public LifecycleOwner getViewLifecycleOwner() {
+        return this;
+    }
+
 }

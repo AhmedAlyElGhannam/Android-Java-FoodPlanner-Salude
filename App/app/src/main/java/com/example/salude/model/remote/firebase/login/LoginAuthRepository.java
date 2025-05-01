@@ -16,7 +16,7 @@ import com.google.firebase.auth.GoogleAuthProvider;
 public class LoginAuthRepository implements LoginContract.Model {
     private static LoginAuthRepository repo;
     private LoginAuthRepository() {}
-    public static LoginAuthRepository getInstance() {
+    public static synchronized LoginAuthRepository getInstance() {
         if (repo == null) {
             repo = new LoginAuthRepository();
         }

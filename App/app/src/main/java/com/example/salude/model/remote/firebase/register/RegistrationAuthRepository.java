@@ -16,7 +16,7 @@ public class RegistrationAuthRepository implements RegistrationContract.Model {
     private static RegistrationAuthRepository repo = null;
 
     private RegistrationAuthRepository() {}
-    public static RegistrationAuthRepository getInstance() {
+    public static synchronized RegistrationAuthRepository getInstance() {
         if (repo == null) {
             repo = new RegistrationAuthRepository();
         }

@@ -1,5 +1,6 @@
 package com.example.salude.features.mealdetails.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,15 +14,21 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
+import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
+import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
+import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -36,6 +43,8 @@ public class MealDetailsFragment extends Fragment {
     private TextView tvInstructions;
     private YouTubePlayerView youtubePlayerView;
     private RecyclerView rvIngredients;
+    private IngredientsAdapter adapter;
+    private MealDetailsPresenter presenter;
 
     @Nullable
     @Override
@@ -65,9 +74,21 @@ public class MealDetailsFragment extends Fragment {
         return view;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        rvIngredients.setHasFixedSize(true);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        layoutManager.setOrientation(RecyclerView.HORIZONTAL);
+        rvIngredients.setLayoutManager(layoutManager);
+
+        adapter = new IngredientsAdapter(getContext());
+        rvIngredients.setAdapter(adapter);
+        adapter.setIngredientList(meal.getIngredientsList());
+        adapter.notifyDataSetChanged();
+
 
         // set favorite button state
         btnFavorite.setImageResource(

@@ -43,6 +43,8 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     TextView mealNameTxt;
     TextView mealCategoryTxt;
     TextView mealCountryTxt;
+    TextView mealOfTheDayTxt;
+    TextView txtMealCategoriesLabel;
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
 
@@ -58,7 +60,8 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         mealCountryTxt = view.findViewById(R.id.txtCountry);
         mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
         mealItemLayout = view.findViewById(R.id.mealItemLayout);
-
+        mealOfTheDayTxt = view.findViewById(R.id.textViewMealOfTheDay);
+        txtMealCategoriesLabel = view.findViewById(R.id.txtMealCategoriesLabel);
         return view;
     }
 
@@ -78,9 +81,10 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         presenter.getAllCategories();
         presenter.getMealOfTheDay();
 
-        mealItemLayout.setOnClickListener(v -> {
-//            Toast.makeText(getContext(), "Meal card clicked", Toast.LENGTH_SHORT).show();
+        txtMealCategoriesLabel.setText("Meal Categories");
+        mealOfTheDayTxt.setText("Meal of The Day");
 
+        mealItemLayout.setOnClickListener(v -> {
             // create the destination fragment object
             MealDetailsFragment fragment = new MealDetailsFragment();
 

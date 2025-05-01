@@ -1,6 +1,7 @@
 package com.example.salude.features.main_screen.view.home;
 
 import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
@@ -42,7 +44,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     TextView mealCategoryTxt;
     TextView mealCountryTxt;
     ConstraintLayout mealItemLayout;
-
+    Meal mealOfTheDay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -77,8 +79,23 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         presenter.getMealOfTheDay();
 
         mealItemLayout.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Meal card clicked", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), "Meal card clicked", Toast.LENGTH_SHORT).show();
 
+            // create the destination fragment object
+            MealDetailsFragment fragment = new MealDetailsFragment();
+
+            // create a bundle and put meal into it
+            Bundle args = new Bundle();
+            args.putParcelable("meal", mealOfTheDay); // For Parcelable
+
+            // set the arguments
+            fragment.setArguments(args);
+
+            // perform fragment transaction
+            getParentFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .addToBackStack(null)
+                    .commit();
         });
 
         // Calendar button click
@@ -97,6 +114,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealOfTheDay(Meal meal) {
+        mealOfTheDay = meal;
         mealNameTxt.setText(meal.getStrMeal());
         mealCategoryTxt.setText(meal.getStrCategory());
         mealCountryTxt.setText(meal.getStrArea());

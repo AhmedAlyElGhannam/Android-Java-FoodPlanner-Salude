@@ -6,6 +6,9 @@ import androidx.room.PrimaryKey;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity(tableName = "meals")
 public class Meal implements Parcelable{
     @PrimaryKey
@@ -666,5 +669,42 @@ public class Meal implements Parcelable{
         dest.writeString(strMeasure19);
         dest.writeString(strMeasure20);
         dest.writeString(strSource);
+    }
+
+    public List<Ingredient> getIngredientsList() {
+        List<Ingredient> ingredients = new ArrayList<>();
+
+        // Helper method to add ingredient if it exists
+        addIngredientIfExists(ingredients, strIngredient1, strMeasure1);
+        addIngredientIfExists(ingredients, strIngredient2, strMeasure2);
+        addIngredientIfExists(ingredients, strIngredient3, strMeasure3);
+        addIngredientIfExists(ingredients, strIngredient4, strMeasure4);
+        addIngredientIfExists(ingredients, strIngredient5, strMeasure5);
+        addIngredientIfExists(ingredients, strIngredient6, strMeasure6);
+        addIngredientIfExists(ingredients, strIngredient7, strMeasure7);
+        addIngredientIfExists(ingredients, strIngredient8, strMeasure8);
+        addIngredientIfExists(ingredients, strIngredient9, strMeasure9);
+        addIngredientIfExists(ingredients, strIngredient10, strMeasure10);
+        addIngredientIfExists(ingredients, strIngredient11, strMeasure11);
+        addIngredientIfExists(ingredients, strIngredient12, strMeasure12);
+        addIngredientIfExists(ingredients, strIngredient13, strMeasure13);
+        addIngredientIfExists(ingredients, strIngredient14, strMeasure14);
+        addIngredientIfExists(ingredients, strIngredient15, strMeasure15);
+        addIngredientIfExists(ingredients, strIngredient16, strMeasure16);
+        addIngredientIfExists(ingredients, strIngredient17, strMeasure17);
+        addIngredientIfExists(ingredients, strIngredient18, strMeasure18);
+        addIngredientIfExists(ingredients, strIngredient19, strMeasure19);
+        addIngredientIfExists(ingredients, strIngredient20, strMeasure20);
+
+        return ingredients;
+    }
+
+    private void addIngredientIfExists(List<Ingredient> list, String name, String measure) {
+        if (name != null && !name.trim().isEmpty()) {
+            Ingredient ingredient = new Ingredient();
+            ingredient.setStrIngredient(name);
+            ingredient.setStrMeasure(measure != null ? measure : "");
+            list.add(ingredient);
+        }
     }
 }

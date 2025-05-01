@@ -23,7 +23,6 @@ import java.util.List;
 public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMealAdapter.ViewHolder> {
 
     private final Context context;
-    private Meal meal;
     private List<Category> categories;
     private final OnFavouriteClickListener fav_listener;
     private final OnPlannedClickListener plan_listener;
@@ -35,10 +34,6 @@ public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMe
         fav_listener = _fav_listener;
         plan_listener = _plan_listener;
         meal_listener = _meal_listener;
-    }
-
-    public void setMeal(Meal _meal) {
-        this.meal = _meal;
     }
 
     public void setCategories(List<Category> _categories) {
@@ -73,15 +68,9 @@ public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMe
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-
-
-
-
         ImageView categoryThumbnailImg;
         TextView categoryNameTxt;
-
         ConstraintLayout layout;
-
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);

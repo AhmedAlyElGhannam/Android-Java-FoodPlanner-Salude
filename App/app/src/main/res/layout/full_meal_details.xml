@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <!-- Meal Image with Favorite and Calendar Buttons -->
+        <!-- Meal Image with Buttons -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="250dp">
@@ -31,32 +31,34 @@
                 android:scaleType="centerCrop"
                 android:contentDescription="Description" />
 
-            <!-- Favorite Button (Right) -->
+            <!-- Favorite Button -->
             <ImageButton
                 android:id="@+id/btnFavorite"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_alignParentEnd="true"
-                android:layout_margin="16dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:layout_margin="12dp"
+                android:background="@drawable/rounded_dark_background"
                 android:src="@drawable/ic_favorite_border"
-                android:contentDescription="Description"
+                android:contentDescription="Favorite"
+                android:padding="8dp"
                 app:tint="@android:color/white" />
 
-            <!-- Add to Calendar Button (Left) -->
+            <!-- Calendar Button -->
             <ImageButton
                 android:id="@+id/btnAddToCalendar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_alignParentStart="true"
-                android:layout_margin="16dp"
+                android:layout_margin="12dp"
+                android:background="@drawable/rounded_dark_background"
                 android:src="@drawable/ic_calendar"
-                android:contentDescription="Description"
-                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Add to Calendar"
+                android:padding="8dp"
                 app:tint="@android:color/white" />
         </RelativeLayout>
 
-        <!-- Basic Info Card -->
+        <!-- Meal Info Card -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -91,7 +93,6 @@
                     android:layout_marginTop="4dp"
                     android:textSize="16sp" />
 
-                <!-- YouTube Player -->
                 <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
                     android:id="@+id/youtubePlayerView"
                     android:layout_width="match_parent"
@@ -101,7 +102,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Ingredients Card -->
+        <!-- Ingredients -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -134,7 +135,7 @@
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
-        <!-- Instructions Card -->
+        <!-- Instructions -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

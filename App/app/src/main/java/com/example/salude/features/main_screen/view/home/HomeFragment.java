@@ -23,6 +23,7 @@ import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
+import com.example.salude.features.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.MealDAO;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -79,12 +80,15 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         mealCategoriesRecyclerView.setLayoutManager(layoutManager2);
 
 
-        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()), RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()), getContext());
+        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()),
+                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+                getContext());
+
         adapter = new HomeFragmentMealAdapter(getContext(), new ArrayList<>(), null, null, null);
         mealCategoriesRecyclerView.setAdapter(adapter);
         presenter.getAllCategories();
         presenter.getMealOfTheDay();
-        presenter.getFavouriteMealBtnStatus(mealOfTheDay);
 
         txtMealCategoriesLabel.setText("Meal Categories");
         mealOfTheDayTxt.setText("Meal of The Day");
@@ -109,7 +113,21 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
         // Calendar button click
         addToCalBtn.setOnClickListener(v -> {
-
+            // save fav in db (toggle to undo it)
+            if (mealOfTheDay.getPlannedMealDate() == null) {
+                // Open date picker dialog to set a new date
+                DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
+                    mealOfTheDay.setPlannedMealDate(selectedDate);
+                    presenter.addMealToPlanned(mealOfTheDay);
+                    Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
+                });
+            }
+            else {
+                // Clear the date
+                mealOfTheDay.setPlannedMealDate(null);
+                presenter.removeMealFromPlanned(mealOfTheDay);
+                Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+            }
         });
 
         // Favourites button click
@@ -136,6 +154,8 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         mealCategoryTxt.setText(meal.getStrCategory());
         mealCountryTxt.setText(meal.getStrArea());
         Glide.with(getContext()).load(meal.getStrMealThumb()).into(mealThumbnailImg);
+        presenter.getFavouriteMealBtnStatus(mealOfTheDay);
+        presenter.getPlannedMealBtnStatus(mealOfTheDay);
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -174,5 +194,14 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     @Override
     public LifecycleOwner getViewLifecycleOwner() {
         return this;
+    }
+
+    @Override
+    public void updatePlannedMealBtn(boolean state) {
+        addToCalBtn.setImageResource(
+                state ?
+                        R.drawable.ic_calendar_filled :
+                        R.drawable.ic_calendar_border
+        );
     }
 }

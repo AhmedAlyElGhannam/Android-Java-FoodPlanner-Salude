@@ -104,10 +104,10 @@ public class RoomLocalRepository {
                 @Override
                 public void run() {
                     if (dao.isMealInDB(meal.getIdMeal())) {
-                        dao.updateMealPlannedStatus(meal.getIdMeal(), "");
+                        dao.updateMealPlannedStatus(meal.getIdMeal(), null);
                     }
                     else {
-                        meal.setPlannedMealDate("");
+                        meal.setPlannedMealDate(null);
                         dao.removeMealFromPlanned(meal);
                     }
                 }

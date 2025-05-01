@@ -16,6 +16,7 @@ public interface HomeScreenContract {
         public void updateFavouriteMealBtn(boolean state);
 
         public LifecycleOwner getViewLifecycleOwner();
+        public void updatePlannedMealBtn(boolean state);
     }
 
     public interface Presenter {
@@ -24,6 +25,9 @@ public interface HomeScreenContract {
         public void getFavouriteMealBtnStatus(Meal meal);
         public void addMealToFavourites(Meal meal);
         public void removeMealFromFavourites(Meal meal);
+        public void getPlannedMealBtnStatus(Meal meal);
+        public void addMealToPlanned(Meal meal);
+        public void removeMealFromPlanned(Meal meal);
     }
 
     public interface Model {

@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.salude.contracts.HomeScreenContract;
+import com.example.salude.features.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
@@ -20,14 +21,18 @@ import java.util.Locale;
 public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     private final HomeScreenContract.View view;
     private final RemoteRetrofitRepository remoteRepo;
-    private final RoomLocalRepository.RoomLocalFavouriteRepository localRepo;
+    private final RoomLocalRepository.RoomLocalFavouriteRepository localFavRepo;
+    private final RoomLocalRepository.RoomLocalPlannedRepository localPlanRepo;
 
     private final SharedPreferences sharedPreferences;
+    private Context context;
 
-    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, Context _context) {
+    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+        context = _context;
         view = _view;
         remoteRepo = _repo;
-        localRepo = _localRepo;
+        localFavRepo = _localRepo;
+        localPlanRepo = _localPlanRepo;
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
     }
 
@@ -97,7 +102,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getFavouriteMealBtnStatus(Meal meal) {
-        localRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        localFavRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isFavorite = false;
             if (meals != null) {
                 for (Meal m : meals) {
@@ -114,11 +119,42 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void addMealToFavourites(Meal meal) {
-        localRepo.addMealToFavourites(meal);
+        localFavRepo.addMealToFavourites(meal);
     }
 
     @Override
     public void removeMealFromFavourites(Meal meal) {
-        localRepo.removeMealFromFavourites(meal);
+        localFavRepo.removeMealFromFavourites(meal);
+    }
+
+    @Override
+    public void getPlannedMealBtnStatus(Meal meal) {
+        localPlanRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
+            boolean isPlanned = false;
+            String plannedDate = null;
+            if (meals != null) {
+                for (Meal m : meals) {
+                    if (m.getIdMeal().equals(meal.getIdMeal())) {
+                        isPlanned = true;
+                        plannedDate = m.getPlannedMealDate();
+                        break;
+                    }
+                }
+            }
+            meal.setPlannedMealDate(plannedDate);
+            view.updatePlannedMealBtn(isPlanned);
+        });
+    }
+
+    @Override
+    public void addMealToPlanned(Meal meal) {
+        localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
+        view.updatePlannedMealBtn(meal.getPlannedMealDate() != null);
+    }
+
+    @Override
+    public void removeMealFromPlanned(Meal meal) {
+        localPlanRepo.removeFromPlannedMeals(meal);
+        view.updatePlannedMealBtn(false);
     }
 }

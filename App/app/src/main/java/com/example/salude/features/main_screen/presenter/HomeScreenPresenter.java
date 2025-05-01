@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.salude.contracts.HomeScreenContract;
+import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
@@ -18,12 +19,15 @@ import java.util.Locale;
 
 public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     private final HomeScreenContract.View view;
-    private final RemoteRetrofitRepository repo;
+    private final RemoteRetrofitRepository remoteRepo;
+    private final RoomLocalRepository.RoomLocalFavouriteRepository localRepo;
+
     private final SharedPreferences sharedPreferences;
 
-    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, Context _context) {
+    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, Context _context) {
         view = _view;
-        repo = _repo;
+        remoteRepo = _repo;
+        localRepo = _localRepo;
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
     }
 
@@ -49,7 +53,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         }
 
         // If we get here, either date doesn't match or no saved meal exists
-        repo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+        remoteRepo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 if (meals != null && !meals.isEmpty()) {
@@ -73,7 +77,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getAllCategories() {
-        repo.getMealsCategories(new RemoteRetrofitCallback.RemoteRetrofitCategoryCallback() {
+        remoteRepo.getMealsCategories(new RemoteRetrofitCallback.RemoteRetrofitCategoryCallback() {
             @Override
             public void onSuccess(List<Category> categories) {
                 if (categories != null && !categories.isEmpty()) {
@@ -89,5 +93,32 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
                 Log.i("TAG", "on failure");
             }
         });
+    }
+
+    @Override
+    public void getFavouriteMealBtnStatus(Meal meal) {
+        localRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
+            boolean isFavorite = false;
+            if (meals != null) {
+                for (Meal m : meals) {
+                    if (m.getIdMeal().equals(meal.getIdMeal())) {
+                        isFavorite = true;
+                        break;
+                    }
+                }
+            }
+            meal.setIsFavouriteMeal(isFavorite);
+            view.updateFavouriteMealBtn(isFavorite);
+        });
+    }
+
+    @Override
+    public void addMealToFavourites(Meal meal) {
+        localRepo.addMealToFavourites(meal);
+    }
+
+    @Override
+    public void removeMealFromFavourites(Meal meal) {
+        localRepo.removeMealFromFavourites(meal);
     }
 }

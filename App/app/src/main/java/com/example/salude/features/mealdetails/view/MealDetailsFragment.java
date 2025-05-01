@@ -21,6 +21,8 @@ import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
+import com.example.salude.model.local.dao.RoomLocalDB;
+import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
@@ -45,11 +47,15 @@ public class MealDetailsFragment extends Fragment {
     private RecyclerView rvIngredients;
     private IngredientsAdapter adapter;
     private MealDetailsPresenter presenter;
+    RoomLocalRepository.RoomLocalFavouriteRepository repo;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.full_meal_details, container, false);
+
+        repo = RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO());
+
 
         // Retrieve the Meal object from the Bundle
         if (getArguments() != null) {
@@ -79,6 +85,25 @@ public class MealDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        repo.getListOfFavouriteMeals().observe(getViewLifecycleOwner(), meals -> {
+            boolean isFavorite = false;
+            if (meals != null) {
+                for (Meal m : meals) {
+                    if (m.getIdMeal().equals(meal.getIdMeal())) {
+                        isFavorite = true;
+                        break;
+                    }
+                }
+            }
+            meal.setIsFavouriteMeal(isFavorite);
+            btnFavorite.setImageResource(
+                    meal.getIsFavouriteMeal() ?
+                            R.drawable.ic_favorite_filled :
+                            R.drawable.ic_favorite_border
+            );
+        });
+
+
         rvIngredients.setHasFixedSize(true);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.HORIZONTAL);
@@ -89,13 +114,6 @@ public class MealDetailsFragment extends Fragment {
         adapter.setIngredientList(meal.getIngredientsList());
         adapter.notifyDataSetChanged();
 
-
-        // set favorite button state
-        btnFavorite.setImageResource(
-                meal.getIsFavouriteMeal() ?
-                        R.drawable.ic_favorite_filled :
-                        R.drawable.ic_favorite_border
-        );
 
         // Set meal image
         Glide.with(requireContext())
@@ -115,7 +133,16 @@ public class MealDetailsFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 // save fav in db (toggle to undo it)
-                Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                if (meal.getIsFavouriteMeal()) {
+                    // set it to false and remove its flag + make button hollow
+                    repo.removeMealFromFavourites(meal);
+                    Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    // set it to true and set its flag + make button filled
+                    repo.addMealToFavourites(meal);
+                    Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

@@ -20,7 +20,7 @@ public class RoomLocalRepository {
             this.dao = dao;
         }
 
-        public static RoomLocalFavouriteRepository getInstance(MealDAO.FavouriteMealDAO dao) {
+        public static synchronized RoomLocalFavouriteRepository getInstance(MealDAO.FavouriteMealDAO dao) {
             if (repo == null) {
                 repo = new RoomLocalFavouriteRepository(dao);
             }

@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,6 +23,9 @@ import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
+import com.example.salude.model.local.dao.MealDAO;
+import com.example.salude.model.local.dao.RoomLocalDB;
+import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
@@ -75,11 +79,12 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         mealCategoriesRecyclerView.setLayoutManager(layoutManager2);
 
 
-        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()), getContext());
+        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()), RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()), getContext());
         adapter = new HomeFragmentMealAdapter(getContext(), new ArrayList<>(), null, null, null);
         mealCategoriesRecyclerView.setAdapter(adapter);
         presenter.getAllCategories();
         presenter.getMealOfTheDay();
+        presenter.getFavouriteMealBtnStatus(mealOfTheDay);
 
         txtMealCategoriesLabel.setText("Meal Categories");
         mealOfTheDayTxt.setText("Meal of The Day");
@@ -104,14 +109,22 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
         // Calendar button click
         addToCalBtn.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Add to calendar", Toast.LENGTH_SHORT).show();
 
         });
 
         // Favourites button click
         addToFavBtn.setOnClickListener(v -> {
-            Toast.makeText(getContext(), "Added to favourites", Toast.LENGTH_SHORT).show();
-
+            // save fav in db (toggle to undo it)
+            if (mealOfTheDay.getIsFavouriteMeal()) {
+                // set it to false and remove its flag + make button hollow
+                presenter.removeMealFromFavourites(mealOfTheDay);
+                Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                // set it to true and set its flag + make button filled
+                presenter.addMealToFavourites(mealOfTheDay);
+                Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
@@ -132,6 +145,15 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         adapter.notifyDataSetChanged();
     }
 
+    @Override
+    public void updateFavouriteMealBtn(boolean state) {
+        addToFavBtn.setImageResource(
+                mealOfTheDay.getIsFavouriteMeal() ?
+                        R.drawable.ic_favorite_filled :
+                        R.drawable.ic_favorite_border
+        );
+    }
+
 
     @Override
     public void onFavouriteClickListener() {
@@ -146,5 +168,11 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     @Override
     public void onPlannedClickListener() {
 
+    }
+
+    @NonNull
+    @Override
+    public LifecycleOwner getViewLifecycleOwner() {
+        return this;
     }
 }

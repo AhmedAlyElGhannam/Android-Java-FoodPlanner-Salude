@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -39,6 +41,8 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     TextView mealNameTxt;
     TextView mealCategoryTxt;
     TextView mealCountryTxt;
+    ConstraintLayout mealItemLayout;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         mealCategoryTxt = view.findViewById(R.id.txtCategory);
         mealCountryTxt = view.findViewById(R.id.txtCountry);
         mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
+        mealItemLayout = view.findViewById(R.id.mealItemLayout);
 
         return view;
     }
@@ -71,18 +76,21 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         presenter.getAllCategories();
         presenter.getMealOfTheDay();
 
-        addToFavBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        mealItemLayout.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Meal card clicked", Toast.LENGTH_SHORT).show();
 
-            }
         });
 
-        addToCalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        // Calendar button click
+        addToCalBtn.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Add to calendar", Toast.LENGTH_SHORT).show();
 
-            }
+        });
+
+        // Favourites button click
+        addToFavBtn.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Added to favourites", Toast.LENGTH_SHORT).show();
+
         });
     }
 

@@ -21,6 +21,8 @@ import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity {
 
+    BottomNavigationView bottomNav;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,7 +68,7 @@ public class MainScreenActivity extends AppCompatActivity {
             }
         });
 
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
 
         bottomNav.setOnItemSelectedListener(item -> {
             Fragment selectedFragment = null;
@@ -93,6 +95,20 @@ public class MainScreenActivity extends AppCompatActivity {
         // Load the default fragment when activity starts
         if (savedInstanceState == null) {
             bottomNav.setSelectedItemId(R.id.nav_home);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // get the current fragment
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        // if current fragment is Profile or Search, navigate to Home
+        if (currentFragment instanceof ProfileFragment || currentFragment instanceof SearchFragment) {
+            bottomNav.setSelectedItemId(R.id.nav_home);
+        } else {
+            // otherwise, perform default back behavior
+            super.onBackPressed();
         }
     }
 }

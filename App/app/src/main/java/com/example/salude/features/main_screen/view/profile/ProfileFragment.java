@@ -96,7 +96,6 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -107,6 +106,5 @@ public class ProfileFragment extends Fragment {
                 getActivity().finish();
             }
         });
-
     }
 }

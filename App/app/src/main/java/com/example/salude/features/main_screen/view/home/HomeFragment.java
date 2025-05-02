@@ -176,12 +176,12 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
 
     @Override
-    public void onFavouriteClickListener() {
+    public void onFavouriteClickListener(Meal meal) {
 
     }
 
     @Override
-    public void onMealItemClickListener() {
+    public void onMealItemClickListener(Meal meal) {
 
     }
 

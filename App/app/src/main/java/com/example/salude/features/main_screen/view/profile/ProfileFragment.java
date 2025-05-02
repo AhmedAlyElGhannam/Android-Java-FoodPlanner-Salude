@@ -13,9 +13,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.example.salude.R;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
+import com.example.salude.features.list_Fav.view.ListOfFavouriteMealsFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -56,6 +59,9 @@ public class ProfileFragment extends Fragment {
             String name = user.getDisplayName();
             usernameTxt.setText("Hello, " + name);
         }
+        else {
+            usernameTxt.setText("Hello, Guest");
+        }
         /**************************move to repo***************************************/
 
 
@@ -65,7 +71,14 @@ public class ProfileFragment extends Fragment {
         favMealsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "To Favourite Meals List", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(getContext(), "To Favourite Meals List", Toast.LENGTH_SHORT).show();
+                ListOfFavouriteMealsFragment newFragment = new ListOfFavouriteMealsFragment(); // Replace with your fragment class
+
+                // perform fragment transaction
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, newFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

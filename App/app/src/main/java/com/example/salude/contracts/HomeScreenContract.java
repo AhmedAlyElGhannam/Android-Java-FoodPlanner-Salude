@@ -30,7 +30,4 @@ public interface HomeScreenContract {
         public void removeMealFromPlanned(Meal meal);
     }
 
-    public interface Model {
-
-    }
 }

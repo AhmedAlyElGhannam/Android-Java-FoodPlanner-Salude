@@ -15,4 +15,5 @@
     <string name="register">Register</string>
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="add_to_favourites">Add to Favourites</string>
+    <string name="search">Search</string>
 </resources>

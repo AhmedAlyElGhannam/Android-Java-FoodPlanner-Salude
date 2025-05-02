@@ -10,9 +10,7 @@ import androidx.fragment.app.Fragment;
 import com.example.salude.R;
 
 public class SearchFragment extends Fragment {
-    public SearchFragment() {
-        // Required empty public constructor
-    }
+    public SearchFragment() { }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

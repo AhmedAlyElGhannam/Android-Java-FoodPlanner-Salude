@@ -14,4 +14,5 @@
     <string name="email">Email</string>
     <string name="client_id_google">416045091648-fhe3o55nlnscjapk68lh7edlu7covmku.apps.googleusercontent.com</string>
     <string name="register">Register</string>
+    <string name="search">Search</string>
 </resources>

@@ -56,17 +56,14 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
         holder.mealArea.setText(meal.getStrArea());
         Glide.with(context).load(meal.getStrMealThumb()).into(holder.mealThumbnail);
 
+        holder.planBtn.setVisibility(View.INVISIBLE);
+
         holder.favButton.setImageResource(
                 meal.getIsFavouriteMeal() ?
                         R.drawable.ic_favorite_filled :
                         R.drawable.ic_favorite_border
         );
 
-        holder.planBtn.setImageResource(
-                meal.getIsFavouriteMeal() ?
-                        R.drawable.ic_calendar_filled :
-                        R.drawable.ic_calendar_border
-        );
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +108,8 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
             favButton = itemView.findViewById(R.id.btnAddToFavourites);
             planBtn = itemView.findViewById(R.id.btnAddToCalendar);
             layout = itemView.findViewById(R.id.mealItemLayout);
+
+
         }
     }
 }

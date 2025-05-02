@@ -1,82 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/mealItemLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="12dp">
+    android:layout_margin="8dp"
+    app:cardElevation="8dp"
+    app:cardCornerRadius="16dp"
+    app:cardBackgroundColor="@color/white">
 
-    <!-- Calendar Button -->
-    <ImageButton
-        android:id="@+id/btnAddToCalendar"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/add_to_calendar"
-        android:src="@drawable/ic_calendar_border"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <!-- Favourite Button -->
-    <ImageButton
-        android:id="@+id/btnAddToFavourites"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:contentDescription="@string/add_to_favourites"
-        android:src="@drawable/ic_favorite_border"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Meal Image -->
-    <ImageView
-        android:id="@+id/imgMeal"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintTop_toBottomOf="@id/btnAddToCalendar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <!-- Meal Name -->
-    <TextView
-        android:id="@+id/txtMealName"
-        android:layout_width="0dp"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mealItemLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="Meal Name"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceHeadline6"
-        app:layout_constraintTop_toBottomOf="@id/imgMeal"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="12dp">
 
-    <!-- Category -->
-    <TextView
-        android:id="@+id/txtCategory"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="Category"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceBody2"
-        app:layout_constraintTop_toBottomOf="@id/txtMealName"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Calendar Button -->
+        <ImageButton
+            android:id="@+id/btnAddToCalendar"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/add_to_calendar"
+            android:src="@drawable/ic_calendar_border"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Country -->
-    <TextView
-        android:id="@+id/txtCountry"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
-        android:layout_marginBottom="8dp"
-        android:text="Country"
-        android:textAlignment="center"
-        android:textAppearance="?attr/textAppearanceCaption"
-        app:layout_constraintTop_toBottomOf="@id/txtCategory"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Favourite Button -->
+        <ImageButton
+            android:id="@+id/btnAddToFavourites"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:contentDescription="@string/add_to_favourites"
+            android:src="@drawable/ic_favorite_border"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <!-- Meal Image -->
+        <ImageView
+            android:id="@+id/imgMeal"
+            android:layout_width="0dp"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btnAddToCalendar" />
+
+        <!-- Meal Name -->
+        <TextView
+            android:id="@+id/txtMealName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Meal Name"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceHeadline6"
+            android:textColor="@color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/imgMeal" />
+
+        <!-- Category -->
+        <TextView
+            android:id="@+id/txtCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Category"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceBody2"
+            android:textColor="@color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtMealName" />
+
+        <!-- Country -->
+        <TextView
+            android:id="@+id/txtCountry"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif-medium"
+            android:text="Country"
+            android:textAlignment="center"
+            android:textAppearance="?attr/textAppearanceCaption"
+            android:textColor="@color/black"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtCategory" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>

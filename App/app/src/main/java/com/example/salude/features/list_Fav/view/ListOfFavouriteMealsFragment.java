@@ -41,15 +41,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
     private ListOfFavouriteMealsContract.Presenter presenter;
     private ListOfFavouriteMealsAdapter adapter;
     private RecyclerView mealsRecyclerView;
-    ImageButton addToFavBtn;
-    ImageButton addToCalBtn;
-    ImageView mealThumbnailImg;
-    TextView mealNameTxt;
-    TextView mealCategoryTxt;
-    TextView mealCountryTxt;
-    TextView mealOfTheDayTxt;
-    TextView txtMealCategoriesLabel;
-    ConstraintLayout mealItemLayout;
+    TextView favMealsid;
+
 
     @Nullable
     @Override
@@ -57,6 +50,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         View view =  inflater.inflate(R.layout.list_of_fav_meals, container, false);
 
         mealsRecyclerView = view.findViewById(R.id.listOfFavMealsRecyclerView);
+        favMealsid = view.findViewById(R.id.favMealsid);
         presenter = new ListOfFavouriteMealsPresenter(this,
                 RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
@@ -74,6 +68,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         mealsRecyclerView.setLayoutManager(layoutManager);
 
+        favMealsid.setText("Favourite Meals");
+
         adapter = new ListOfFavouriteMealsAdapter(getContext(), null, this, this);
         mealsRecyclerView.setAdapter(adapter);
         presenter.getFavouriteMeals();
@@ -82,6 +78,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showFavouriteMeals(List<Meal> meals) {
         adapter.setMeals(meals);
@@ -90,7 +87,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
     @Override
     public void showEmptyState() {
-
+        adapter.setMeals(new ArrayList<>());
+        adapter.notifyDataSetChanged();
     }
 
     @NonNull
@@ -107,10 +105,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onFavouriteClickListener(Meal meal) {
-
         presenter.removeMealFromFavourites(meal);
         Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
-        adapter.notifyDataSetChanged();
     }
 
     @Override

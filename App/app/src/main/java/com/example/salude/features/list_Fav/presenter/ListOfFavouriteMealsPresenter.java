@@ -20,13 +20,16 @@ public class ListOfFavouriteMealsPresenter implements ListOfFavouriteMealsContra
         localPlanRepo = _localPlanRepo;
         context = _context;
     }
+
     @Override
     public void getFavouriteMeals() {
         localFavRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
-            if (meals != null && !meals.isEmpty()) {
-                view.showFavouriteMeals(meals);
-            } else {
-                view.showEmptyState();
+            if (meals != null) {
+                if (!meals.isEmpty()) {
+                    view.showFavouriteMeals(meals);
+                } else {
+                    view.showEmptyState();
+                }
             }
         });
     }

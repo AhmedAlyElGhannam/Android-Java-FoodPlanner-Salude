@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.salude.R;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
 import com.example.salude.features.list_Fav.view.ListOfFavouriteMealsFragment;
+import com.example.salude.features.list_plan.view.ListOfPlannedMealsFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -72,7 +73,7 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
 //                Toast.makeText(getContext(), "To Favourite Meals List", Toast.LENGTH_SHORT).show();
-                ListOfFavouriteMealsFragment newFragment = new ListOfFavouriteMealsFragment(); // Replace with your fragment class
+                ListOfFavouriteMealsFragment newFragment = new ListOfFavouriteMealsFragment();
 
                 // perform fragment transaction
                 getParentFragmentManager().beginTransaction()
@@ -85,7 +86,13 @@ public class ProfileFragment extends Fragment {
         planMealsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getContext(), "To Planned Meals List", Toast.LENGTH_SHORT).show();
+                ListOfPlannedMealsFragment newFragment = new ListOfPlannedMealsFragment();
+
+                // perform fragment transaction
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, newFragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 

@@ -21,6 +21,9 @@ public class Meal implements Parcelable{
     // for marking planned meals
     private String plannedMealDate;
 
+    // for storing data unique to a certain user
+    private String userID;
+
     private String strMeal;
 
     private String strDrinkAlternate;
@@ -123,6 +126,13 @@ public class Meal implements Parcelable{
     public Meal() {}
 
     // --- Getters and Setters ---
+
+    public String getUserID() {
+        return userID;
+    }
+    public void setUserID(String _userID) {
+        userID = _userID;
+    }
 
     public String getIdMeal() {
         return idMeal;

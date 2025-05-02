@@ -186,7 +186,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     }
 
     @Override
-    public void onPlannedClickListener() {
+    public void onPlannedClickListener(Meal meal) {
 
     }
 

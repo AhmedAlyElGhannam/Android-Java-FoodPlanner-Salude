@@ -12,6 +12,7 @@ public interface ListOfFavouriteMealsContract {
         void showFavouriteMeals(List<Meal> meals);
         void showEmptyState();
         public LifecycleOwner getViewLifecycleOwner();
+        void showMealDetails(Meal meal);
     }
 
     interface Presenter {

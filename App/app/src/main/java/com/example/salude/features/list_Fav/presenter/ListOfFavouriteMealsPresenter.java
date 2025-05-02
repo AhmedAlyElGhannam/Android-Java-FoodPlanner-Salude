@@ -10,13 +10,16 @@ import com.example.salude.model.pojo.Meal;
 public class ListOfFavouriteMealsPresenter implements ListOfFavouriteMealsContract.Presenter {
     private final ListOfFavouriteMealsContract.View view;
     private final RoomLocalRepository.RoomLocalFavouriteRepository localFavRepo;
+    private final RoomLocalRepository.RoomLocalPlannedRepository localPlanRepo;
+    private final Context context;
 
     public ListOfFavouriteMealsPresenter(ListOfFavouriteMealsContract.View _view,
-                                         RoomLocalRepository.RoomLocalFavouriteRepository _localRepo) {
+                                         RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
         view = _view;
         localFavRepo = _localRepo;
+        localPlanRepo = _localPlanRepo;
+        context = _context;
     }
-
     @Override
     public void getFavouriteMeals() {
         localFavRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {

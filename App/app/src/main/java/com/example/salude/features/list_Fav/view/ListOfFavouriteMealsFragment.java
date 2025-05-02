@@ -1,5 +1,6 @@
 package com.example.salude.features.list_Fav.view;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,7 +24,9 @@ import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.features.list_Fav.presenter.ListOfFavouriteMealsPresenter;
 import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
 import com.example.salude.features.main_screen.view.home.OnFavouriteClickListener;
+import com.example.salude.features.main_screen.view.home.OnMealItemClickListener;
 import com.example.salude.features.main_screen.view.home.OnPlannedClickListener;
+import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Meal;
@@ -30,7 +34,7 @@ import com.example.salude.model.pojo.Meal;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavouriteMealsContract.View, OnFavouriteClickListener, OnPlannedClickListener {
+public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavouriteMealsContract.View, OnFavouriteClickListener, OnMealItemClickListener {
 
 
 
@@ -54,9 +58,9 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
         mealsRecyclerView = view.findViewById(R.id.listOfFavMealsRecyclerView);
         presenter = new ListOfFavouriteMealsPresenter(this,
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(
-                        RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()
-                ));
+                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+                getContext());
 
         return view;
     }
@@ -70,8 +74,9 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         mealsRecyclerView.setLayoutManager(layoutManager);
 
-        adapter = new ListOfFavouriteMealsAdapter(getContext(), null, this);
+        adapter = new ListOfFavouriteMealsAdapter(getContext(), null, this, this);
         mealsRecyclerView.setAdapter(adapter);
+        presenter.getFavouriteMeals();
 //        presenter.getAllCategories();
 //        presenter.getMealOfTheDay();
 
@@ -79,7 +84,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
     @Override
     public void showFavouriteMeals(List<Meal> meals) {
-
+        adapter.setMeals(meals);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -94,12 +100,35 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
     }
 
     @Override
-    public void onFavouriteClickListener() {
+    public void showMealDetails(Meal meal) {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
-    public void onPlannedClickListener() {
+    public void onFavouriteClickListener(Meal meal) {
 
+        presenter.removeMealFromFavourites(meal);
+        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+        adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onMealItemClickListener(Meal meal) {
+        // create the destination fragment object
+        MealDetailsFragment fragment = new MealDetailsFragment();
+
+        // create a bundle and put meal into it
+        Bundle args = new Bundle();
+        args.putParcelable("meal", meal); // For Parcelable
+
+        // set the arguments
+        fragment.setArguments(args);
+
+        // perform fragment transaction
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

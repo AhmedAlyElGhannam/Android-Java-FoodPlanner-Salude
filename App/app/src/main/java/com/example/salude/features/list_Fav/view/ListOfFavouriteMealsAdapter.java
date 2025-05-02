@@ -10,10 +10,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
+import com.example.salude.features.main_screen.view.home.OnFavouriteClickListener;
+import com.example.salude.features.main_screen.view.home.OnMealItemClickListener;
+import com.example.salude.features.main_screen.view.home.OnPlannedClickListener;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.List;
@@ -22,11 +26,13 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
 
     private final Context context;
     private List<Meal> meals;
-    private final OnFavouriteClickListener favListener;
+    private OnMealItemClickListener mealListener;
+    private OnFavouriteClickListener favListener;
 
-    public ListOfFavouriteMealsAdapter(Context _context, List<Meal> _meals, OnFavouriteClickListener _favListener) {
+    public ListOfFavouriteMealsAdapter(Context _context, List<Meal> _meals, OnMealItemClickListener _mealListener, OnFavouriteClickListener _favListener) {
         context = _context;
         meals = _meals;
+        mealListener = _mealListener;
         favListener = _favListener;
     }
 
@@ -37,7 +43,7 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListOfFavouriteMealsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.meal_item, parent, false);
         return new ViewHolder(view);
     }
@@ -47,6 +53,7 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
         Meal meal = meals.get(position);
         holder.mealName.setText(meal.getStrMeal());
         holder.mealCategory.setText(meal.getStrCategory());
+        holder.mealArea.setText(meal.getStrArea());
         Glide.with(context).load(meal.getStrMealThumb()).into(holder.mealThumbnail);
 
         holder.favButton.setImageResource(
@@ -55,16 +62,30 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
                         R.drawable.ic_favorite_border
         );
 
-        holder.favButton.setOnClickListener(v -> {
-            if (favListener != null) {
-                favListener.onFavouriteClick(meal);
+        holder.planBtn.setImageResource(
+                meal.getIsFavouriteMeal() ?
+                        R.drawable.ic_calendar_filled :
+                        R.drawable.ic_calendar_border
+        );
+
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mealListener.onMealItemClickListener(meal);
             }
         });
 
-        holder.itemView.setOnClickListener(v -> {
-            // Handle meal item click if needed
-            Toast.makeText(context, meal.getStrMeal(), Toast.LENGTH_SHORT).show();
+        holder.favButton.setOnClickListener(v -> {
+            if (favListener != null) {
+
+                favListener.onFavouriteClickListener(meal);
+            }
         });
+
+//        holder.itemView.setOnClickListener(v -> {
+//            // Handle meal item click if needed
+//            view.showMealDetails(meal);
+//        });
     }
 
     @Override
@@ -76,18 +97,20 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
         ImageView mealThumbnail;
         TextView mealName;
         TextView mealCategory;
+        TextView mealArea;
         ImageButton favButton;
+        ImageButton planBtn;
+        ConstraintLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mealThumbnail = itemView.findViewById(R.id.imgMeal);
             mealName = itemView.findViewById(R.id.txtMealName);
             mealCategory = itemView.findViewById(R.id.txtCategory);
+            mealArea = itemView.findViewById(R.id.txtCountry);
             favButton = itemView.findViewById(R.id.btnAddToFavourites);
+            planBtn = itemView.findViewById(R.id.btnAddToCalendar);
+            layout = itemView.findViewById(R.id.mealItemLayout);
         }
-    }
-
-    public interface OnFavouriteClickListener {
-        void onFavouriteClick(Meal meal);
     }
 }

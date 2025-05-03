@@ -58,4 +58,5 @@ public class RemoteRetrofitRepository {
     public void getMealsFilteredByFirstLetter(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String letter) {
         client.getMealsFilteredByFirstLetter(cbf, letter);
     }
+
 }

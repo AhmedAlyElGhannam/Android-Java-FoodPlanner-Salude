@@ -6,7 +6,10 @@ import android.util.Log;
 
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.Category;
+import com.example.salude.model.pojo.FilteredMeal;
+import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
@@ -155,5 +158,65 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     public void removeMealFromPlanned(Meal meal) {
         localPlanRepo.removeFromPlannedMeals(meal);
         view.updatePlannedMealBtn(false);
+    }
+
+    @Override
+    public void getMealsFilteredByIngredient(String ingredient) {
+        remoteRepo.getMealsFilteredByIngredient(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback(){
+            @Override
+            public void onSuccess(List<FilteredMeal> filteredMeals) {
+                if (filteredMeals != null && !filteredMeals.isEmpty()) {
+                    view.showFilteredMeals(filteredMeals);
+                }
+                else {
+                    Log.i("TAG", "Meals filtered by ingredient list is null or empty");
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "on failure");
+            }
+        }, ingredient);
+    }
+
+    @Override
+    public void getMealsFilteredByArea(String area) {
+        remoteRepo.getMealsFilteredByArea(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+            @Override
+            public void onSuccess(List<FilteredMeal> filteredMeals) {
+                if (filteredMeals != null && !filteredMeals.isEmpty()) {
+                    view.showFilteredMeals(filteredMeals);
+                }
+                else {
+                    Log.i("TAG", "Meals filtered by area list is null or empty");
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "on failure");
+            }
+        }, area);
+    }
+
+    @Override
+    public void getMealsFilteredByCategory(String category) {
+        remoteRepo.getMealsFilteredByCategory(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+            @Override
+            public void onSuccess(List<FilteredMeal> filteredMeals) {
+                if (filteredMeals != null && !filteredMeals.isEmpty()) {
+                    view.showFilteredMeals(filteredMeals);
+                }
+                else {
+                    Log.i("TAG", "Meals filtered by category list is null or empty");
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "on failure");
+            }
+        }, category);
     }
 }

@@ -299,4 +299,20 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     public void onMealItemClickListener(Meal meal) {
         showMealDetails(meal);
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // clear search text
+        searchTxt.setText("");
+
+        // hide search results label
+        searchResLabel.setVisibility(View.INVISIBLE);
+
+        // reset chip check-ness...?!!
+        ingredientChip.setChecked(false);
+        areaChip.setChecked(false);
+        categoryChip.setChecked(false);
+    }
 }

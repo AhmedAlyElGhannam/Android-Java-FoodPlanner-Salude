@@ -1,5 +1,6 @@
 package com.example.salude.features.main_screen.fragments.search;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -86,7 +87,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
         searchResRecyclerView.setLayoutManager(layoutManager1);
 
         presenter.getAllCategories();
-        presenter.getMealOfTheDay();
+        presenter.getAllAreas();
         presenter.getAllIngredients();
 
         // only show it once a search/category is selected
@@ -98,6 +99,9 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
             public void onClick(View v) {
                 areaChip.setChecked(true);
                 // set adapter && display search results + label
+                searchResRecyclerView.setAdapter(areaAdapter);
+                searchResLabel.setVisibility(View.VISIBLE);
+                searchResLabel.setText("Search Results");
                 Toast.makeText(getContext(), "Area Chip", Toast.LENGTH_SHORT).show();
             }
         });
@@ -107,6 +111,9 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
             public void onClick(View v) {
                 categoryChip.setChecked(true);
                 // set adapter && display search results + label
+                searchResRecyclerView.setAdapter(categoryAdapter);
+                searchResLabel.setVisibility(View.VISIBLE);
+                searchResLabel.setText("Search Results");
                 Toast.makeText(getContext(), "Category Chip", Toast.LENGTH_SHORT).show();
             }
         });
@@ -116,6 +123,9 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
             public void onClick(View v) {
                 ingredientChip.setChecked(true);
                 // set adapter && display search results + label
+                searchResRecyclerView.setAdapter(ingredientsAdapter);
+                searchResLabel.setVisibility(View.VISIBLE);
+                searchResLabel.setText("Search Results");
                 Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
             }
         });
@@ -128,6 +138,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
                     String query = Objects.requireNonNull(searchTxt.getText()).toString().trim();
                     if (!query.isEmpty()) {
                         // perform search
+                        Toast.makeText(getContext(), "User entered: " + query, Toast.LENGTH_SHORT).show();
                     }
                     else {
                         // toast to tell user to input sth
@@ -153,19 +164,25 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealCategories(List<Category> categories) {
-
+        categoryAdapter.setCategories(categories);
+        categoryAdapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealIngredients(List<Ingredient> ingredients) {
-
+        ingredientsAdapter.setIngredients(ingredients);
+        ingredientsAdapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealAreas(List<Area> areas) {
-
+        areaAdapter.setAreas(areas);
+        areaAdapter.notifyDataSetChanged();
     }
 
     @Override

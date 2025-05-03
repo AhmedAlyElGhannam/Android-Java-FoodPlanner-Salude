@@ -21,6 +21,9 @@ public interface HomeScreenContract {
         public void updatePlannedMealBtn(boolean state);
         public void showFilteredMeals(List<FilteredMeal> filteredMeals);
         public void showMealDetails(Meal meal);
+        public void showMealSearchFailure(String err);
+        public void showMealWithName(List<Meal> meals);
+        public void showMealsWithFirstLetter(List<FilteredMeal> meals);
     }
 
     public interface Presenter {
@@ -37,6 +40,8 @@ public interface HomeScreenContract {
         public void getMealsFilteredByIngredient(String ingredient);
         public void getMealsFilteredByArea(String area);
         public void getMealsFilteredByCategory(String category);
+        public void getMealsFilteredByFirstLetter(String str);
+        public void getMealByName(String str);
     }
 
 }

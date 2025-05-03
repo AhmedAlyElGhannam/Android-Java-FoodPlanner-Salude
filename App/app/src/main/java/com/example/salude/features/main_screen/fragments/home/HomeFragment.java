@@ -272,6 +272,21 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     }
 
     @Override
+    public void showMealSearchFailure(String err) {
+
+    }
+
+    @Override
+    public void showMealWithName(List<Meal> meals) {
+
+    }
+
+    @Override
+    public void showMealsWithFirstLetter(List<FilteredMeal> meals) {
+
+    }
+
+    @Override
     public void onAreaClickListener(String area) {
 
     }

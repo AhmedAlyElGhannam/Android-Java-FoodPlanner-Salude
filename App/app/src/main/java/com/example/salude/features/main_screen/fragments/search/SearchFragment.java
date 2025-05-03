@@ -24,6 +24,7 @@ import com.example.salude.features.main_screen.view.MealAreaAdapter;
 import com.example.salude.features.main_screen.view.MealCategoryAdapter;
 import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.features.main_screen.view.MealSearchResultsAdapter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -38,13 +39,14 @@ import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener {
+public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
     public SearchFragment() { }
 
     TextInputEditText searchTxt;
@@ -57,6 +59,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     MealIngredientsAdapter ingredientsAdapter;
     MealCategoryAdapter categoryAdapter;
     ListOfFilteredMealsAdapter filterAdapter;
+    MealSearchResultsAdapter searchAdapter;
     HomeScreenPresenter presenter;
 
     @Override
@@ -73,6 +76,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
         categoryAdapter = new MealCategoryAdapter(getContext(), this);
         ingredientsAdapter = new MealIngredientsAdapter(getContext(), this);
         filterAdapter = new ListOfFilteredMealsAdapter(getContext(), this);
+        searchAdapter = new MealSearchResultsAdapter(getContext(), this);
 
         searchTxt = view.findViewById(R.id.edtSearch);
         ingredientChip = view.findViewById(R.id.chipIngredient);
@@ -97,6 +101,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
         presenter.getAllAreas();
         presenter.getAllIngredients();
 
+
         // only show it once a search/category is selected
         searchResLabel.setVisibility(View.INVISIBLE);
 
@@ -109,7 +114,6 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
                 searchResRecyclerView.setAdapter(areaAdapter);
                 searchResLabel.setVisibility(View.VISIBLE);
                 searchResLabel.setText("Search Results");
-                Toast.makeText(getContext(), "Area Chip", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -121,23 +125,21 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
                 searchResRecyclerView.setAdapter(categoryAdapter);
                 searchResLabel.setVisibility(View.VISIBLE);
                 searchResLabel.setText("Search Results");
-                Toast.makeText(getContext(), "Category Chip", Toast.LENGTH_SHORT).show();
             }
         });
 
         // I left it out cuz its performance is abysmally slow
-        ingredientChip.setVisibility(View.INVISIBLE);
-//        ingredientChip.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                ingredientChip.setChecked(true);
-//                // set adapter && display search results + label
-//                searchResRecyclerView.setAdapter(ingredientsAdapter);
-//                searchResLabel.setVisibility(View.VISIBLE);
-//                searchResLabel.setText("Search Results");
-//                Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
-//            }
-//        });
+//        ingredientChip.setVisibility(View.INVISIBLE);
+        ingredientChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ingredientChip.setChecked(true);
+                // set adapter && display search results + label
+                searchResRecyclerView.setAdapter(ingredientsAdapter);
+                searchResLabel.setVisibility(View.VISIBLE);
+                searchResLabel.setText("Search Results");
+            }
+        });
 
         searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -146,7 +148,14 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
                     String query = Objects.requireNonNull(searchTxt.getText()).toString().trim();
                     if (!query.isEmpty()) {
                         // perform search
-                        Toast.makeText(getContext(), "User entered: " + query, Toast.LENGTH_SHORT).show();
+                        if (query.length() == 1) {
+                            presenter.getMealsFilteredByFirstLetter(query);
+                        }
+                        else {
+                            presenter.getMealByName(query);
+                        }
+                        searchResLabel.setVisibility(View.VISIBLE);
+                        searchResLabel.setText("Search Results for: " + query);
                     }
                     else {
                         // toast to tell user to input sth
@@ -168,9 +177,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     }
 
     @Override
-    public void showMealOfTheDay(Meal meal) {
-
-    }
+    public void showMealOfTheDay(Meal meal) {}
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -194,22 +201,28 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     }
 
     @Override
-    public void updateFavouriteMealBtn(boolean state) {
-
-    }
+    public void updateFavouriteMealBtn(boolean state) {}
 
     @Override
-    public void updatePlannedMealBtn(boolean state) {
-
-    }
+    public void updatePlannedMealBtn(boolean state) {}
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
-        // set recycler view adapter to filterAdapter THEN do:
+        // set recycler view adapter to filterAdapter
         searchResRecyclerView.setAdapter(filterAdapter);
-        filterAdapter.setFilteredMeals(filteredMeals);
-        filterAdapter.notifyDataSetChanged();
+
+        // reveal search res label
+        searchResLabel.setVisibility(View.VISIBLE);
+
+        // set label text + update data and notify adapter
+        if (filteredMeals != null && !filteredMeals.isEmpty()) {
+            searchResLabel.setText("Search Results");
+            filterAdapter.setFilteredMeals(filteredMeals);
+            filterAdapter.notifyDataSetChanged();
+        } else {
+            searchResLabel.setText("No results found");
+        }
     }
 
     @Override
@@ -251,5 +264,39 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
                 .replace(R.id.fragment_container, fragment)
                 .addToBackStack(null)
                 .commit();
+    }
+
+    @Override
+    public void showMealSearchFailure(String err) {
+
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showMealWithName(List<Meal> meals) {
+        // set recycler view adapter to filterAdapter
+        searchResRecyclerView.setAdapter(searchAdapter);
+
+        // reveal search res label
+        searchResLabel.setVisibility(View.VISIBLE);
+
+        // set label text + update data and notify adapter
+        if (meals != null && !meals.isEmpty()) {
+            searchResLabel.setText("Search Results");
+            searchAdapter.setMeals(meals);
+            searchAdapter.notifyDataSetChanged();
+        } else {
+            searchResLabel.setText("No results found");
+        }
+    }
+
+    @Override
+    public void showMealsWithFirstLetter(List<FilteredMeal> meals) {
+
+    }
+
+    @Override
+    public void onMealItemClickListener(Meal meal) {
+        showMealDetails(meal);
     }
 }

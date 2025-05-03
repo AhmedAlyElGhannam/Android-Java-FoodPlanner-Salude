@@ -262,6 +262,36 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         }, category);
     }
 
+    @Override
+    public void getMealsFilteredByFirstLetter(String str) {
+        remoteRepo.getMealsFilteredByFirstLetter(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+            @Override
+            public void onSuccess(List<FilteredMeal> filteredMeals) {
+                view.showFilteredMeals(filteredMeals);
+            }
+
+            @Override
+            public void onFailure(String err) {
+                view.showMealSearchFailure(err);
+            }
+        }, str);
+    }
+
+    @Override
+    public void getMealByName(String str) {
+        remoteRepo.getMealByName(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+            @Override
+            public void onSuccess(List<Meal> meals) {
+                view.showMealWithName(meals);
+            }
+
+            @Override
+            public void onFailure(String err) {
+                view.showMealSearchFailure(err);
+            }
+        }, str);
+    }
+
     public void getMealByID(String id) {
         remoteRepo.getMealByID(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
@@ -272,8 +302,10 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
             @Override
             public void onFailure(String err) {
-
+                view.showMealSearchFailure(err);
             }
         }, id);
     }
+
+
 }

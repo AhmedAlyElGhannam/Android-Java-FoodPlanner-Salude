@@ -55,7 +55,7 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, ingredient.getStrIngredient(), Toast.LENGTH_SHORT).show();
+                ingredient_listener.onIngredientClickListener(ingredient.getStrIngredient());
             }
         });
     }

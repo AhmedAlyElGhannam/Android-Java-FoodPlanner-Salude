@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.fragments.home;
+package com.example.salude.features.main_screen.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -15,9 +15,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.model.pojo.Category;
-import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
-import com.example.salude.utils.clicklistener.OnMealItemClickListener;
-import com.example.salude.utils.clicklistener.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +24,12 @@ public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapte
 
     private final Context context;
     private List<Category> categories;
-//    private final OnCategoryClickListener category_listener;
+    private OnCategoryClickListener category_listener;
 
-    public MealCategoryAdapter(Context _context) {
+    public MealCategoryAdapter(Context _context, OnCategoryClickListener _category_listener) {
         context = _context;
         categories = new ArrayList<>();
+        category_listener = _category_listener;
     }
 
     public void setCategories(List<Category> _categories) {

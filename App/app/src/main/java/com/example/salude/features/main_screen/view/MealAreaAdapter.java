@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.fragments.home;
+package com.example.salude.features.main_screen.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -17,10 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.model.pojo.Area;
-import com.example.salude.model.pojo.Category;
-import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
-import com.example.salude.utils.clicklistener.OnMealItemClickListener;
-import com.example.salude.utils.clicklistener.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.mealarea.CountryFlagsUtil;
 
 import java.util.ArrayList;
@@ -30,11 +26,12 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
 
     private final Context context;
     private List<Area> areas;
-//    private final OnAreaClickListener  area_listener;
+    private OnAreaClickListener area_listener;
 
-    public MealAreaAdapter(Context _context) {
+    public MealAreaAdapter(Context _context, OnAreaClickListener _area_listener) {
         context = _context;
         areas = new ArrayList<>();
+        area_listener = _area_listener;
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -63,6 +60,7 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
             @Override
             public void onClick(View v) {
                 // call item click listener
+                area_listener.onAreaClickListener(area.getStrArea());
             }
         });
     }

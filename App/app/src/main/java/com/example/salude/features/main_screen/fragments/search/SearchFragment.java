@@ -19,9 +19,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
-import com.example.salude.features.main_screen.fragments.home.MealAreaAdapter;
-import com.example.salude.features.main_screen.fragments.home.MealCategoryAdapter;
-import com.example.salude.features.main_screen.fragments.home.MealIngredientsAdapter;
+import com.example.salude.features.main_screen.view.MealAreaAdapter;
+import com.example.salude.features.main_screen.view.MealCategoryAdapter;
+import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -38,7 +38,6 @@ import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -54,6 +53,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     MealAreaAdapter areaAdapter;
     MealIngredientsAdapter ingredientsAdapter;
     MealCategoryAdapter categoryAdapter;
+    MealFilterAdapter filterAdapter;
     HomeScreenPresenter presenter;
 
     @Override
@@ -66,9 +66,9 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
-        areaAdapter = new MealAreaAdapter(getContext());
-        categoryAdapter = new MealCategoryAdapter(getContext());
-        ingredientsAdapter = new MealIngredientsAdapter(getContext());
+        areaAdapter = new MealAreaAdapter(getContext(), this);
+        categoryAdapter = new MealCategoryAdapter(getContext(), this);
+        ingredientsAdapter = new MealIngredientsAdapter(getContext(), this);
 
         searchTxt = view.findViewById(R.id.edtSearch);
         ingredientChip = view.findViewById(R.id.chipIngredient);
@@ -121,6 +121,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
             }
         });
 
+        // I left it out cuz its performance is abysmally slow
         ingredientChip.setVisibility(View.INVISIBLE);
 //        ingredientChip.setOnClickListener(new View.OnClickListener() {
 //            @Override
@@ -133,7 +134,6 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
 //                Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
 //            }
 //        });
-
 
         searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -201,21 +201,23 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
 
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
+        // set recycler view adapter to filterAdapter THEN do:
+        filterAdapter.setMealsList(filteredMeals);
+        filterAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onAreaClickListener(String area) {
+        presenter.getMealsFilteredByArea(area);
+    }
+
+    @Override
+    public void onCategoryClickListener(String category) {
 
     }
 
     @Override
-    public void onAreaClickListener() {
-
-    }
-
-    @Override
-    public void onCategoryClickListener() {
-
-    }
-
-    @Override
-    public void onIngredientClickListener() {
+    public void onIngredientClickListener(String ingredient) {
 
     }
 }

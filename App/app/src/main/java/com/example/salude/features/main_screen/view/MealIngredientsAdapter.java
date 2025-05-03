@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.fragments.home;
+package com.example.salude.features.main_screen.view;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -14,11 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
-import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Ingredient;
-import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
-import com.example.salude.utils.clicklistener.OnMealItemClickListener;
-import com.example.salude.utils.clicklistener.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,11 +24,12 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
 
     private final Context context;
     private List<Ingredient> ingredients;
-//    private final OnIngredientClickListener ingredient_listener;
+    private OnIngredientClickListener ingredient_listener;
 
-    public MealIngredientsAdapter(Context _context) {
+    public MealIngredientsAdapter(Context _context, OnIngredientClickListener _ingredient_listener) {
         context = _context;
         ingredients = new ArrayList<>();
+        ingredient_listener = _ingredient_listener;
     }
 
     public void setIngredients(List<Ingredient> _ingredients) {

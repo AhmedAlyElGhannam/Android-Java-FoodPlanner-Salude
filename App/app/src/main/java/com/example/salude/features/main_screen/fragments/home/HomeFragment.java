@@ -22,10 +22,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.features.main_screen.view.MealAreaAdapter;
+import com.example.salude.features.main_screen.view.MealCategoryAdapter;
+import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
+import com.example.salude.utils.clicklistener.OnAreaClickListener;
+import com.example.salude.utils.clicklistener.OnCategoryClickListener;
+import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -34,14 +41,13 @@ import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import com.bumptech.glide.Glide;
 import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
-public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener {
+public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener {
     HomeScreenContract.Presenter presenter;
     MealCategoryAdapter categoryAdapter;
     MealAreaAdapter areaAdapter;
@@ -73,9 +79,9 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
-        categoryAdapter = new MealCategoryAdapter(getContext());
-        areaAdapter = new MealAreaAdapter(getContext());
-        ingredientsAdapter = new MealIngredientsAdapter(getContext());
+        categoryAdapter = new MealCategoryAdapter(getContext(), this);
+        areaAdapter = new MealAreaAdapter(getContext(), this);
+        ingredientsAdapter = new MealIngredientsAdapter(getContext(), this);
 
         addToFavBtn = view.findViewById(R.id.btnAddToFavourites);
         addToCalBtn = view.findViewById(R.id.btnAddToCalendar);
@@ -257,6 +263,28 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
+
+    }
+
+    @Override
+    public void onAreaClickListener(String area) {
+
+    }
+
+    @Override
+    public void onCategoryClickListener(String category) {
+
+    }
+
+    @Override
+    public void onIngredientClickListener(String ingredient) {
+
+    }
+
+    @Override
+    public void onFilteredMealItemClickListener(FilteredMeal meal) {
+        // call presenter to fetch meal details by id THEN after it is done it will call another method
+        // that will launch the meal details fragment
 
     }
 }

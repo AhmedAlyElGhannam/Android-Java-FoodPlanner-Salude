@@ -1,5 +1,8 @@
 package com.example.salude.model.remote.retrofit.client;
 
+import android.content.Context;
+import android.util.Log;
+
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.response.AreaResponse;
 import com.example.salude.model.remote.retrofit.response.CategoryResponse;
@@ -8,9 +11,11 @@ import com.example.salude.model.remote.retrofit.response.IngredientResponse;
 import com.example.salude.model.remote.retrofit.response.MealResponse;
 import com.example.salude.model.remote.retrofit.service.RemoteRetrofitService;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,20 +32,23 @@ public class RemoteRetrofitClient {
 
     private final RemoteRetrofitService service;
 
-    private RemoteRetrofitClient() {
+    private RemoteRetrofitClient(Context _context) {
+        // 10 MB cache
+        int cacheSize = 10 * 1024 * 1024;
+        Cache cache = new Cache(new File(String.valueOf(_context), "http_cache"), cacheSize);
         OkHttpClient okHttpClient = new OkHttpClient.Builder()
                 .connectTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .readTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
                 .writeTimeout(TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .cache(cache)
                 .build();
         Retrofit retrofit = new Retrofit.Builder().baseUrl(baseUrl).client(okHttpClient).addConverterFactory(GsonConverterFactory.create()).build();
         service = retrofit.create(RemoteRetrofitService.class);
     }
 
-    public static RemoteRetrofitClient getInstance() {
-        // maybe make it synchonized
+    public static synchronized RemoteRetrofitClient getInstance(Context _context) {
         if (client == null) {
-            client = new RemoteRetrofitClient();
+            client = new RemoteRetrofitClient(_context);
         }
 
         return client;
@@ -125,6 +133,7 @@ public class RemoteRetrofitClient {
                 if ((response.isSuccessful()) && (response.body() != null)) {
                     // maybe check if meal id is null
                     cbf.onSuccess(response.body().getAreas());
+                    Log.i("TAG", "onResponse: areas success" + response.body().getAreas());
                 }
                 else {
                     try {

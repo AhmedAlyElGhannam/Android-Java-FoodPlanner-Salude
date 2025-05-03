@@ -1,5 +1,6 @@
-package com.example.salude.features.list_Fav.view;
+package com.example.salude.features.main_screen.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,74 +15,60 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
-import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
-import com.example.salude.utils.clicklistener.OnMealItemClickListener;
+import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Meal;
+import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
+import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavouriteMealsAdapter.ViewHolder> {
+public class ListOfFilteredMealsAdapter extends RecyclerView.Adapter<ListOfFilteredMealsAdapter.ViewHolder> {
 
     private final Context context;
-    private List<Meal> meals;
-    private OnMealItemClickListener mealListener;
-    private OnFavouriteClickListener favListener;
+    private List<FilteredMeal> meals;
+    private OnFilteredMealItemClickListener filteredListener;
 
-    public ListOfFavouriteMealsAdapter(Context _context, OnMealItemClickListener _mealListener, OnFavouriteClickListener _favListener) {
+    public ListOfFilteredMealsAdapter(Context _context, OnFilteredMealItemClickListener _filteredListener) {
         context = _context;
         meals = new ArrayList<>();
-        mealListener = _mealListener;
-        favListener = _favListener;
+        filteredListener = _filteredListener;
     }
 
-    public void setMeals(List<Meal> _meals) {
+    @SuppressLint("NotifyDataSetChanged")
+    public void setFilteredMeals(List<FilteredMeal> _meals) {
         this.meals = _meals;
-        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public ListOfFavouriteMealsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ListOfFilteredMealsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.meal_item, parent, false);
-        return new ViewHolder(view);
+        return new ListOfFilteredMealsAdapter.ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Meal meal = meals.get(position);
+    public void onBindViewHolder(@NonNull ListOfFilteredMealsAdapter.ViewHolder holder, int position) {
+        FilteredMeal meal = meals.get(position);
         holder.mealName.setText(meal.getStrMeal());
-        holder.mealCategory.setText(meal.getStrCategory());
-        holder.mealArea.setText(meal.getStrArea());
         Glide.with(context).load(meal.getStrMealThumb()).into(holder.mealThumbnail);
 
+        // send all unnecessary UI elements to the shadow realm
         holder.planBtn.setVisibility(View.INVISIBLE);
+        holder.favButton.setVisibility(View.INVISIBLE);
+        holder.mealArea.setVisibility(View.INVISIBLE);
+        holder.mealCategory.setVisibility(View.INVISIBLE);
 
-        holder.favButton.setImageResource(
-                meal.getIsFavouriteMeal() ?
-                        R.drawable.ic_favorite_filled :
-                        R.drawable.ic_favorite_border
-        );
-
-
+        // handle item click
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mealListener.onMealItemClickListener(meal);
+                filteredListener.onFilteredMealItemClickListener(meal);
             }
         });
 
-        holder.favButton.setOnClickListener(v -> {
-            if (favListener != null) {
-
-                favListener.onFavouriteClickListener(meal);
-            }
-        });
-
-//        holder.itemView.setOnClickListener(v -> {
-//            // Handle meal item click if needed
-//            view.showMealDetails(meal);
-//        });
     }
 
     @Override
@@ -107,8 +94,6 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
             favButton = itemView.findViewById(R.id.btnAddToFavourites);
             planBtn = itemView.findViewById(R.id.btnAddToCalendar);
             layout = itemView.findViewById(R.id.mealItemLayout);
-
-
         }
     }
 }

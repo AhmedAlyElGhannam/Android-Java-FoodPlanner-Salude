@@ -21,19 +21,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.contracts.MealDetailsContract;
-import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
-import com.example.salude.features.plannedmeal.DatePickerDialogManager;
+import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
-import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

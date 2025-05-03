@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.view.profile;
+package com.example.salude.features.main_screen.fragments.profile;
 
 import android.content.Intent;
 import android.os.Bundle;

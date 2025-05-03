@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.view.home;
+package com.example.salude.utils.clicklistener;
 
 import com.example.salude.model.pojo.Meal;
 

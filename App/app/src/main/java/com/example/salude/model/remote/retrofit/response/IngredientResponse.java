@@ -5,9 +5,9 @@ import com.example.salude.model.pojo.Ingredient;
 import java.util.List;
 
 public class IngredientResponse {
-    private List<Ingredient> ingredients;
+    private List<Ingredient> meals;
 
     public List<Ingredient> getIngredients() {
-        return ingredients;
+        return meals;
     }
 }

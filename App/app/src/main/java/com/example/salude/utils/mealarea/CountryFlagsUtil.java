@@ -1,4 +1,4 @@
-package com.example.salude.features.mealarea;
+package com.example.salude.utils.mealarea;
 
 import java.util.HashMap;
 import java.util.Map;

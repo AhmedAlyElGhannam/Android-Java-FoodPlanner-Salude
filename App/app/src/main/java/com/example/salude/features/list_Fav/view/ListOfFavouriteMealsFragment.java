@@ -5,27 +5,21 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
-import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.features.list_Fav.presenter.ListOfFavouriteMealsPresenter;
-import com.example.salude.features.main_screen.view.home.HomeFragmentMealAdapter;
-import com.example.salude.features.main_screen.view.home.OnFavouriteClickListener;
-import com.example.salude.features.main_screen.view.home.OnMealItemClickListener;
-import com.example.salude.features.main_screen.view.home.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -70,7 +64,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
         favMealsid.setText("Favourite Meals");
 
-        adapter = new ListOfFavouriteMealsAdapter(getContext(), null, this, this);
+        adapter = new ListOfFavouriteMealsAdapter(getContext(), this, this);
         mealsRecyclerView.setAdapter(adapter);
         presenter.getFavouriteMeals();
 

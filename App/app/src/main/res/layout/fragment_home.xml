@@ -5,177 +5,237 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true">
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
 
-    <!-- Header section with TextView -->
     <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp">
 
+        <!-- Header section with TextView -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/homeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fontFamily="sans-serif-medium"
+                android:text="Salude!"
+                android:textColor="@color/black"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <!-- Meal Card View -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/mealCardView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            app:cardElevation="8dp"
+            app:cardCornerRadius="16dp"
+            app:cardBackgroundColor="@color/white">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/mealItemLayout"
+                android:layout_width="match_parent"
+                android:layout_height="351dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:padding="12dp">
+
+                <ImageButton
+                    android:id="@+id/btnAddToCalendar"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/add_to_calendar"
+                    android:src="@drawable/ic_calendar_border"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageButton
+                    android:id="@+id/btnAddToFavourites"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:contentDescription="@string/add_to_favourites"
+                    android:src="@drawable/ic_favorite_border"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imgMeal"
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:scaleType="centerCrop"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/btnAddToCalendar" />
+
+                <TextView
+                    android:id="@+id/txtMealName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Meal Name"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceHeadline6"
+                    android:textColor="@color/black"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/imgMeal" />
+
+                <TextView
+                    android:id="@+id/txtCategory"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Category"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceBody2"
+                    android:textColor="@color/black"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtMealName" />
+
+                <TextView
+                    android:id="@+id/txtCountry"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="8dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Country"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/black"
+                    android:visibility="visible"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtCategory" />
+
+                <TextView
+                    android:id="@+id/textViewMealOfTheDay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="TextView"
+                    android:textAlignment="center"
+                    android:textAppearance="?attr/textAppearanceCaption"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toTopOf="@+id/imgMeal"
+                    app:layout_constraintEnd_toStartOf="@+id/btnAddToFavourites"
+                    app:layout_constraintStart_toEndOf="@+id/btnAddToCalendar"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Meal Categories Section -->
         <TextView
-            android:id="@+id/homeTitle"
+            android:id="@+id/txtMealCategoriesLabel"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fontFamily="sans-serif-medium"
-            android:text="Welcome!"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:text="Meal Categories:"
             android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:visibility="visible" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCategories"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:clipToPadding="false"
+                android:padding="8dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Meal Areas Section -->
+        <TextView
+            android:id="@+id/txtMealAreasLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:text="Meal Areas:"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewAreas"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:clipToPadding="false"
+                android:padding="8dp" />
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Meal Ingredients Section -->
+        <TextView
+            android:id="@+id/txtMealIngredientsLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="4dp"
+            android:text="Meal Ingredients:"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:layout_weight="1"
+            app:cardBackgroundColor="@color/white"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="8dp">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewIngredients"
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:clipToPadding="false"
+                android:padding="8dp" />
+        </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
-
-    <!-- Meal Card View -->
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/mealCardView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardElevation="8dp"
-        app:cardCornerRadius="16dp"
-        app:cardBackgroundColor="@color/white">
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/mealItemLayout"
-            android:layout_width="match_parent"
-            android:layout_height="351dp"
-            android:clickable="true"
-            android:focusable="true"
-            android:padding="12dp">
-
-            <ImageButton
-                android:id="@+id/btnAddToCalendar"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/add_to_calendar"
-                android:src="@drawable/ic_calendar_border"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageButton
-                android:id="@+id/btnAddToFavourites"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="@string/add_to_favourites"
-                android:src="@drawable/ic_favorite_border"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imgMeal"
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/btnAddToCalendar" />
-
-            <TextView
-                android:id="@+id/txtMealName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Meal Name"
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceHeadline6"
-                android:textColor="@color/black"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imgMeal" />
-
-            <TextView
-                android:id="@+id/txtCategory"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Category"
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceBody2"
-                android:textColor="@color/black"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtMealName" />
-
-            <TextView
-                android:id="@+id/txtCountry"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif-medium"
-                android:text="Country"
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/black"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/txtCategory" />
-
-            <TextView
-                android:id="@+id/textViewMealOfTheDay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="sans-serif-medium"
-                android:text="TextView"
-                android:textAlignment="center"
-                android:textAppearance="?attr/textAppearanceCaption"
-                android:textColor="@color/black"
-                android:textSize="18sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toTopOf="@+id/imgMeal"
-                app:layout_constraintEnd_toStartOf="@+id/btnAddToFavourites"
-                app:layout_constraintStart_toEndOf="@+id/btnAddToCalendar"
-                app:layout_constraintTop_toTopOf="parent" />
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- Section title above RecyclerView -->
-    <TextView
-        android:id="@+id/txtMealCategoriesLabel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="4dp"
-        android:text="Meal Categories:"
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <!-- RecyclerView Card - Increased height to accommodate category items -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="8dp"
-        android:layout_weight="1"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="8dp">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView2"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:padding="8dp" />
-    </com.google.android.material.card.MaterialCardView>
-
-</LinearLayout>
 </androidx.core.widget.NestedScrollView>

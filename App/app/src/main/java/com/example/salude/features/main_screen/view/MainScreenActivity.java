@@ -9,8 +9,9 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.example.salude.features.main_screen.view.home.HomeFragment;
-import com.example.salude.features.main_screen.view.profile.ProfileFragment;
+import com.example.salude.features.main_screen.fragments.home.HomeFragment;
+import com.example.salude.features.main_screen.fragments.profile.ProfileFragment;
+import com.example.salude.features.main_screen.fragments.search.SearchFragment;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
@@ -56,7 +57,7 @@ public class MainScreenActivity extends AppCompatActivity {
 //        repo1.removeFromPlannedMeals(testMeal);
 
 
-        RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()).getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+        RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance(getApplicationContext())).getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 Log.i("TAG", "onSuccess: " + meals.get(0).getStrMeal());

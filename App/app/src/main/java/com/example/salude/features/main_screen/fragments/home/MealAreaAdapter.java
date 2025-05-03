@@ -1,6 +1,8 @@
 package com.example.salude.features.main_screen.fragments.home;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,27 +29,24 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
 
     private final Context context;
     private List<Area> areas;
-    private final OnFavouriteClickListener fav_listener;
-    private final OnPlannedClickListener plan_listener;
-    private final OnMealItemClickListener meal_listener;
+//    private final OnAreaClickListener  area_listener;
 
-    public MealAreaAdapter(Context _context, List<Area> _areas, OnFavouriteClickListener _fav_listener, OnPlannedClickListener _plan_listener, OnMealItemClickListener _meal_listener) {
+    public MealAreaAdapter(Context _context, List<Area> _areas) {
         context = _context;
         areas = _areas;
-        fav_listener = _fav_listener;
-        plan_listener = _plan_listener;
-        meal_listener = _meal_listener;
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     public void setAreas(List<Area> _areas) {
         areas = _areas;
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
     public MealAreaAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         /* creating a view from the recycler view item */
-        View view = LayoutInflater.from(context).inflate(R.layout.category_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.area_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -56,6 +55,7 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
         Area area = areas.get(position);
 
         holder.areaNameTxt.setText(area.getStrArea());
+        Log.i("TAG", "onBindViewHolder: " + area.getStrArea());
         Glide.with(context).load(CountryFlagsUtil.getFlagUrl(area.getStrArea())).into(holder.areaFlagImg);
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
@@ -78,8 +78,8 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            areaFlagImg = itemView.findViewById(R.id.imgCategory);
-            areaNameTxt = itemView.findViewById(R.id.txtCategoryName);
+            areaFlagImg = itemView.findViewById(R.id.imgArea);
+            areaNameTxt = itemView.findViewById(R.id.txtAreaName);
             layout = itemView.findViewById(R.id.categoryItemLayout);
         }
     }

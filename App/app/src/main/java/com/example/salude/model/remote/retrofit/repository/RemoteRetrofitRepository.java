@@ -1,5 +1,7 @@
 package com.example.salude.model.remote.retrofit.repository;
 
+import android.util.Log;
+
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 
@@ -11,7 +13,7 @@ public class RemoteRetrofitRepository {
         client = _client;
     }
 
-    public static RemoteRetrofitRepository getInstance(RemoteRetrofitClient _client) {
+    public static synchronized RemoteRetrofitRepository getInstance(RemoteRetrofitClient _client) {
         if (repo == null) {
             repo = new RemoteRetrofitRepository(_client);
         }
@@ -33,6 +35,7 @@ public class RemoteRetrofitRepository {
 
     public void getMealAreas(RemoteRetrofitCallback.RemoteRetrofitAreaCallback cbf) {
         client.getMealAreas(cbf);
+        Log.i("TAG", "getMealAreas: ");
     }
 
     public void getMealsIngredients(RemoteRetrofitCallback.RemoteRetrofitIngredientCallback cbf) {

@@ -5,9 +5,9 @@ import com.example.salude.model.pojo.FilteredMeal;
 import java.util.List;
 
 public class FilteredMealResponse {
-    private List<FilteredMeal> filteredMeals;
+    private List<FilteredMeal> meals;
 
     public List<FilteredMeal> getFilteredMeals() {
-        return filteredMeals;
+        return meals;
     }
 }

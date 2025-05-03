@@ -2,6 +2,7 @@ package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,9 @@ import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
+import com.example.salude.model.pojo.Area;
+import com.example.salude.model.pojo.FilteredMeal;
+import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -39,9 +43,13 @@ import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener {
     HomeScreenContract.Presenter presenter;
-    MealCategoryAdapter adapter;
+    MealCategoryAdapter categoryAdapter;
+    MealAreaAdapter areaAdapter;
+    MealIngredientsAdapter ingredientsAdapter;
 //    RecyclerView mealOfTheDayRecyclerView;
     RecyclerView mealCategoriesRecyclerView;
+    RecyclerView mealAreasRecyclerView;
+    RecyclerView mealIngredientsRecyclerView;
 
     ImageButton addToFavBtn;
     ImageButton addToCalBtn;
@@ -51,6 +59,8 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     TextView mealCountryTxt;
     TextView mealOfTheDayTxt;
     TextView txtMealCategoriesLabel;
+    TextView txtMealAreasLabel;
+    TextView txtMealIngredientsLabel;
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
 
@@ -58,16 +68,30 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
+        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()),
+                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+                getContext());
+
+        categoryAdapter = new MealCategoryAdapter(getContext(), new ArrayList<>());
+        areaAdapter = new MealAreaAdapter(getContext(), new ArrayList<>());
+        ingredientsAdapter = new MealIngredientsAdapter(getContext(), new ArrayList<>());
+
         addToFavBtn = view.findViewById(R.id.btnAddToFavourites);
         addToCalBtn = view.findViewById(R.id.btnAddToCalendar);
         mealThumbnailImg = view.findViewById(R.id.imgMeal);
         mealNameTxt = view.findViewById(R.id.txtMealName);
         mealCategoryTxt = view.findViewById(R.id.txtCategory);
         mealCountryTxt = view.findViewById(R.id.txtCountry);
-        mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerView2);
+        mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewCategories);
+        mealAreasRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewAreas);
+        mealIngredientsRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewIngredients);
         mealItemLayout = view.findViewById(R.id.mealItemLayout);
         mealOfTheDayTxt = view.findViewById(R.id.textViewMealOfTheDay);
         txtMealCategoriesLabel = view.findViewById(R.id.txtMealCategoriesLabel);
+        txtMealAreasLabel = view.findViewById(R.id.txtMealAreasLabel);
+        txtMealIngredientsLabel = view.findViewById(R.id.txtMealIngredientsLabel);
+
         return view;
     }
 
@@ -76,21 +100,31 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
         super.onViewCreated(view, savedInstanceState);
 
         mealCategoriesRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
+        layoutManager1.setOrientation(RecyclerView.HORIZONTAL);
+        mealCategoriesRecyclerView.setLayoutManager(layoutManager1);
+
+        mealAreasRecyclerView.setHasFixedSize(true);
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(getContext());
         layoutManager2.setOrientation(RecyclerView.HORIZONTAL);
-        mealCategoriesRecyclerView.setLayoutManager(layoutManager2);
+        mealAreasRecyclerView.setLayoutManager(layoutManager2);
 
+        mealIngredientsRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager3 = new LinearLayoutManager(getContext());
+        layoutManager3.setOrientation(RecyclerView.HORIZONTAL);
+        mealIngredientsRecyclerView.setLayoutManager(layoutManager3);
 
-        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()),
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        mealCategoriesRecyclerView.setAdapter(categoryAdapter);
+        mealAreasRecyclerView.setAdapter(areaAdapter);
+        mealIngredientsRecyclerView.setAdapter(ingredientsAdapter);
 
-        adapter = new MealCategoryAdapter(getContext(), new ArrayList<>(), null, null, null);
-        mealCategoriesRecyclerView.setAdapter(adapter);
         presenter.getAllCategories();
         presenter.getMealOfTheDay();
+        presenter.getAllIngredients();
+        presenter.getAllAreas();
 
+        txtMealAreasLabel.setText("Meal Areas");
+        txtMealIngredientsLabel.setText("Meal Ingredients");
         txtMealCategoriesLabel.setText("Meal Categories");
         mealOfTheDayTxt.setText("Meal of The Day");
 
@@ -100,7 +134,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
             // create a bundle and put meal into it
             Bundle args = new Bundle();
-            args.putParcelable("meal", mealOfTheDay); // For Parcelable
+            args.putParcelable("meal", mealOfTheDay);
 
             // set the arguments
             fragment.setArguments(args);
@@ -162,8 +196,23 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealCategories(List<Category> categories) {
-        adapter.setCategories(categories);
-        adapter.notifyDataSetChanged();
+        categoryAdapter.setCategories(categories);
+        categoryAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showMealIngredients(List<Ingredient> ingredients) {
+        ingredientsAdapter.setIngredients(ingredients);
+        ingredientsAdapter.notifyDataSetChanged();
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    @Override
+    public void showMealAreas(List<Area> areas) {
+        Log.i("TAG", "showMealAreas: " + areas);
+        areaAdapter.setAreas(areas);
+        areaAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -204,5 +253,10 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
                         R.drawable.ic_calendar_filled :
                         R.drawable.ic_calendar_border
         );
+    }
+
+    @Override
+    public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
+
     }
 }

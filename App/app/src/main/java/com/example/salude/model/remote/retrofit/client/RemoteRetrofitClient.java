@@ -1,5 +1,7 @@
 package com.example.salude.model.remote.retrofit.client;
 
+import android.util.Log;
+
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.response.AreaResponse;
 import com.example.salude.model.remote.retrofit.response.CategoryResponse;
@@ -37,8 +39,7 @@ public class RemoteRetrofitClient {
         service = retrofit.create(RemoteRetrofitService.class);
     }
 
-    public static RemoteRetrofitClient getInstance() {
-        // maybe make it synchonized
+    public static synchronized RemoteRetrofitClient getInstance() {
         if (client == null) {
             client = new RemoteRetrofitClient();
         }
@@ -125,6 +126,7 @@ public class RemoteRetrofitClient {
                 if ((response.isSuccessful()) && (response.body() != null)) {
                     // maybe check if meal id is null
                     cbf.onSuccess(response.body().getAreas());
+                    Log.i("TAG", "onResponse: areas success" + response.body().getAreas());
                 }
                 else {
                     try {

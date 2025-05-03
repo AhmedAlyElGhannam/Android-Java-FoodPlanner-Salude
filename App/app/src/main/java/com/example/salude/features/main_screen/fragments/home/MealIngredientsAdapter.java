@@ -26,19 +26,14 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
 
     private final Context context;
     private List<Ingredient> ingredients;
-    private final OnFavouriteClickListener fav_listener;
-    private final OnPlannedClickListener plan_listener;
-    private final OnMealItemClickListener meal_listener;
+//    private final OnIngredientClickListener ingredient_listener;
 
-    public MealIngredientsAdapter(Context _context, List<Ingredient> _ingredients, OnFavouriteClickListener _fav_listener, OnPlannedClickListener _plan_listener, OnMealItemClickListener _meal_listener) {
+    public MealIngredientsAdapter(Context _context, List<Ingredient> _ingredients) {
         context = _context;
         ingredients = _ingredients;
-        fav_listener = _fav_listener;
-        plan_listener = _plan_listener;
-        meal_listener = _meal_listener;
     }
 
-    public void setCategories(List<Ingredient> _ingredients) {
+    public void setIngredients(List<Ingredient> _ingredients) {
         ingredients = _ingredients;
     }
 
@@ -46,7 +41,7 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
     @Override
     public MealIngredientsAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         /* creating a view from the recycler view item */
-        View view = LayoutInflater.from(context).inflate(R.layout.category_item, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.ingredient_item, parent, false);
         return new ViewHolder(view);
     }
 
@@ -55,6 +50,8 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
         Ingredient ingredient = ingredients.get(position);
         holder.ingredientNameTxt.setText(ingredient.getStrIngredient());
         Glide.with(context).load(ingredient.getStrImageUrl()).into(holder.ingredientImg);
+
+        holder.ingredientPortion.setVisibility(View.INVISIBLE);
 
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,13 +69,15 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView ingredientImg;
         TextView ingredientNameTxt;
+        TextView ingredientPortion;
         ConstraintLayout layout;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            ingredientImg = itemView.findViewById(R.id.imgCategory);
-            ingredientNameTxt = itemView.findViewById(R.id.txtCategoryName);
-            layout = itemView.findViewById(R.id.categoryItemLayout);
+            ingredientImg = itemView.findViewById(R.id.imgIngredient);
+            ingredientNameTxt = itemView.findViewById(R.id.txtIngredientName);
+            ingredientPortion = itemView.findViewById(R.id.txtIngredientPortion);
+            layout = itemView.findViewById(R.id.ingredientLayout);
         }
     }
 }

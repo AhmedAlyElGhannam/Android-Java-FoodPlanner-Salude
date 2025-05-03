@@ -89,9 +89,51 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
             public void onSuccess(List<Category> categories) {
                 if (categories != null && !categories.isEmpty()) {
                     view.showMealCategories(categories);
-                } else {
+                }
+                else {
                     Log.i("TAG", "Categories list is null or empty");
                     // Optionally, show an error message in the UI
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "on failure");
+            }
+        });
+    }
+
+    @Override
+    public void getAllAreas() {
+        remoteRepo.getMealAreas(new RemoteRetrofitCallback.RemoteRetrofitAreaCallback() {
+            @Override
+            public void onSuccess(List<Area> areas) {
+                if (areas != null && !areas.isEmpty()) {
+                    view.showMealAreas(areas);
+                    Log.i("TAG", "onSuccess: " + areas);
+                }
+                else {
+                    Log.i("TAG", "Areas list is null or empty");
+                }
+            }
+
+            @Override
+            public void onFailure(String err) {
+                Log.i("TAG", "on failure");
+            }
+        });
+    }
+
+    @Override
+    public void getAllIngredients() {
+        remoteRepo.getMealsIngredients(new RemoteRetrofitCallback.RemoteRetrofitIngredientCallback() {
+            @Override
+            public void onSuccess(List<Ingredient> ingredients) {
+                if (ingredients != null && !ingredients.isEmpty()) {
+                    view.showMealIngredients(ingredients);
+                }
+                else {
+                    Log.i("TAG", "Categories list is null or empty");
                 }
             }
 

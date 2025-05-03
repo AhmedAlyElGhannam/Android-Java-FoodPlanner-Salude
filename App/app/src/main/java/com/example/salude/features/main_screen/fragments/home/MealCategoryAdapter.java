@@ -25,16 +25,11 @@ public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapte
 
     private final Context context;
     private List<Category> categories;
-    private final OnFavouriteClickListener fav_listener;
-    private final OnPlannedClickListener plan_listener;
-    private final OnMealItemClickListener meal_listener;
+//    private final OnCategoryClickListener category_listener;
 
-    public MealCategoryAdapter(Context _context, List<Category> _categories, OnFavouriteClickListener _fav_listener, OnPlannedClickListener _plan_listener, OnMealItemClickListener _meal_listener) {
+    public MealCategoryAdapter(Context _context, List<Category> _categories) {
         context = _context;
         categories = _categories;
-        fav_listener = _fav_listener;
-        plan_listener = _plan_listener;
-        meal_listener = _meal_listener;
     }
 
     public void setCategories(List<Category> _categories) {
@@ -52,6 +47,7 @@ public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapte
     @Override
     public void onBindViewHolder(@NonNull MealCategoryAdapter.ViewHolder holder, int position) {
         Category category = categories.get(position);
+
         holder.categoryNameTxt.setText(category.getStrCategory());
         Glide.with(context).load(category.getStrCategoryThumb()).into(holder.categoryThumbnailImg);
 

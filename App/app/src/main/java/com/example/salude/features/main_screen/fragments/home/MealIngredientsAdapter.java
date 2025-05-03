@@ -20,6 +20,7 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredientsAdapter.ViewHolder> {
@@ -28,9 +29,9 @@ public class MealIngredientsAdapter extends RecyclerView.Adapter<MealIngredients
     private List<Ingredient> ingredients;
 //    private final OnIngredientClickListener ingredient_listener;
 
-    public MealIngredientsAdapter(Context _context, List<Ingredient> _ingredients) {
+    public MealIngredientsAdapter(Context _context) {
         context = _context;
-        ingredients = _ingredients;
+        ingredients = new ArrayList<>();
     }
 
     public void setIngredients(List<Ingredient> _ingredients) {

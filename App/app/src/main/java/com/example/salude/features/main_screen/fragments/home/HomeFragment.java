@@ -73,9 +73,9 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
-        categoryAdapter = new MealCategoryAdapter(getContext(), new ArrayList<>());
-        areaAdapter = new MealAreaAdapter(getContext(), new ArrayList<>());
-        ingredientsAdapter = new MealIngredientsAdapter(getContext(), new ArrayList<>());
+        categoryAdapter = new MealCategoryAdapter(getContext());
+        areaAdapter = new MealAreaAdapter(getContext());
+        ingredientsAdapter = new MealIngredientsAdapter(getContext());
 
         addToFavBtn = view.findViewById(R.id.btnAddToFavourites);
         addToCalBtn = view.findViewById(R.id.btnAddToCalendar);

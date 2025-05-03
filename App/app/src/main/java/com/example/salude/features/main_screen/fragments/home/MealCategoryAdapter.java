@@ -19,6 +19,7 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapter.ViewHolder> {
@@ -27,9 +28,9 @@ public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapte
     private List<Category> categories;
 //    private final OnCategoryClickListener category_listener;
 
-    public MealCategoryAdapter(Context _context, List<Category> _categories) {
+    public MealCategoryAdapter(Context _context) {
         context = _context;
-        categories = _categories;
+        categories = new ArrayList<>();
     }
 
     public void setCategories(List<Category> _categories) {

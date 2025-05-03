@@ -23,6 +23,7 @@ import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 import com.example.salude.utils.mealarea.CountryFlagsUtil;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHolder> {
@@ -31,9 +32,9 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
     private List<Area> areas;
 //    private final OnAreaClickListener  area_listener;
 
-    public MealAreaAdapter(Context _context, List<Area> _areas) {
+    public MealAreaAdapter(Context _context) {
         context = _context;
-        areas = _areas;
+        areas = new ArrayList<>();
     }
 
     @SuppressLint("NotifyDataSetChanged")

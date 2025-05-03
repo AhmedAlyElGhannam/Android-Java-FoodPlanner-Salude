@@ -21,7 +21,7 @@ import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 import java.util.List;
 
-public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMealAdapter.ViewHolder> {
+public class MealCategoryAdapter extends RecyclerView.Adapter<MealCategoryAdapter.ViewHolder> {
 
     private final Context context;
     private List<Category> categories;
@@ -29,7 +29,7 @@ public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMe
     private final OnPlannedClickListener plan_listener;
     private final OnMealItemClickListener meal_listener;
 
-    public HomeFragmentMealAdapter(Context _context, List<Category> _categories, OnFavouriteClickListener _fav_listener, OnPlannedClickListener _plan_listener, OnMealItemClickListener _meal_listener) {
+    public MealCategoryAdapter(Context _context, List<Category> _categories, OnFavouriteClickListener _fav_listener, OnPlannedClickListener _plan_listener, OnMealItemClickListener _meal_listener) {
         context = _context;
         categories = _categories;
         fav_listener = _fav_listener;
@@ -43,14 +43,14 @@ public class HomeFragmentMealAdapter extends RecyclerView.Adapter<HomeFragmentMe
 
     @NonNull
     @Override
-    public HomeFragmentMealAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MealCategoryAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         /* creating a view from the recycler view item */
         View view = LayoutInflater.from(context).inflate(R.layout.category_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull HomeFragmentMealAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MealCategoryAdapter.ViewHolder holder, int position) {
         Category category = categories.get(position);
         holder.categoryNameTxt.setText(category.getStrCategory());
         Glide.with(context).load(category.getStrCategoryThumb()).into(holder.categoryThumbnailImg);

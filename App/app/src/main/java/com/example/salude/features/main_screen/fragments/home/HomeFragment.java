@@ -39,7 +39,7 @@ import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener {
     HomeScreenContract.Presenter presenter;
-    HomeFragmentMealAdapter adapter;
+    MealCategoryAdapter adapter;
 //    RecyclerView mealOfTheDayRecyclerView;
     RecyclerView mealCategoriesRecyclerView;
 
@@ -86,7 +86,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
-        adapter = new HomeFragmentMealAdapter(getContext(), new ArrayList<>(), null, null, null);
+        adapter = new MealCategoryAdapter(getContext(), new ArrayList<>(), null, null, null);
         mealCategoriesRecyclerView.setAdapter(adapter);
         presenter.getAllCategories();
         presenter.getMealOfTheDay();

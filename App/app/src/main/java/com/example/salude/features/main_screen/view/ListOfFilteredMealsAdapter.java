@@ -22,6 +22,7 @@ import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListOfFilteredMealsAdapter extends RecyclerView.Adapter<ListOfFilteredMealsAdapter.ViewHolder> {
@@ -30,9 +31,9 @@ public class ListOfFilteredMealsAdapter extends RecyclerView.Adapter<ListOfFilte
     private List<FilteredMeal> meals;
     private OnFilteredMealItemClickListener filteredListener;
 
-    public ListOfFilteredMealsAdapter(Context _context, List<FilteredMeal> _meals, OnFilteredMealItemClickListener _filteredListener) {
+    public ListOfFilteredMealsAdapter(Context _context, OnFilteredMealItemClickListener _filteredListener) {
         context = _context;
-        meals = _meals;
+        meals = new ArrayList<>();
         filteredListener = _filteredListener;
     }
 

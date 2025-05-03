@@ -64,7 +64,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
         favMealsid.setText("Favourite Meals");
 
-        adapter = new ListOfFavouriteMealsAdapter(getContext(), null, this, this);
+        adapter = new ListOfFavouriteMealsAdapter(getContext(), this, this);
         mealsRecyclerView.setAdapter(adapter);
         presenter.getFavouriteMeals();
 

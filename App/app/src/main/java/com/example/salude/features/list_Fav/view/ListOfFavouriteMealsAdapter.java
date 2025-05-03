@@ -18,6 +18,7 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.model.pojo.Meal;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavouriteMealsAdapter.ViewHolder> {
@@ -27,9 +28,9 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
     private OnMealItemClickListener mealListener;
     private OnFavouriteClickListener favListener;
 
-    public ListOfFavouriteMealsAdapter(Context _context, List<Meal> _meals, OnMealItemClickListener _mealListener, OnFavouriteClickListener _favListener) {
+    public ListOfFavouriteMealsAdapter(Context _context, OnMealItemClickListener _mealListener, OnFavouriteClickListener _favListener) {
         context = _context;
-        meals = _meals;
+        meals = new ArrayList<>();
         mealListener = _mealListener;
         favListener = _favListener;
     }

@@ -47,7 +47,7 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
-public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener {
+public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener {
     HomeScreenContract.Presenter presenter;
     MealCategoryAdapter categoryAdapter;
     MealAreaAdapter areaAdapter;
@@ -281,10 +281,4 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
     }
 
-    @Override
-    public void onFilteredMealItemClickListener(FilteredMeal meal) {
-        // call presenter to fetch meal details by id THEN after it is done it will call another method
-        // that will launch the meal details fragment
-
-    }
 }

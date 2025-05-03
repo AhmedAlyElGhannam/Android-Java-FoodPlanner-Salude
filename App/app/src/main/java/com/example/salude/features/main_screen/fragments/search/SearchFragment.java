@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
+import com.example.salude.features.main_screen.view.ListOfFilteredMealsAdapter;
 import com.example.salude.features.main_screen.view.MealAreaAdapter;
 import com.example.salude.features.main_screen.view.MealCategoryAdapter;
 import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
@@ -34,6 +35,7 @@ import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
 import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
+import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
@@ -41,7 +43,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener {
+public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener {
     public SearchFragment() { }
 
     TextInputEditText searchTxt;
@@ -53,7 +55,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     MealAreaAdapter areaAdapter;
     MealIngredientsAdapter ingredientsAdapter;
     MealCategoryAdapter categoryAdapter;
-    MealFilterAdapter filterAdapter;
+    ListOfFilteredMealsAdapter filterAdapter;
     HomeScreenPresenter presenter;
 
     @Override
@@ -69,6 +71,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
         areaAdapter = new MealAreaAdapter(getContext(), this);
         categoryAdapter = new MealCategoryAdapter(getContext(), this);
         ingredientsAdapter = new MealIngredientsAdapter(getContext(), this);
+        filterAdapter = new ListOfFilteredMealsAdapter(getContext(), this);
 
         searchTxt = view.findViewById(R.id.edtSearch);
         ingredientChip = view.findViewById(R.id.chipIngredient);
@@ -199,10 +202,11 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
         // set recycler view adapter to filterAdapter THEN do:
-        filterAdapter.setMealsList(filteredMeals);
+        filterAdapter.setFilteredMeals(filteredMeals);
         filterAdapter.notifyDataSetChanged();
     }
 
@@ -218,6 +222,13 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
 
     @Override
     public void onIngredientClickListener(String ingredient) {
+
+    }
+
+    @Override
+    public void onFilteredMealItemClickListener(FilteredMeal meal) {
+        // call presenter to fetch meal details by id THEN after it is done it will call another method
+        // that will launch the meal details fragment
 
     }
 }

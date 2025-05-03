@@ -1,14 +1,19 @@
 package com.example.salude.features.main_screen.fragments.search;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
@@ -31,6 +36,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SearchFragment extends Fragment implements HomeScreenContract.View {
     public SearchFragment() { }
@@ -74,7 +80,72 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        searchResRecyclerView.setHasFixedSize(true);
+        LinearLayoutManager layoutManager1 = new LinearLayoutManager(getContext());
+        layoutManager1.setOrientation(RecyclerView.VERTICAL);
+        searchResRecyclerView.setLayoutManager(layoutManager1);
 
+        presenter.getAllCategories();
+        presenter.getMealOfTheDay();
+        presenter.getAllIngredients();
+
+        // only show it once a search/category is selected
+        searchResLabel.setVisibility(View.INVISIBLE);
+
+
+        areaChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                areaChip.setChecked(true);
+                // set adapter && display search results + label
+                Toast.makeText(getContext(), "Area Chip", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        categoryChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                categoryChip.setChecked(true);
+                // set adapter && display search results + label
+                Toast.makeText(getContext(), "Category Chip", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        ingredientChip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ingredientChip.setChecked(true);
+                // set adapter && display search results + label
+                Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+        searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == android.view.inputmethod.EditorInfo.IME_ACTION_DONE) {
+                    String query = Objects.requireNonNull(searchTxt.getText()).toString().trim();
+                    if (!query.isEmpty()) {
+                        // perform search
+                    }
+                    else {
+                        // toast to tell user to input sth
+                        Toast.makeText(getContext(), "Write sth to search for", Toast.LENGTH_SHORT).show();
+                    }
+                    // close the keyboard after search
+                    InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (inputMethodManager != null && getActivity().getCurrentFocus() != null) {
+                        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                    }
+                    else {
+                        // ?!
+                    }
+                    return true;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.example.salude.features.plannedmeal;
+package com.example.salude.utils.plannedmeal;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

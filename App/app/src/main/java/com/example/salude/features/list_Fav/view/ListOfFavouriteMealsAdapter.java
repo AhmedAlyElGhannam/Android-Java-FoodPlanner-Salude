@@ -7,7 +7,6 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -15,9 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
-import com.example.salude.features.main_screen.view.home.OnFavouriteClickListener;
-import com.example.salude.features.main_screen.view.home.OnMealItemClickListener;
-import com.example.salude.features.main_screen.view.home.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.List;

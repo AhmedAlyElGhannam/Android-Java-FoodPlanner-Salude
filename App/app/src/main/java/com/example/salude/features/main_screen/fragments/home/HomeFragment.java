@@ -1,7 +1,6 @@
-package com.example.salude.features.main_screen.view.home;
+package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,8 +22,7 @@ import com.example.salude.R;
 import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
-import com.example.salude.features.plannedmeal.DatePickerDialogManager;
-import com.example.salude.model.local.dao.MealDAO;
+import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Category;
@@ -35,8 +33,11 @@ import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitReposit
 import java.util.ArrayList;
 import java.util.List;
 import com.bumptech.glide.Glide;
+import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
-public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener{
+public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener {
     HomeScreenContract.Presenter presenter;
     HomeFragmentMealAdapter adapter;
 //    RecyclerView mealOfTheDayRecyclerView;

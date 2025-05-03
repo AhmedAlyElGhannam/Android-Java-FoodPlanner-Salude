@@ -14,10 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
-import com.example.salude.features.list_Fav.view.ListOfFavouriteMealsAdapter;
-import com.example.salude.features.main_screen.view.home.OnFavouriteClickListener;
-import com.example.salude.features.main_screen.view.home.OnMealItemClickListener;
-import com.example.salude.features.main_screen.view.home.OnPlannedClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.List;

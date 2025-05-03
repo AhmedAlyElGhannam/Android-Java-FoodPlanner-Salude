@@ -1,10 +1,9 @@
-package com.example.salude.features.main_screen.view.home;
+package com.example.salude.features.main_screen.fragments.home;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.model.pojo.Category;
-import com.example.salude.model.pojo.Meal;
+import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
+import com.example.salude.utils.clicklistener.OnMealItemClickListener;
+import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 import java.util.List;
 

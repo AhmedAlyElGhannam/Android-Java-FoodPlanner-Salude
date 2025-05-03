@@ -62,7 +62,7 @@ public class MealAreaAdapter extends RecyclerView.Adapter<MealAreaAdapter.ViewHo
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(context, area.getStrArea(), Toast.LENGTH_SHORT).show();
+                // call item click listener
             }
         });
     }

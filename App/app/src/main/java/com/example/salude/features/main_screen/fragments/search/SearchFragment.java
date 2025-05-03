@@ -32,6 +32,9 @@ import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.utils.clicklistener.OnAreaClickListener;
+import com.example.salude.utils.clicklistener.OnCategoryClickListener;
+import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -39,7 +42,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements HomeScreenContract.View {
+public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener {
     public SearchFragment() { }
 
     TextInputEditText searchTxt;
@@ -58,7 +61,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance()),
+        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance(getContext())),
                 RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
                 RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
@@ -197,6 +200,21 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View 
 
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
+
+    }
+
+    @Override
+    public void onAreaClickListener() {
+
+    }
+
+    @Override
+    public void onCategoryClickListener() {
+
+    }
+
+    @Override
+    public void onIngredientClickListener() {
 
     }
 }

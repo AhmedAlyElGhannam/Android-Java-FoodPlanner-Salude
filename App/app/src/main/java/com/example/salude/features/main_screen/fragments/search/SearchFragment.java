@@ -121,17 +121,18 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
             }
         });
 
-        ingredientChip.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ingredientChip.setChecked(true);
-                // set adapter && display search results + label
-                searchResRecyclerView.setAdapter(ingredientsAdapter);
-                searchResLabel.setVisibility(View.VISIBLE);
-                searchResLabel.setText("Search Results");
-                Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
-            }
-        });
+        ingredientChip.setVisibility(View.INVISIBLE);
+//        ingredientChip.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                ingredientChip.setChecked(true);
+//                // set adapter && display search results + label
+//                searchResRecyclerView.setAdapter(ingredientsAdapter);
+//                searchResLabel.setVisibility(View.VISIBLE);
+//                searchResLabel.setText("Search Results");
+//                Toast.makeText(getContext(), "Ingredient Chip", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
 
         searchTxt.setOnEditorActionListener(new TextView.OnEditorActionListener() {

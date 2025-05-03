@@ -52,14 +52,6 @@
             app:chipSpacing="8dp">
 
             <com.google.android.material.chip.Chip
-                android:id="@+id/chipIngredient"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                style="@style/Widget.MaterialComponents.Chip.Choice"
-                android:text="Ingredient"
-                app:chipCornerRadius="8dp" />
-
-            <com.google.android.material.chip.Chip
                 android:id="@+id/chipArea"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -74,6 +66,15 @@
                 style="@style/Widget.MaterialComponents.Chip.Choice"
                 android:text="Category"
                 app:chipCornerRadius="8dp" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipIngredient"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:text="Ingredient"
+                app:chipCornerRadius="8dp" />
+
         </com.google.android.material.chip.ChipGroup>
 
         <!-- Divider -->

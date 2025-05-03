@@ -20,6 +20,7 @@ public interface HomeScreenContract {
         public LifecycleOwner getViewLifecycleOwner();
         public void updatePlannedMealBtn(boolean state);
         public void showFilteredMeals(List<FilteredMeal> filteredMeals);
+        public void showMealDetails(Meal meal);
     }
 
     public interface Presenter {

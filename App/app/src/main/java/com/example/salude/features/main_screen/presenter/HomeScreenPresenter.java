@@ -261,4 +261,19 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
             }
         }, category);
     }
+
+    public void getMealByID(String id) {
+        remoteRepo.getMealByID(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+            @Override
+            public void onSuccess(List<Meal> meals) {
+                // it returned a list so I will assume the first is the one I want
+                view.showMealDetails(meals.get(0));
+            }
+
+            @Override
+            public void onFailure(String err) {
+
+            }
+        }, id);
+    }
 }

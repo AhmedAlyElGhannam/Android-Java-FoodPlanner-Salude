@@ -267,6 +267,11 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     }
 
     @Override
+    public void showMealDetails(Meal meal) {
+
+    }
+
+    @Override
     public void onAreaClickListener(String area) {
 
     }

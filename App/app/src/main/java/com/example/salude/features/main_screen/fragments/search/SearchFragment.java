@@ -24,6 +24,7 @@ import com.example.salude.features.main_screen.view.MealAreaAdapter;
 import com.example.salude.features.main_screen.view.MealCategoryAdapter;
 import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
 import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
 import com.example.salude.model.pojo.Area;
@@ -206,6 +207,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     @Override
     public void showFilteredMeals(List<FilteredMeal> filteredMeals) {
         // set recycler view adapter to filterAdapter THEN do:
+        searchResRecyclerView.setAdapter(filterAdapter);
         filterAdapter.setFilteredMeals(filteredMeals);
         filterAdapter.notifyDataSetChanged();
     }
@@ -217,18 +219,37 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
 
     @Override
     public void onCategoryClickListener(String category) {
-
+        presenter.getMealsFilteredByCategory(category);
     }
 
     @Override
     public void onIngredientClickListener(String ingredient) {
-
+        presenter.getMealsFilteredByIngredient(ingredient);
     }
 
     @Override
     public void onFilteredMealItemClickListener(FilteredMeal meal) {
         // call presenter to fetch meal details by id THEN after it is done it will call another method
         // that will launch the meal details fragment
+        presenter.getMealByID(meal.getIdMeal());
+    }
 
+    @Override
+    public void showMealDetails(Meal meal) {
+        // create the destination fragment object
+        MealDetailsFragment fragment = new MealDetailsFragment();
+
+        // create a bundle and put meal into it
+        Bundle args = new Bundle();
+        args.putParcelable("meal", meal);
+
+        // set the arguments
+        fragment.setArguments(args);
+
+        // perform fragment transaction
+        getParentFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

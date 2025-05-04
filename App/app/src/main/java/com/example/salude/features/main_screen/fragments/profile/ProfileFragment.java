@@ -78,6 +78,7 @@ public class ProfileFragment extends Fragment {
                 // perform fragment transaction
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, newFragment)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out) // enter, exit
                         .addToBackStack(null)
                         .commit();
             }
@@ -91,6 +92,7 @@ public class ProfileFragment extends Fragment {
                 // perform fragment transaction
                 getParentFragmentManager().beginTransaction()
                         .replace(R.id.fragment_container, newFragment)
+                        .setCustomAnimations(R.anim.fade_in, R.anim.fade_out) // enter, exit
                         .addToBackStack(null)
                         .commit();
             }

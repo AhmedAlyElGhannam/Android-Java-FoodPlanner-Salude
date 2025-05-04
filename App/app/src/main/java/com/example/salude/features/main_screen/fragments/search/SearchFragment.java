@@ -262,6 +262,7 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
         // perform fragment transaction
         getParentFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
+                .setCustomAnimations(R.anim.fade_in, R.anim.fade_out) // enter, exit
                 .addToBackStack(null)
                 .commit();
     }

@@ -1,6 +1,8 @@
 package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,8 @@ import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
+import com.example.salude.utils.network.NetworkChangeReceiver;
+import com.example.salude.utils.network.OnNetworkConnectionListener;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -47,7 +51,12 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
-public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener {
+public class HomeFragment extends Fragment
+        implements HomeScreenContract.View,
+        OnFavouriteClickListener, OnPlannedClickListener,
+        OnMealItemClickListener, OnAreaClickListener,
+        OnCategoryClickListener, OnIngredientClickListener,
+        OnNetworkConnectionListener {
     HomeScreenContract.Presenter presenter;
     MealCategoryAdapter categoryAdapter;
     MealAreaAdapter areaAdapter;
@@ -148,6 +157,7 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
             // perform fragment transaction
             getParentFragmentManager().beginTransaction()
                     .replace(R.id.fragment_container, fragment)
+                    .setCustomAnimations(R.anim.fade_in, R.anim.fade_out) // enter, exit
                     .addToBackStack(null)
                     .commit();
         });
@@ -301,4 +311,18 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
     }
 
+    @Override
+    public void onNetworkConnectionSuccess() {
+        if (presenter != null) {
+            presenter.getAllCategories();
+            presenter.getMealOfTheDay();
+            presenter.getAllIngredients();
+            presenter.getAllAreas();
+        }
+    }
+
+    @Override
+    public void onNetworkConnectionFailure() {
+
+    }
 }

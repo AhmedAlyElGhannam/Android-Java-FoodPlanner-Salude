@@ -1,5 +1,7 @@
 package com.example.salude.model.local.repo;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -28,38 +30,36 @@ public class RoomLocalRepository {
             return repo;
         }
 
-        public LiveData<List<Meal>> getListOfFavouriteMeals() {
-            return dao.getFavouriteMeals();
+        public LiveData<List<Meal>> getListOfFavouriteMeals(String userID) {
+            return dao.getFavouriteMeals(userID);
         }
 
         public void addMealToFavourites(Meal meal) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    // add to favs
-                    if (dao.isMealInDB(meal.getIdMeal())) {
-                        dao.updateMealFavouriteStatus(meal.getIdMeal(), true);
-                    }
-                    else {
-                        meal.setIsFavouriteMeal(true);
-                        dao.insertFavouriteMeal(meal);
-                    }
+            new Thread(() -> {
+                String userID = meal.getUserID();
+                if (userID == null) {
+                    Log.e("RoomLocalRepository", "User ID is null when adding to favorites");
+                    return;
+                }
+
+                if (dao.isMealInDB(meal.getIdMeal(), userID)) {
+                    dao.updateMealFavouriteStatus(meal.getIdMeal(), true, userID);
+                } else {
+                    meal.setIsFavouriteMeal(true);
+                    dao.insert(meal); // You'll need to add this method to your DAO
                 }
             }).start();
         }
 
         public void removeMealFromFavourites(Meal meal) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (dao.isMealInDB(meal.getIdMeal())) {
-                        dao.updateMealFavouriteStatus(meal.getIdMeal(), false);
-                    }
-                    else {
-                        meal.setIsFavouriteMeal(false);
-                        dao.removeMealFromFavourites(meal);
-                    }
+            new Thread(() -> {
+                String userID = meal.getUserID();
+                if (userID == null) {
+                    Log.e("RoomLocalRepository", "User ID is null when removing from favorites");
+                    return;
                 }
+
+                dao.updateMealFavouriteStatus(meal.getIdMeal(), false, userID);
             }).start();
         }
     }
@@ -80,21 +80,24 @@ public class RoomLocalRepository {
             return repo;
         }
 
-        public LiveData<List<Meal>> getListOfPlannedMeals() {
-            return dao.getPlannedMeals();
+        public LiveData<List<Meal>> getListOfPlannedMeals(String userID) {
+            return dao.getPlannedMeals(userID);
         }
 
-        public void addToPlannedMeals(Meal meal, String date) {
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    if (dao.isMealInDB(meal.getIdMeal())) {
-                        dao.updateMealPlannedStatus(meal.getIdMeal(), date);
-                    }
-                    else {
-                        meal.setPlannedMealDate(date);
-                        dao.insertPlannedMeal(meal);
-                    }
+        public void addToPlannedMeals(Meal meal, String date, String userID) {
+            new Thread(() -> {
+                if (userID == null) {
+                    Log.e("RoomLocalRepository", "User ID is null when adding to planned");
+                    return;
+                }
+
+                meal.setUserID(userID);
+                meal.setPlannedMealDate(date);
+
+                if (dao.isMealInDB(meal.getIdMeal(), userID)) {
+                    dao.updateMealPlannedStatus(meal.getIdMeal(), date, userID);
+                } else {
+                    dao.insertPlannedMeal(meal); // You'll need to add this method to your DAO
                 }
             }).start();
         }
@@ -103,12 +106,12 @@ public class RoomLocalRepository {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    if (dao.isMealInDB(meal.getIdMeal())) {
-                        dao.updateMealPlannedStatus(meal.getIdMeal(), null);
+                    if (dao.isMealInDB(meal.getIdMeal(), meal.getUserID())) {
+                        dao.updateMealPlannedStatus(meal.getIdMeal(), null, meal.getUserID());
                     }
                     else {
                         meal.setPlannedMealDate(null);
-                        dao.removeMealFromPlanned(meal);
+                        dao.removeMealFromPlanned(meal.getIdMeal(), meal.getUserID());
                     }
                 }
             }).start();

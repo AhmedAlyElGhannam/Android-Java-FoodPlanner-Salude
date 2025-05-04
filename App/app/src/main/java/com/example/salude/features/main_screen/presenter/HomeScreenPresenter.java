@@ -13,6 +13,7 @@ import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.utils.sessionmanager.UserSessionManager;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,8 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     private final SharedPreferences sharedPreferences;
     private Context context;
+    private UserSessionManager sessionManager;
+
 
     public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
         context = _context;
@@ -36,6 +39,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         localFavRepo = _localRepo;
         localPlanRepo = _localPlanRepo;
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
+        sessionManager = new UserSessionManager(context);
     }
 
     @Override
@@ -146,7 +150,8 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getFavouriteMealBtnStatus(Meal meal) {
-        localFavRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        String userID = sessionManager.getUserId();
+        localFavRepo.getListOfFavouriteMeals(userID).observe(view.getViewLifecycleOwner(), meals -> {
             boolean isFavorite = false;
             if (meals != null) {
                 for (Meal m : meals) {
@@ -163,8 +168,15 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void addMealToFavourites(Meal meal) {
-        localFavRepo.addMealToFavourites(meal);
+        String userID = sessionManager.getCurrentUserId();
+        if (userID != null) {
+            meal.setUserID(userID);
+            localFavRepo.addMealToFavourites(meal);
+        } else {
+            Log.e("HomeScreenPresenter", "User ID is null when adding to favorites");
+        }
     }
+
 
     @Override
     public void removeMealFromFavourites(Meal meal) {
@@ -173,7 +185,8 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getPlannedMealBtnStatus(Meal meal) {
-        localPlanRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        String userID = sessionManager.getUserId();
+        localPlanRepo.getListOfPlannedMeals(userID).observe(view.getViewLifecycleOwner(), meals -> {
             boolean isPlanned = false;
             String plannedDate = null;
             if (meals != null) {
@@ -188,6 +201,25 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
             meal.setPlannedMealDate(plannedDate);
             view.updatePlannedMealBtn(isPlanned);
         });
+    }
+
+    @Override
+    public void addMealToPlanned(Meal meal) {
+        String userID = sessionManager.getCurrentUserId();
+        if (userID != null) {
+            meal.setUserID(userID);
+            localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate(), userID);
+            view.updatePlannedMealBtn(meal.getPlannedMealDate() != null);
+            view.addMealToCalendar(meal);
+        } else {
+            Log.e("HomeScreenPresenter", "User ID is null when adding to planned");
+        }
+    }
+
+    @Override
+    public void removeMealFromPlanned(Meal meal) {
+        localPlanRepo.removeFromPlannedMeals(meal);
+        view.updatePlannedMealBtn(false);
     }
 
     @Override
@@ -295,15 +327,5 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         }, id);
     }
 
-    @Override
-    public void addMealToPlanned(Meal meal) {
-        localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
-        view.updatePlannedMealBtn(true);
-    }
 
-    @Override
-    public void removeMealFromPlanned(Meal meal) {
-        localPlanRepo.removeFromPlannedMeals(meal);
-        view.updatePlannedMealBtn(false);
-    }
 }

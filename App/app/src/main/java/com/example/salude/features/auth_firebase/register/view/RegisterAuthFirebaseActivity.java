@@ -16,7 +16,10 @@ import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.features.auth_firebase.register.presenter.RegisterAuthFirebasePresenter;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.model.remote.firebase.register.RegistrationAuthRepository;
+import com.example.salude.utils.sessionmanager.UserSessionManager;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class RegisterAuthFirebaseActivity extends AppCompatActivity implements RegistrationContract.View {
     TextInputEditText editTextName;
@@ -25,6 +28,9 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
     TextInputEditText editTextConfirmPassword;
     Button registerBtn;
     ProgressBar progressBar;
+
+    private UserSessionManager sessionManager;
+
 
     RegisterAuthFirebasePresenter presenter;
 
@@ -98,7 +104,10 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
 
     @Override
     public void onSuccessUIAction() {
-        // return to login page
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            sessionManager.createUserSession(user.getUid(), user.getEmail());
+        }
         Intent intent = new Intent(RegisterAuthFirebaseActivity.this, MainScreenActivity.class);
         startActivity(intent);
         finish();

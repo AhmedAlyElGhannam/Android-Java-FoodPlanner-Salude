@@ -1,6 +1,7 @@
 package com.example.salude.model.pojo;
 
 import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import android.os.Parcel;
@@ -22,6 +23,7 @@ public class Meal implements Parcelable{
     private String plannedMealDate;
 
     // for storing data unique to a certain user
+    @ColumnInfo(name = "userID")
     private String userID;
 
     private String strMeal;

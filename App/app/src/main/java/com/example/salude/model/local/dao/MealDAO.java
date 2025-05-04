@@ -15,29 +15,28 @@ public interface MealDAO {
 
     @Dao
     interface FavouriteMealDAO {
-        // insert
-        @Insert(onConflict = OnConflictStrategy.IGNORE)
-        void insertFavouriteMeal(Meal meal);
+        @Insert(onConflict = OnConflictStrategy.REPLACE)
+        void insert(Meal meal);
 
-        // get
-        @Query("SELECT * FROM meals WHERE isFavouriteMeal = 1")
-        LiveData<List<Meal>> getFavouriteMeals();
+        // get all favorites for current user
+        @Query("SELECT * FROM meals WHERE isFavouriteMeal = 1 AND userID = :userId")
+        LiveData<List<Meal>> getFavouriteMeals(String userId);
 
-        // remove
-        @Delete
-        void removeMealFromFavourites(Meal meal);
+        // remove favorite for current user
+        @Query("DELETE FROM meals WHERE idMeal = :mealId AND userID = :userId")
+        void removeMealFromFavourites(String mealId, String userId);
 
-        // isFav
-        @Query("SELECT isFavouriteMeal FROM meals WHERE idMeal = :id")
-        boolean isMealFavourite(String id);
+        // isFav for current user
+        @Query("SELECT isFavouriteMeal FROM meals WHERE idMeal = :id AND userID = :userId")
+        boolean isMealFavourite(String id, String userId);
 
-        // statUpdate
-        @Query("UPDATE meals SET isFavouriteMeal = :state WHERE idMeal = :id")
-        void updateMealFavouriteStatus(String id, boolean state);
+        // statUpdate for current user
+        @Query("UPDATE meals SET isFavouriteMeal = :state WHERE idMeal = :id AND userID = :userId")
+        void updateMealFavouriteStatus(String id, boolean state, String userId);
 
-        // if meal exists in db
-        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
-        boolean isMealInDB(String id);
+        // if meal exists in db for current user
+        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id AND userID = :userId")
+        boolean isMealInDB(String id, String userId);
 
     }
 
@@ -47,26 +46,24 @@ public interface MealDAO {
         @Insert(onConflict = OnConflictStrategy.IGNORE)
         void insertPlannedMeal(Meal meal);
 
-        // get
-        @Query("SELECT * FROM meals WHERE plannedMealDate IS NOT NULL")
-        LiveData<List<Meal>> getPlannedMeals();
+        // get all planned meals for current user
+        @Query("SELECT * FROM meals WHERE plannedMealDate IS NOT NULL AND userID = :userId")
+        LiveData<List<Meal>> getPlannedMeals(String userId);
 
-        // remove
-        @Delete
-        void removeMealFromPlanned(Meal meal);
+        // remove planned meal for current user
+        @Query("DELETE FROM meals WHERE idMeal = :mealId AND userID = :userId")
+        void removeMealFromPlanned(String mealId, String userId);
 
-        // isPlanned
-        @Query("SELECT plannedMealDate FROM meals WHERE idMeal = :id")
-        boolean isMealPlanned(String id);
+        // isPlanned for current user
+        @Query("SELECT plannedMealDate FROM meals WHERE idMeal = :id AND userID = :userId")
+        String isMealPlanned(String id, String userId);
 
-        // statUpdate
-        @Query("UPDATE meals SET plannedMealDate = :date WHERE idMeal = :id")
-        void updateMealPlannedStatus(String id, String date);
+        // statUpdate for current user
+        @Query("UPDATE meals SET plannedMealDate = :date WHERE idMeal = :id AND userID = :userId")
+        void updateMealPlannedStatus(String id, String date, String userId);
 
-        // if meal exists in db
-        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
-        boolean isMealInDB(String id);
+        // if meal exists in db for current user
+        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id AND userID = :userId")
+        boolean isMealInDB(String id, String userId);
     }
-
-
 }

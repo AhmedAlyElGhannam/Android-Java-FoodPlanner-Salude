@@ -69,6 +69,7 @@ import com.bumptech.glide.Glide;
 import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
+import com.example.salude.utils.sessionmanager.UserSessionManager;
 
 public class HomeFragment extends Fragment
         implements HomeScreenContract.View,
@@ -98,11 +99,15 @@ public class HomeFragment extends Fragment
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
     private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
+    private UserSessionManager sessionManager;
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
+
+        // session manager
+        sessionManager = new UserSessionManager(getContext());
 
         presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance(getContext())),
                 RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
@@ -183,8 +188,12 @@ public class HomeFragment extends Fragment
                     .commit();
         });
 
-        // Calendar button click
         addToCalBtn.setOnClickListener(v -> {
+            String userId = sessionManager.getUserId();
+            if (userId == null) return;
+
+            mealOfTheDay.setUserID(userId);
+
             if (!hasCalendarPermissions()) {
                 requestCalendarPermissions();
                 return;
@@ -198,7 +207,6 @@ public class HomeFragment extends Fragment
                     Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
                 });
             } else {
-                // Add confirmation dialog before unscheduling
                 new AlertDialog.Builder(getContext())
                         .setTitle("Unscheduled Meal")
                         .setMessage("Are you sure you want to unschedule this meal?")
@@ -213,16 +221,17 @@ public class HomeFragment extends Fragment
             }
         });
 
-        // Favourites button click
         addToFavBtn.setOnClickListener(v -> {
-            // save fav in db (toggle to undo it)
+            String userId = sessionManager.getUserId();
+            if (userId == null) return;
+
+            mealOfTheDay.setUserID(userId);
+
             if (mealOfTheDay.getIsFavouriteMeal()) {
-                // set it to false and remove its flag + make button hollow
                 presenter.removeMealFromFavourites(mealOfTheDay);
                 Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
             }
             else {
-                // set it to true and set its flag + make button filled
                 presenter.addMealToFavourites(mealOfTheDay);
                 Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
             }

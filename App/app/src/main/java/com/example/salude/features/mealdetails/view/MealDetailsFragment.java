@@ -88,7 +88,8 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
 
         presenter = new MealDetailsPresenter(this,
                 RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()));
+                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+                getContext());
 
         // Retrieve the Meal object from the Bundle
         if (getArguments() != null) {

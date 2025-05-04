@@ -24,6 +24,7 @@ import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFireba
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.model.remote.firebase.login.LoginAuthRepository;
+import com.example.salude.utils.sessionmanager.UserSessionManager;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -48,6 +49,8 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     ProgressBar progressBar;
     LoginAuthFirebasePresenter presenter;
     FirebaseAuth mAuth;
+    private UserSessionManager sessionManager;
+
 
     private static final int RC_SIGN_IN = 9001;
     private GoogleSignInClient mGoogleSignInClient;
@@ -62,6 +65,9 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
         // create an instance of firebase
         mAuth = FirebaseAuth.getInstance();
+
+        // instance of user session manager
+        sessionManager = new UserSessionManager(this);
 
         // create an object of login presenter
         presenter = new LoginAuthFirebasePresenter(this, LoginAuthRepository.getInstance());
@@ -143,10 +149,14 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
                         FirebaseUser user = mAuth.getCurrentUser();
-                        Log.d("SignIn", "signInWithCredential:success - " + user.getEmail());
-                        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-                        startActivity(intent);
-                        finish();
+                        if (user != null) {
+                            // Create user session
+                            sessionManager.createUserSession(user.getUid(), user.getEmail());
+                            Log.d("SignIn", "signInWithCredential:success - " + user.getEmail());
+                            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                            startActivity(intent);
+                            finish();
+                        }
                     } else {
                         Log.w("SignIn", "signInWithCredential:failure", task.getException());
                     }
@@ -177,6 +187,10 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
     @Override
     public void onSuccessUIAction() {
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            sessionManager.createUserSession(user.getUid(), user.getEmail());
+        }
         hideProgress();
         Intent intent = new Intent(this, MainScreenActivity.class);
         startActivity(intent);

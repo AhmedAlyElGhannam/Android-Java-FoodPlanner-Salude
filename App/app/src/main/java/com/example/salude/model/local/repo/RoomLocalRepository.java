@@ -1,5 +1,7 @@
 package com.example.salude.model.local.repo;
 
+import android.util.Log;
+
 import androidx.lifecycle.LiveData;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,6 +10,7 @@ import androidx.room.Query;
 
 import com.example.salude.model.local.dao.MealDAO;
 import com.example.salude.model.pojo.Meal;
+import com.example.salude.model.remote.firebase.service.FirebaseDataSyncService;
 
 import java.util.List;
 
@@ -62,6 +65,17 @@ public class RoomLocalRepository {
                 }
             }).start();
         }
+
+        public void syncFavoriteMealsToFirebase() {
+            new Thread(() -> {
+                try {
+                    List<Meal> favoriteMeals = dao.getFavouriteMealsSync();
+                    FirebaseDataSyncService.getInstance().syncFavoritesToFirebase(favoriteMeals);
+                } catch (Exception e) {
+                    Log.e("SyncFavorites", "Failed to sync favorites", e);
+                }
+            }).start();
+        }
     }
 
     public static class RoomLocalPlannedRepository {
@@ -110,6 +124,17 @@ public class RoomLocalRepository {
                         meal.setPlannedMealDate(null);
                         dao.removeMealFromPlanned(meal);
                     }
+                }
+            }).start();
+        }
+
+        public void syncPlannedMealsToFirebase() {
+            new Thread(() -> {
+                try {
+                    List<Meal> plannedMeals = dao.getPlannedMealsSync();
+                    FirebaseDataSyncService.getInstance().syncPlannedToFirebase(plannedMeals);
+                } catch (Exception e) {
+                    Log.e("SyncPlanned", "Failed to sync planned meals", e);
                 }
             }).start();
         }

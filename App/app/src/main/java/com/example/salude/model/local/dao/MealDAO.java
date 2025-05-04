@@ -39,6 +39,9 @@ public interface MealDAO {
         @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
         boolean isMealInDB(String id);
 
+        // get LIST of favourite meals for firebase sync shenanigans
+        @Query("SELECT * FROM meals WHERE isFavouriteMeal = 1")
+        List<Meal> getFavouriteMealsSync();
     }
 
     @Dao
@@ -66,7 +69,9 @@ public interface MealDAO {
         // if meal exists in db
         @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
         boolean isMealInDB(String id);
+
+        // get LIST of planned meals for firebase sync shenanigans
+        @Query("SELECT * FROM meals WHERE plannedMealDate IS NOT NULL")
+        List<Meal> getPlannedMealsSync();
     }
-
-
 }

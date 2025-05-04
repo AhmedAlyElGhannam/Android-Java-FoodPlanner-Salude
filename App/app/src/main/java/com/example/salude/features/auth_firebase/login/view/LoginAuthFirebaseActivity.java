@@ -23,7 +23,11 @@ import com.example.salude.contracts.LoginContract;
 import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFirebasePresenter;
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
+import com.example.salude.model.local.dao.MealDAO;
+import com.example.salude.model.local.dao.RoomLocalDB;
+import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.firebase.login.LoginAuthRepository;
+import com.example.salude.model.remote.firebase.service.FirebaseDataSyncService;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -37,6 +41,14 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class LoginAuthFirebaseActivity extends AppCompatActivity implements LoginContract.View {
     TextInputEditText editTextMail;
@@ -49,38 +61,6 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     LoginAuthFirebasePresenter presenter;
     FirebaseAuth mAuth;
     GoogleSignInClient googleSignInClient;
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK) {
-                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                try {
-                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // proceed to app home page
-                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
-                                startActivity(intent);
-                                finish();
-//                                mAuth = FirebaseAuth.getInstance();
-//                                Glide.with(MainActivity.this).load(Objects.requireNonNull(mAuth.getCurrentUser()).getPhotoUrl()).into(imageView);
-//                                name.setText(mAuth.getCurrentUser().getDisplayName());
-//                                mail.setText(mAuth.getCurrentUser().getEmail());
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } catch (ApiException e) {
-                    Log.e("GOOGLE_SIGN_IN", "Sign-in failed. Code: " + e.getStatusCode(), e);
-                }
-            }
-        }
-    });
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -182,15 +162,134 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
     @Override
     public void onSuccessUIAction() {
-        // proceed to app home page
-        //Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
-        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-        startActivity(intent);
-        finish();
+        // sync with user data from firebase then switch to main screen
+        loadUserDataFromFirebase();
+
+        // proceed to main screen
+
     }
 
     @Override
     public void onErrorUIAction(String msg) {
         Toast.makeText(this, "Failed to login. Try again later.", Toast.LENGTH_SHORT).show();
+    }
+
+    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+        @Override
+        public void onActivityResult(ActivityResult result) {
+            if (result.getResultCode() == RESULT_OK) {
+                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                try {
+                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
+                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
+                    mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if (task.isSuccessful()) {
+                                // proceed to app home page
+                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
+                                startActivity(intent);
+                                finish();
+//                                mAuth = FirebaseAuth.getInstance();
+//                                Glide.with(MainActivity.this).load(Objects.requireNonNull(mAuth.getCurrentUser()).getPhotoUrl()).into(imageView);
+//                                name.setText(mAuth.getCurrentUser().getDisplayName());
+//                                mail.setText(mAuth.getCurrentUser().getEmail());
+                                Toast.makeText(LoginAuthFirebaseActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(LoginAuthFirebaseActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                } catch (ApiException e) {
+                    Log.e("GOOGLE_SIGN_IN", "Sign-in failed. Code: " + e.getStatusCode(), e);
+                }
+            }
+        }
+    });
+
+
+
+    private void loadUserDataFromFirebase() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser == null) {
+            return;
+        }
+
+        DatabaseReference userRef = FirebaseDatabase.getInstance()
+                .getReference("userData")
+                .child(currentUser.getUid());
+
+        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                new Thread(() -> {
+                    try {
+                        // Handle favorites
+                        DataSnapshot favSnapshot = dataSnapshot.child("favorites");
+                        if (favSnapshot.exists()) {
+                            List<Meal> favMeals = new ArrayList<>();
+                            for (DataSnapshot mealSnapshot : favSnapshot.getChildren()) {
+                                Meal meal = mealSnapshot.getValue(Meal.class);
+                                if (meal != null) {
+                                    meal.setIsFavouriteMeal(true);
+                                    favMeals.add(meal);
+                                }
+                            }
+                            // update favourites in db
+                            MealDAO.FavouriteMealDAO favDao = RoomLocalDB.getInstance(null).getFavouriteMealDAO();
+                            for (Meal meal : favMeals) {
+                                if (favDao.isMealInDB(meal.getIdMeal())) {
+                                    favDao.updateMealFavouriteStatus(meal.getIdMeal(), true);
+                                } else {
+                                    favDao.insertFavouriteMeal(meal);
+                                }
+                            }
+                        }
+
+                        // Handle planned meals
+                        DataSnapshot plannedSnapshot = dataSnapshot.child("planned");
+                        if (plannedSnapshot.exists()) {
+                            List<Meal> plannedMeals = new ArrayList<>();
+                            for (DataSnapshot mealSnapshot : plannedSnapshot.getChildren()) {
+                                Meal meal = mealSnapshot.getValue(Meal.class);
+                                if (meal != null) {
+                                    plannedMeals.add(meal);
+                                }
+                            }
+
+                            MealDAO.PlannedMealDAO plannedDao = RoomLocalDB.getInstance(null).getPlannedMealDAO();
+                            for (Meal meal : plannedMeals) {
+                                if (plannedDao.isMealInDB(meal.getIdMeal())) {
+                                    plannedDao.updateMealPlannedStatus(meal.getIdMeal(), meal.getPlannedMealDate());
+                                } else {
+                                    plannedDao.insertPlannedMeal(meal);
+                                }
+                            }
+                        }
+
+                        runOnUiThread(() -> {
+                            Toast.makeText(LoginAuthFirebaseActivity.this,
+                                    "Data Sync Successful", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                            startActivity(intent);
+                            finish();
+                        });
+                    } catch (Exception e) {
+                        Log.e("FirebaseLoad", "Error loading data", e);
+                        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                        startActivity(intent);
+                        finish();
+                    }
+                }).start();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("FirebaseLoad", "Data load cancelled", databaseError.toException());
+                Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
     }
 }

@@ -20,6 +20,7 @@ import com.example.salude.R;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
 import com.example.salude.features.list_Fav.view.ListOfFavouriteMealsFragment;
 import com.example.salude.features.list_plan.view.ListOfPlannedMealsFragment;
+import com.example.salude.model.remote.firebase.logout.FirebaseLogoutHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -101,11 +102,14 @@ public class ProfileFragment extends Fragment {
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                auth.signOut();
-                Intent intent = new Intent(getActivity(), LoginAuthFirebaseActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                getActivity().finish();
+                FirebaseLogoutHelper.logout(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(getActivity(), LoginAuthFirebaseActivity.class);
+                        startActivity(intent);
+                        getActivity().finish();
+                    }
+                });
             }
         });
     }

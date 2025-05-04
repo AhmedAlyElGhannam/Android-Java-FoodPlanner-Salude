@@ -25,6 +25,9 @@
             </intent-filter>
         </activity>
         <!--  MUST add other activities here  -->
+        <meta-data
+            android:name="com.google.android.gms.auth.api.credentials.CredentialPickerConfig.EnableSmartLock"
+            android:value="false" />
         <activity android:name=".features.main_screen.view.MainScreenActivity"></activity>
         <activity android:name=".features.auth_firebase.login.view.LoginAuthFirebaseActivity"></activity>
         <activity android:name=".features.auth_firebase.register.view.RegisterAuthFirebaseActivity"></activity>

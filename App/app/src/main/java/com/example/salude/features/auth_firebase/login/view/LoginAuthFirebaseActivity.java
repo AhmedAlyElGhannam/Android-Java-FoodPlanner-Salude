@@ -48,39 +48,10 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     ProgressBar progressBar;
     LoginAuthFirebasePresenter presenter;
     FirebaseAuth mAuth;
-    GoogleSignInClient googleSignInClient;
-    private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
-        public void onActivityResult(ActivityResult result) {
-            if (result.getResultCode() == RESULT_OK) {
-                Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                try {
-                    GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // proceed to app home page
-                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
-                                startActivity(intent);
-                                finish();
-//                                mAuth = FirebaseAuth.getInstance();
-//                                Glide.with(MainActivity.this).load(Objects.requireNonNull(mAuth.getCurrentUser()).getPhotoUrl()).into(imageView);
-//                                name.setText(mAuth.getCurrentUser().getDisplayName());
-//                                mail.setText(mAuth.getCurrentUser().getEmail());
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
-                } catch (ApiException e) {
-                    Log.e("GOOGLE_SIGN_IN", "Sign-in failed. Code: " + e.getStatusCode(), e);
-                }
-            }
-        }
-    });
+
+    private static final int RC_SIGN_IN = 9001;
+    private GoogleSignInClient mGoogleSignInClient;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -96,11 +67,13 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         presenter = new LoginAuthFirebasePresenter(this, LoginAuthRepository.getInstance());
 
         // sign in with google shenanigans
-        GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.client_id_google))
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id)) // found in google-services.json
                 .requestEmail()
                 .build();
-        googleSignInClient = GoogleSignIn.getClient(LoginAuthFirebaseActivity.this, options);
+
+        mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
 
         // get references to UI elements by id
         editTextMail = findViewById(R.id.inputEmail);
@@ -131,14 +104,10 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
             }
         });
 
-        // googleBtn click handler
-        googleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                presenter.callLoginWithGoogleModelAction(googleSignInClient);
-                Intent intent = googleSignInClient.getSignInIntent();
-                activityResultLauncher.launch(intent);
-            }
+        // Update googleBtn click handler
+        googleBtn.setOnClickListener(v -> {
+            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+            startActivityForResult(signInIntent, RC_SIGN_IN);
         });
 
         // registerTxt click handler
@@ -156,6 +125,37 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
             forgotPassTxt click handler
             TODO
         */
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == RC_SIGN_IN) {
+            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+            try {
+                GoogleSignInAccount account = task.getResult(ApiException.class);
+                firebaseAuthWithGoogle(account.getIdToken());
+            } catch (ApiException e) {
+                Log.w("SignIn", "Google sign in failed", e);
+            }
+        }
+    }
+
+    private void firebaseAuthWithGoogle(String idToken) {
+        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        Log.d("SignIn", "signInWithCredential:success - " + user.getEmail());
+                        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Log.w("SignIn", "signInWithCredential:failure", task.getException());
+                    }
+                });
     }
 
     @Override
@@ -182,9 +182,8 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
     @Override
     public void onSuccessUIAction() {
-        // proceed to app home page
-        //Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainActivity.class);
-        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+        hideProgress();
+        Intent intent = new Intent(this, MainScreenActivity.class);
         startActivity(intent);
         finish();
     }
@@ -192,5 +191,10 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     @Override
     public void onErrorUIAction(String msg) {
         Toast.makeText(this, "Failed to login. Try again later.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void startGoogleSignIn(Intent signInIntent) {
+
     }
 }

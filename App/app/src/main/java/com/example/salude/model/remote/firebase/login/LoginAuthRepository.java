@@ -47,15 +47,13 @@ public class LoginAuthRepository implements LoginContract.Model {
         AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
 
         mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-                            FirebaseUser user = mAuth.getCurrentUser();
-                            // User is signed in
-                        } else {
-                            // user was not able to sign in
-                        }
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        listener.OnLoginSuccess();
+                    } else {
+                        String error = task.getException() != null ?
+                                task.getException().getMessage() : "Unknown error";
+                        listener.OnLoginFailure("Google authentication failed: " + error);
                     }
                 });
     }

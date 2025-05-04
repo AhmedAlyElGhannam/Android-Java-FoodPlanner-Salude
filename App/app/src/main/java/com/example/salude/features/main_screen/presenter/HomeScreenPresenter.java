@@ -194,6 +194,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     public void addMealToPlanned(Meal meal) {
         localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
         view.updatePlannedMealBtn(meal.getPlannedMealDate() != null);
+        view.addMealToCalendar(meal);
     }
 
     @Override

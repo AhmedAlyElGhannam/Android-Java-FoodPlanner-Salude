@@ -297,6 +297,11 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     }
 
     @Override
+    public void addMealToCalendar(Meal meal) {
+
+    }
+
+    @Override
     public void onMealItemClickListener(Meal meal) {
         showMealDetails(meal);
     }

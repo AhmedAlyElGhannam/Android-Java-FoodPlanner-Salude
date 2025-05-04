@@ -1,85 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:fillViewport="true">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/connectionLostAnimation"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/guideline"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/connectionlost" />
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintGuide_percent="0.6" />
+        <!-- Animation -->
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/connectionLostAnimation"
+            android:layout_width="300dp"
+            android:layout_height="300dp"
+            app:layout_constraintBottom_toTopOf="@+id/guideline"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/connectionlost" />
 
-    <TextView
-        android:id="@+id/txtConnectionLost"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Connection Lost"
-        android:textSize="24sp"
-        android:textColor="@color/black"
-        android:layout_marginBottom="16dp"
-        app:layout_constraintTop_toBottomOf="@id/connectionLostAnimation"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Horizontal guideline -->
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.6" />
 
-    <TextView
-        android:id="@+id/txtConnectionMessage"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginHorizontal="32dp"
-        android:text="You are currently offline. Please check your internet connection."
-        android:textAlignment="center"
-        android:textSize="16sp"
-        app:layout_constraintTop_toBottomOf="@id/txtConnectionLost"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        <!-- Title -->
+        <TextView
+            android:id="@+id/txtConnectionLost"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="Connection Lost"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/connectionLostAnimation" />
 
-    <Button
-        android:id="@+id/btnRetry"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="32dp"
-        android:text="Retry Connection"
-        android:backgroundTint="@color/beige"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/txtConnectionMessage"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/guidelineVertical" />
+        <!-- Description -->
+        <TextView
+            android:id="@+id/txtConnectionMessage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="32dp"
+            android:text="You are currently offline. Please check your internet connection."
+            android:textAlignment="center"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtConnectionLost" />
 
-    <Button
-        android:id="@+id/btnContinueOffline"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginHorizontal="32dp"
-        android:text="Continue Offline"
-        android:backgroundTint="@color/beige"
-        android:textColor="@color/white"
-        app:layout_constraintTop_toBottomOf="@id/txtConnectionMessage"
-        app:layout_constraintStart_toEndOf="@id/guidelineVertical"
-        app:layout_constraintEnd_toEndOf="parent" />
 
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guidelineVertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
+        <!-- Vertical guideline -->
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnContinueOffline"
+            android:layout_width="256dp"
+            android:layout_height="55dp"
+            android:layout_marginHorizontal="32dp"
+            android:layout_marginTop="40dp"
+            android:text="Continue Offline"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            app:backgroundTint="@color/beige"
+            app:cornerRadius="12dp"
+            app:elevation="4dp"
+            app:iconPadding="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtConnectionMessage"
+            app:textAllCaps="false" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guidelineVertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.5" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

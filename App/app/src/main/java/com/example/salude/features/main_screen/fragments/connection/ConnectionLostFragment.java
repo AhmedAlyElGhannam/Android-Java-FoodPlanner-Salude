@@ -26,9 +26,7 @@ import com.example.salude.features.splash_screen.view.SplashScreenActivity;
 public class ConnectionLostFragment extends Fragment {
 
     private LottieAnimationView animationView;
-    private Button btnRetry;
     private Button btnContinueOffline;
-    private boolean isCheckingConnection = false;
 
     @Nullable
     @Override
@@ -36,7 +34,6 @@ public class ConnectionLostFragment extends Fragment {
         View view = inflater.inflate(R.layout.connection_lost, container, false);
 
         animationView = view.findViewById(R.id.connectionLostAnimation);
-        btnRetry = view.findViewById(R.id.btnRetry);
         btnContinueOffline = view.findViewById(R.id.btnContinueOffline);
 
         return view;
@@ -46,26 +43,7 @@ public class ConnectionLostFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        btnRetry.setOnClickListener(v -> {
-            if (isCheckingConnection) return;
-            isCheckingConnection = true;
-
-            // Show checking connection state
-            Toast.makeText(getContext(), "Checking connection...", Toast.LENGTH_SHORT).show();
-
-            // Check connection status
-            if (isNetworkAvailable()) {
-                // Connection restored - show animation
-                ((MainScreenActivity) requireActivity()).showConnectionRestoredAnimation();
-            } else {
-                // Still no connection
-                Toast.makeText(getContext(), "Still offline. Please check your connection.", Toast.LENGTH_SHORT).show();
-                isCheckingConnection = false;
-            }
-        });
-
         btnContinueOffline.setOnClickListener(v -> {
-            // Return to home screen with limited functionality
             ((MainScreenActivity) requireActivity()).continueOffline();
         });
     }

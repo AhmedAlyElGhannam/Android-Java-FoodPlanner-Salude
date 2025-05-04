@@ -5,6 +5,9 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!--  for accessing network state permission (know when internet is disconnected or not)  -->
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!--  for reflecting planned meals into system calendar app  -->
+    <uses-permission android:name="android.permission.READ_CALENDAR"/>
+    <uses-permission android:name="android.permission.WRITE_CALENDAR"/>
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

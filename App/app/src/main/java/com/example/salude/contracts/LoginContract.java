@@ -1,5 +1,7 @@
 package com.example.salude.contracts;
 
+import android.content.Intent;
+
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
@@ -17,8 +19,6 @@ public interface LoginContract {
     interface Presenter {
         // caller: view, callee: presenter
         void callLoginModelAction(String email, String password);
-        void callLoginWithGoogleModelAction(GoogleSignInClient googleSignInClient);
-
     }
 
     interface Model {

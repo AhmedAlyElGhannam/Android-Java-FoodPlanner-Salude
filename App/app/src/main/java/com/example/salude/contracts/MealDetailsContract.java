@@ -9,6 +9,8 @@ public interface MealDetailsContract {
         public LifecycleOwner getViewLifecycleOwner();
         void updateFavoriteButton(boolean isFavorite);
         void updateCalendarButton(boolean isPlanned);
+        void addMealToCalendar(Meal meal);
+        void removeMealFromCalendar(Meal meal);
     }
 
     interface Presenter {

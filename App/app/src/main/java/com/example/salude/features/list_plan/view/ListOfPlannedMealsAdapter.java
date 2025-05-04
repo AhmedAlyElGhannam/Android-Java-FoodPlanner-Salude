@@ -20,6 +20,8 @@ import com.example.salude.model.pojo.Meal;
 
 import java.util.List;
 
+import android.Manifest;
+
 public class ListOfPlannedMealsAdapter extends RecyclerView.Adapter<ListOfPlannedMealsAdapter.ViewHolder> {
 
     private final Context context;
@@ -57,7 +59,7 @@ public class ListOfPlannedMealsAdapter extends RecyclerView.Adapter<ListOfPlanne
         holder.favButton.setVisibility(View.INVISIBLE);
         holder.mealArea.setVisibility(View.INVISIBLE);
         holder.planBtn.setImageResource(
-                meal.getIsFavouriteMeal() ?
+                meal.getPlannedMealDate() != null ?
                         R.drawable.ic_calendar_filled :
                         R.drawable.ic_calendar_border
         );
@@ -72,7 +74,6 @@ public class ListOfPlannedMealsAdapter extends RecyclerView.Adapter<ListOfPlanne
 
         holder.planBtn.setOnClickListener(v -> {
             if (planListener != null) {
-
                 planListener.onPlannedClickListener(meal);
             }
         });

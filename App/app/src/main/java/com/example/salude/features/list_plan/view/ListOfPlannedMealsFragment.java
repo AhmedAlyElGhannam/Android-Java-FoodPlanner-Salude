@@ -1,7 +1,12 @@
 package com.example.salude.features.list_plan.view;
 
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -116,7 +121,19 @@ public class ListOfPlannedMealsFragment extends Fragment implements ListOfPlanne
     @Override
     public void onPlannedClickListener(Meal meal) {
         presenter.removeMealFromPlanned(meal);
+        removeMealFromCalendar(meal);
         Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+    }
+
+    private void removeMealFromCalendar(Meal meal) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("MealCalendarPrefs", Context.MODE_PRIVATE);
+        long eventId = prefs.getLong("event_" + meal.getIdMeal(), -1);
+        if (eventId != -1) {
+            Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
+            requireContext().getContentResolver().delete(deleteUri, null, null);
+
+            prefs.edit().remove("event_" + meal.getIdMeal()).apply();
+        }
     }
 }
 

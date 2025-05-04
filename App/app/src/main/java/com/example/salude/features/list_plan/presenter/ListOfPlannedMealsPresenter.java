@@ -38,5 +38,18 @@ public class ListOfPlannedMealsPresenter implements ListOfPlannedMealsContract.P
     public void removeMealFromPlanned(Meal meal) {
         localPlanRepo.removeFromPlannedMeals(meal);
     }
+
+//    @Override
+//    public void togglePlanned(Meal meal, String selectedDate) {
+//        if (selectedDate != null) {
+//            meal.setPlannedMealDate(selectedDate);
+//            localPlanRepo.addToPlannedMeals(meal, selectedDate);
+//            view.updateCalendarButton(true);
+//        } else {
+//            meal.setPlannedMealDate(null);
+//            localPlanRepo.removeFromPlannedMeals(meal);
+//            view.updateCalendarButton(false);
+//        }
+//    }
 }
 

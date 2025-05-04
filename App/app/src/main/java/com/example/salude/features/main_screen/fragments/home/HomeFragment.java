@@ -1,6 +1,7 @@
 package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
@@ -96,6 +97,8 @@ public class HomeFragment extends Fragment
     TextView txtMealIngredientsLabel;
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
+    private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -191,13 +194,22 @@ public class HomeFragment extends Fragment
                 DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
                     mealOfTheDay.setPlannedMealDate(selectedDate);
                     presenter.addMealToPlanned(mealOfTheDay);
+                    addMealToCalendar(mealOfTheDay);
                     Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
                 });
             } else {
-                mealOfTheDay.setPlannedMealDate(null);
-                presenter.removeMealFromPlanned(mealOfTheDay);
-                removeMealFromCalendar(mealOfTheDay);
-                Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                // Add confirmation dialog before unscheduling
+                new AlertDialog.Builder(getContext())
+                        .setTitle("Unscheduled Meal")
+                        .setMessage("Are you sure you want to unschedule this meal?")
+                        .setPositiveButton("Yes", (dialog, which) -> {
+                            mealOfTheDay.setPlannedMealDate(null);
+                            presenter.removeMealFromPlanned(mealOfTheDay);
+                            removeMealFromCalendar(mealOfTheDay);
+                            Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                        })
+                        .setNegativeButton("No", null)
+                        .show();
             }
         });
 
@@ -413,8 +425,6 @@ public class HomeFragment extends Fragment
             prefs.edit().remove("event_" + meal.getIdMeal()).apply();
         }
     }
-
-    private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
 
     private boolean hasCalendarPermissions() {
         return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED &&

@@ -191,19 +191,6 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     }
 
     @Override
-    public void addMealToPlanned(Meal meal) {
-        localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
-        view.updatePlannedMealBtn(meal.getPlannedMealDate() != null);
-        view.addMealToCalendar(meal);
-    }
-
-    @Override
-    public void removeMealFromPlanned(Meal meal) {
-        localPlanRepo.removeFromPlannedMeals(meal);
-        view.updatePlannedMealBtn(false);
-    }
-
-    @Override
     public void getMealsFilteredByIngredient(String ingredient) {
         remoteRepo.getMealsFilteredByIngredient(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback(){
             @Override
@@ -308,5 +295,15 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         }, id);
     }
 
+    @Override
+    public void addMealToPlanned(Meal meal) {
+        localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
+        view.updatePlannedMealBtn(true);
+    }
 
+    @Override
+    public void removeMealFromPlanned(Meal meal) {
+        localPlanRepo.removeFromPlannedMeals(meal);
+        view.updatePlannedMealBtn(false);
+    }
 }

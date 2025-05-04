@@ -37,7 +37,7 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
 
     @Override
     public void checkPlannedStatus(Meal meal) {
-        planRepo.getListOfPlannedMeals().observe(((MealDetailsFragment) view).getViewLifecycleOwner(), meals -> {
+        planRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isPlanned = false;
             String plannedDate = null;
             if (meals != null) {
@@ -66,13 +66,14 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
 
     @Override
     public void togglePlanned(Meal meal, String selectedDate) {
-        if (meal.getPlannedMealDate() == null) {
+        if (selectedDate != null) {
             meal.setPlannedMealDate(selectedDate);
             planRepo.addToPlannedMeals(meal, selectedDate);
+            view.updateCalendarButton(true);
         } else {
             meal.setPlannedMealDate(null);
             planRepo.removeFromPlannedMeals(meal);
+            view.updateCalendarButton(false);
         }
-        view.updateCalendarButton(meal.getPlannedMealDate() != null);
     }
 }

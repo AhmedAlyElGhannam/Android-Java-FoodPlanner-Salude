@@ -14,15 +14,11 @@ public interface LoginContract {
         void onSuccessUIAction();
         // caller: presenter, callee: view
         void onErrorUIAction(String msg);
-        void startGoogleSignIn(Intent signInIntent);
-
     }
 
     interface Presenter {
         // caller: view, callee: presenter
         void callLoginModelAction(String email, String password);
-        void callLoginWithGoogleModelAction(GoogleSignInClient googleSignInClient);
-        void handleGoogleSignInResult(Intent data);
     }
 
     interface Model {

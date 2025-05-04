@@ -120,11 +120,6 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                 finish();
             }
         });
-
-        /*
-            forgotPassTxt click handler
-            TODO
-        */
     }
 
     @Override
@@ -191,10 +186,5 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     @Override
     public void onErrorUIAction(String msg) {
         Toast.makeText(this, "Failed to login. Try again later.", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void startGoogleSignIn(Intent signInIntent) {
-
     }
 }

@@ -15,6 +15,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -41,7 +43,7 @@ public class MainScreenActivity extends AppCompatActivity
     private NetworkChangeReceiver networkChangeReceiver;
     private boolean isConnected = true;
     private boolean isShowingConnectionFragment = false;
-
+    private boolean isOfflineMode = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class MainScreenActivity extends AppCompatActivity
 
         bottomNav.setOnItemSelectedListener(item -> {
             if (isShowingConnectionFragment) {
-                return false; // Prevent navigation when showing connection fragments
+                return false; // prevent navigation when showing connection fragments
             }
 
             Fragment selectedFragment = null;
@@ -71,6 +73,10 @@ public class MainScreenActivity extends AppCompatActivity
             if (id == R.id.nav_home) {
                 selectedFragment = new HomeFragment();
             } else if (id == R.id.nav_search) {
+                if (isOfflineMode) {
+                    Toast.makeText(this, "Search requires internet connection", Toast.LENGTH_SHORT).show();
+                    return false;
+                }
                 selectedFragment = new SearchFragment();
             } else if (id == R.id.nav_profile) {
                 selectedFragment = new ProfileFragment();
@@ -116,6 +122,7 @@ public class MainScreenActivity extends AppCompatActivity
             this.isConnected = isConnected;
             runOnUiThread(() -> {
                 if (isConnected) {
+                    isOfflineMode = false; // Reset offline mode when connection is restored
                     showConnectionRestoredAnimation();
                 } else {
                     showConnectionLostFragment();
@@ -136,7 +143,7 @@ public class MainScreenActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void showConnectionRestoredAnimation() {
+    public void showConnectionRestoredAnimation() {
         isShowingConnectionFragment = true;
         bottomNav.setVisibility(View.GONE);
 
@@ -188,6 +195,17 @@ public class MainScreenActivity extends AppCompatActivity
         if (currentFragment instanceof HomeFragment) {
             ((HomeFragment) currentFragment).onNetworkConnectionSuccess();
         }
+    }
+
+    public void continueOffline() {
+        isShowingConnectionFragment = false;
+        bottomNav.setVisibility(View.VISIBLE);
+
+        // Set a flag that we're in offline mode
+        isOfflineMode = true;
+
+        // Return to home fragment
+        bottomNav.setSelectedItemId(R.id.nav_home);
     }
 }
 

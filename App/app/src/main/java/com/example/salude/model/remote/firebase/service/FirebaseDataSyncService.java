@@ -3,8 +3,12 @@ package com.example.salude.model.remote.firebase.service;
 import android.util.Log;
 
 import com.example.salude.model.pojo.Meal;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -16,27 +20,8 @@ public class FirebaseDataSyncService {
     private final DatabaseReference databaseReference;
 
     private FirebaseDataSyncService() {
-        databaseReference = FirebaseDatabase.getInstance().getReference("userData");
-    }
-
-    public void syncFavoritesToFirebase(List<Meal> meals) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            databaseReference.child(userId).child("favorites").setValue(meals)
-                    .addOnSuccessListener(aVoid -> Log.d("FirebaseSync", "Favorites synced"))
-                    .addOnFailureListener(e -> Log.e("FirebaseSync", "Failed to sync favorites", e));
-        }
-    }
-
-    public void syncPlannedToFirebase(List<Meal> meals) {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser != null) {
-            String userId = currentUser.getUid();
-            databaseReference.child(userId).child("planned").setValue(meals)
-                    .addOnSuccessListener(aVoid -> Log.d("FirebaseSync", "Planned meals synced"))
-                    .addOnFailureListener(e -> Log.e("FirebaseSync", "Failed to sync planned meals", e));
-        }
+        FirebaseDatabase database = FirebaseDatabase.getInstance("https://salud-98c8c-default-rtdb.europe-west1.firebasedatabase.app");
+        databaseReference = database.getInstance().getReference("userData");
     }
 
     public static synchronized FirebaseDataSyncService getInstance() {
@@ -46,20 +31,30 @@ public class FirebaseDataSyncService {
         return instance;
     }
 
-    public void syncMealsToFirebase(List<Meal> meals) {
+    public Task<Void> syncFavorites(List<Meal> meals) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            databaseReference.child(userId).setValue(meals);
+            return databaseReference.child(userId).child("favorites").setValue(meals);
         }
+        return Tasks.forException(new Exception("User not authenticated"));
     }
 
-    public DatabaseReference getUserMealsReference() {
+    public Task<Void> syncPlannedMeals(List<Meal> meals) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            return databaseReference.child(userId);
+            return databaseReference.child(userId).child("planned").setValue(meals);
         }
-        return null;
+        return Tasks.forException(new Exception("User not authenticated"));
+    }
+
+    public Task<DataSnapshot> loadUserData() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            String userId = currentUser.getUid();
+            return databaseReference.child(userId).get();
+        }
+        return Tasks.forException(new Exception("User not authenticated"));
     }
 }

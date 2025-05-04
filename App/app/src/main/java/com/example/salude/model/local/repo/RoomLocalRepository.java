@@ -11,8 +11,11 @@ import androidx.room.Query;
 import com.example.salude.model.local.dao.MealDAO;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.firebase.service.FirebaseDataSyncService;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class RoomLocalRepository {
     public static class RoomLocalFavouriteRepository {
@@ -57,24 +60,25 @@ public class RoomLocalRepository {
                 public void run() {
                     if (dao.isMealInDB(meal.getIdMeal())) {
                         dao.updateMealFavouriteStatus(meal.getIdMeal(), false);
-                    }
-                    else {
+                    } else {
                         meal.setIsFavouriteMeal(false);
                         dao.removeMealFromFavourites(meal);
                     }
                 }
             }).start();
         }
+        public Task<Void> syncFavoriteMealsToFirebase() {
+            return Tasks.call(Executors.newSingleThreadExecutor(), () -> {
+                List<Meal> favoriteMeals = dao.getFavouriteMealsSync();
+                Task<Void> syncTask = FirebaseDataSyncService.getInstance()
+                        .syncFavorites(favoriteMeals)
+                        .addOnFailureListener(e ->
+                                Log.e("SyncFavorites", "Failed to sync favorites", e));
 
-        public void syncFavoriteMealsToFirebase() {
-            new Thread(() -> {
-                try {
-                    List<Meal> favoriteMeals = dao.getFavouriteMealsSync();
-                    FirebaseDataSyncService.getInstance().syncFavoritesToFirebase(favoriteMeals);
-                } catch (Exception e) {
-                    Log.e("SyncFavorites", "Failed to sync favorites", e);
-                }
-            }).start();
+                // Wait for the sync to complete
+                Tasks.await(syncTask);
+                return null;
+            });
         }
     }
 
@@ -128,15 +132,19 @@ public class RoomLocalRepository {
             }).start();
         }
 
-        public void syncPlannedMealsToFirebase() {
-            new Thread(() -> {
-                try {
-                    List<Meal> plannedMeals = dao.getPlannedMealsSync();
-                    FirebaseDataSyncService.getInstance().syncPlannedToFirebase(plannedMeals);
-                } catch (Exception e) {
-                    Log.e("SyncPlanned", "Failed to sync planned meals", e);
-                }
-            }).start();
+        public Task<Void> syncPlannedMealsToFirebase() {
+            return Tasks.call(Executors.newSingleThreadExecutor(), () -> {
+                List<Meal> plannedMeals = dao.getPlannedMealsSync();
+                Task<Void> syncTask = FirebaseDataSyncService.getInstance()
+                        .syncPlannedMeals(plannedMeals);  // Now matches with one argument
+
+                // Add failure logging
+                syncTask.addOnFailureListener(e ->
+                        Log.e("SyncPlanned", "Failed to sync planned meals", e));
+
+                Tasks.await(syncTask);
+                return null;
+            });
         }
     }
 }

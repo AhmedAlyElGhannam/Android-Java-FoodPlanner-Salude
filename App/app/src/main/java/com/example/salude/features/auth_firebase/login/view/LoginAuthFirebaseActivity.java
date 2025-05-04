@@ -49,6 +49,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 
 public class LoginAuthFirebaseActivity extends AppCompatActivity implements LoginContract.View {
     TextInputEditText editTextMail;
@@ -207,89 +208,71 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         }
     });
 
-
-
     private void loadUserDataFromFirebase() {
-        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-        if (currentUser == null) {
-            return;
-        }
+        showProgress();
 
-        DatabaseReference userRef = FirebaseDatabase.getInstance()
-                .getReference("userData")
-                .child(currentUser.getUid());
-
-        userRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                new Thread(() -> {
-                    try {
-                        // Handle favorites
-                        DataSnapshot favSnapshot = dataSnapshot.child("favorites");
-                        if (favSnapshot.exists()) {
-                            List<Meal> favMeals = new ArrayList<>();
-                            for (DataSnapshot mealSnapshot : favSnapshot.getChildren()) {
-                                Meal meal = mealSnapshot.getValue(Meal.class);
-                                if (meal != null) {
-                                    meal.setIsFavouriteMeal(true);
-                                    favMeals.add(meal);
-                                }
-                            }
-                            // update favourites in db
-                            MealDAO.FavouriteMealDAO favDao = RoomLocalDB.getInstance(null).getFavouriteMealDAO();
-                            for (Meal meal : favMeals) {
-                                if (favDao.isMealInDB(meal.getIdMeal())) {
-                                    favDao.updateMealFavouriteStatus(meal.getIdMeal(), true);
-                                } else {
-                                    favDao.insertFavouriteMeal(meal);
-                                }
-                            }
-                        }
-
-                        // Handle planned meals
-                        DataSnapshot plannedSnapshot = dataSnapshot.child("planned");
-                        if (plannedSnapshot.exists()) {
-                            List<Meal> plannedMeals = new ArrayList<>();
-                            for (DataSnapshot mealSnapshot : plannedSnapshot.getChildren()) {
-                                Meal meal = mealSnapshot.getValue(Meal.class);
-                                if (meal != null) {
-                                    plannedMeals.add(meal);
-                                }
-                            }
-
-                            MealDAO.PlannedMealDAO plannedDao = RoomLocalDB.getInstance(null).getPlannedMealDAO();
-                            for (Meal meal : plannedMeals) {
-                                if (plannedDao.isMealInDB(meal.getIdMeal())) {
-                                    plannedDao.updateMealPlannedStatus(meal.getIdMeal(), meal.getPlannedMealDate());
-                                } else {
-                                    plannedDao.insertPlannedMeal(meal);
-                                }
-                            }
-                        }
-
-                        runOnUiThread(() -> {
-                            Toast.makeText(LoginAuthFirebaseActivity.this,
-                                    "Data Sync Successful", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-                            startActivity(intent);
-                            finish();
-                        });
-                    } catch (Exception e) {
-                        Log.e("FirebaseLoad", "Error loading data", e);
-                        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-                        startActivity(intent);
-                        finish();
+        FirebaseDataSyncService.getInstance().loadUserData()
+                .addOnSuccessListener(dataSnapshot -> {
+                    if (dataSnapshot.exists()) {
+                        updateLocalDatabase(dataSnapshot);
+                    } else {
+                        proceedToMainScreen();
                     }
-                }).start();
-            }
+                })
+                .addOnFailureListener(e -> {
+                    Log.e("FirebaseLoad", "Failed to load data", e);
+                    proceedToMainScreen();
+                });
+    }
 
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-                Log.e("FirebaseLoad", "Data load cancelled", databaseError.toException());
-                Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-                startActivity(intent);
-                finish();
+    private void updateLocalDatabase(DataSnapshot dataSnapshot) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                MealDAO.FavouriteMealDAO favDao = RoomLocalDB.getInstance(this).getFavouriteMealDAO();
+                MealDAO.PlannedMealDAO plannedDao = RoomLocalDB.getInstance(this).getPlannedMealDAO();
+
+                // Handle favorites
+                DataSnapshot favSnapshot = dataSnapshot.child("favorites");
+                if (favSnapshot.exists()) {
+                    for (DataSnapshot mealSnapshot : favSnapshot.getChildren()) {
+                        Meal meal = mealSnapshot.getValue(Meal.class);
+                        if (meal != null) {
+                            meal.setIsFavouriteMeal(true);
+                            if (favDao.isMealInDB(meal.getIdMeal())) {
+                                favDao.updateMealFavouriteStatus(meal.getIdMeal(), true);
+                            } else {
+                                favDao.insertFavouriteMeal(meal);
+                            }
+                        }
+                    }
+                }
+
+                // Handle planned meals
+                DataSnapshot plannedSnapshot = dataSnapshot.child("planned");
+                if (plannedSnapshot.exists()) {
+                    for (DataSnapshot mealSnapshot : plannedSnapshot.getChildren()) {
+                        Meal meal = mealSnapshot.getValue(Meal.class);
+                        if (meal != null && meal.getPlannedMealDate() != null) {
+                            if (plannedDao.isMealInDB(meal.getIdMeal())) {
+                                plannedDao.updateMealPlannedStatus(meal.getIdMeal(), meal.getPlannedMealDate());
+                            } else {
+                                plannedDao.insertPlannedMeal(meal);
+                            }
+                        }
+                    }
+                }
+
+                runOnUiThread(this::proceedToMainScreen);
+            } catch (Exception e) {
+                Log.e("LocalDBUpdate", "Error updating local DB", e);
+                runOnUiThread(this::proceedToMainScreen);
             }
         });
+    }
+
+    private void proceedToMainScreen() {
+        hideProgress();
+        startActivity(new Intent(this, MainScreenActivity.class));
+        finish();
     }
 }

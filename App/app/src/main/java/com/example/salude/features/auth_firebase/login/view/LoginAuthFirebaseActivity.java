@@ -175,34 +175,20 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         Toast.makeText(this, "Failed to login. Try again later.", Toast.LENGTH_SHORT).show();
     }
 
+
+
     private final ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
-        @Override
         public void onActivityResult(ActivityResult result) {
             if (result.getResultCode() == RESULT_OK) {
                 Task<GoogleSignInAccount> accountTask = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                 try {
                     GoogleSignInAccount signInAccount = accountTask.getResult(ApiException.class);
-                    AuthCredential authCredential = GoogleAuthProvider.getCredential(signInAccount.getIdToken(), null);
-                    mAuth.signInWithCredential(authCredential).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if (task.isSuccessful()) {
-                                // proceed to app home page
-                                Intent intent = new Intent(getApplicationContext(), MainScreenActivity.class);
-                                startActivity(intent);
-                                finish();
-//                                mAuth = FirebaseAuth.getInstance();
-//                                Glide.with(MainActivity.this).load(Objects.requireNonNull(mAuth.getCurrentUser()).getPhotoUrl()).into(imageView);
-//                                name.setText(mAuth.getCurrentUser().getDisplayName());
-//                                mail.setText(mAuth.getCurrentUser().getEmail());
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Signed in successfully!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(LoginAuthFirebaseActivity.this, "Failed to sign in: " + task.getException(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    });
+                    String idToken = signInAccount.getIdToken();
+                    // Pass the token to presenter for handling
+                    presenter.handleGoogleSignInResult(idToken);
                 } catch (ApiException e) {
                     Log.e("GOOGLE_SIGN_IN", "Sign-in failed. Code: " + e.getStatusCode(), e);
+                    onErrorUIAction("Google sign-in failed");
                 }
             }
         }
@@ -238,11 +224,8 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                         Meal meal = mealSnapshot.getValue(Meal.class);
                         if (meal != null) {
                             meal.setIsFavouriteMeal(true);
-                            if (favDao.isMealInDB(meal.getIdMeal())) {
-                                favDao.updateMealFavouriteStatus(meal.getIdMeal(), true);
-                            } else {
-                                favDao.insertFavouriteMeal(meal);
-                            }
+                            favDao.insertFavouriteMeal(meal);
+
                         }
                     }
                 }
@@ -253,11 +236,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                     for (DataSnapshot mealSnapshot : plannedSnapshot.getChildren()) {
                         Meal meal = mealSnapshot.getValue(Meal.class);
                         if (meal != null && meal.getPlannedMealDate() != null) {
-                            if (plannedDao.isMealInDB(meal.getIdMeal())) {
-                                plannedDao.updateMealPlannedStatus(meal.getIdMeal(), meal.getPlannedMealDate());
-                            } else {
-                                plannedDao.insertPlannedMeal(meal);
-                            }
+                            plannedDao.insertPlannedMeal(meal);
                         }
                     }
                 }
@@ -274,5 +253,23 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         hideProgress();
         startActivity(new Intent(this, MainScreenActivity.class));
         finish();
+    }
+
+    public void launchGoogleSignIn(GoogleSignInClient googleSignInClient) {
+        Intent intent = googleSignInClient.getSignInIntent();
+        activityResultLauncher.launch(intent);
+    }
+
+    @Override
+    public void handleGoogleSignInResult(String idToken) {
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.detachView();
+        }
     }
 }

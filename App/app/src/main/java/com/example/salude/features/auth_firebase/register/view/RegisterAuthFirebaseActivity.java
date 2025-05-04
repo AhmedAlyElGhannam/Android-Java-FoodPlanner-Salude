@@ -57,7 +57,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
                 }
 
                 String email = String.valueOf(editTextMail.getText());
-                if (TextUtils.isEmpty(email)) {
+                if (android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
                     Toast.makeText(RegisterAuthFirebaseActivity.this, "Please enter your email.", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -75,6 +75,11 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
                 }
 
                 if (password.equals(confirmedPassword)) {
+                    if (password.length() < 6) {
+                        Toast.makeText(RegisterAuthFirebaseActivity.this,
+                                "Password must be at least 6 characters", Toast.LENGTH_LONG).show();
+                        return;
+                    }
                     presenter.callRegisterModelAction(name, email, password);
                 }
                 else {
@@ -99,13 +104,22 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
     @Override
     public void onSuccessUIAction() {
         // return to login page
-        Intent intent = new Intent(RegisterAuthFirebaseActivity.this, MainScreenActivity.class);
-        startActivity(intent);
+        Toast.makeText(this, "Registration successful! Please login", Toast.LENGTH_SHORT).show();
+//        Intent intent = new Intent(RegisterAuthFirebaseActivity.this, MainScreenActivity.class);
+//        startActivity(intent);
         finish();
     }
 
     @Override
     public void onErrorUIAction(String msg) {
         Toast.makeText(this, "Failed to register. Try again later.", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (presenter != null) {
+            presenter.detachView();
+        }
     }
 }

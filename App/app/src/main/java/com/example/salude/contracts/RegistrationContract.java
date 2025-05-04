@@ -14,6 +14,7 @@ public interface RegistrationContract {
     interface Presenter {
         // caller: view, callee: presenter
         void callRegisterModelAction(String name, String email, String password);
+        public void detachView();
     }
 
     interface Model {

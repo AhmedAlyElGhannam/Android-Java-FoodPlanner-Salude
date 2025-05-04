@@ -24,6 +24,11 @@ public class RegisterAuthFirebasePresenter implements RegistrationContract.Prese
     }
 
     @Override
+    public void detachView() {
+        view = null;
+    }
+
+    @Override
     public void OnRegistrationSuccess() {
         if (repo != null) {
             view.hideProgress();

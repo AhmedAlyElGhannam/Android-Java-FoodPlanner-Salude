@@ -70,13 +70,11 @@ public class RoomLocalRepository {
         public Task<Void> syncFavoriteMealsToFirebase() {
             return Tasks.call(Executors.newSingleThreadExecutor(), () -> {
                 List<Meal> favoriteMeals = dao.getFavouriteMealsSync();
-                Task<Void> syncTask = FirebaseDataSyncService.getInstance()
-                        .syncFavorites(favoriteMeals)
-                        .addOnFailureListener(e ->
-                                Log.e("SyncFavorites", "Failed to sync favorites", e));
-
-                // Wait for the sync to complete
-                Tasks.await(syncTask);
+                if (favoriteMeals != null && !favoriteMeals.isEmpty()) {
+                    Task<Void> syncTask = FirebaseDataSyncService.getInstance()
+                            .syncFavorites(favoriteMeals);
+                    Tasks.await(syncTask);
+                }
                 return null;
             });
         }
@@ -135,14 +133,11 @@ public class RoomLocalRepository {
         public Task<Void> syncPlannedMealsToFirebase() {
             return Tasks.call(Executors.newSingleThreadExecutor(), () -> {
                 List<Meal> plannedMeals = dao.getPlannedMealsSync();
-                Task<Void> syncTask = FirebaseDataSyncService.getInstance()
-                        .syncPlannedMeals(plannedMeals);  // Now matches with one argument
-
-                // Add failure logging
-                syncTask.addOnFailureListener(e ->
-                        Log.e("SyncPlanned", "Failed to sync planned meals", e));
-
-                Tasks.await(syncTask);
+                if (plannedMeals != null && !plannedMeals.isEmpty()) {
+                    Task<Void> syncTask = FirebaseDataSyncService.getInstance()
+                            .syncFavorites(plannedMeals);
+                    Tasks.await(syncTask);
+                }
                 return null;
             });
         }

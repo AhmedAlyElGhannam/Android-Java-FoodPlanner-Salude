@@ -21,7 +21,7 @@ public class FirebaseDataSyncService {
 
     private FirebaseDataSyncService() {
         FirebaseDatabase database = FirebaseDatabase.getInstance("https://salud-98c8c-default-rtdb.europe-west1.firebasedatabase.app");
-        databaseReference = database.getInstance().getReference("userData");
+        databaseReference = database.getReference("userData");
     }
 
     public static synchronized FirebaseDataSyncService getInstance() {
@@ -35,26 +35,33 @@ public class FirebaseDataSyncService {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            return databaseReference.child(userId).child("favorites").setValue(meals);
+            // Clear existing data before syncing
+            return databaseReference.child(userId).child("favorites").removeValue()
+                    .continueWithTask(task -> databaseReference.child(userId).child("favorites").setValue(meals));
         }
         return Tasks.forException(new Exception("User not authenticated"));
     }
+
 
     public Task<Void> syncPlannedMeals(List<Meal> meals) {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            return databaseReference.child(userId).child("planned").setValue(meals);
+            return databaseReference.child(userId).child("planned").removeValue()
+                    .continueWithTask(task -> databaseReference.child(userId).child("planned").setValue(meals));
         }
         return Tasks.forException(new Exception("User not authenticated"));
     }
+
 
     public Task<DataSnapshot> loadUserData() {
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             String userId = currentUser.getUid();
-            return databaseReference.child(userId).get();
+            return databaseReference.child(userId).get()
+                    .addOnFailureListener(e -> Log.e("FirebaseLoad", "Error loading data", e));
         }
         return Tasks.forException(new Exception("User not authenticated"));
     }
+
 }

@@ -12,13 +12,15 @@ public interface LoginContract {
         void onSuccessUIAction();
         // caller: presenter, callee: view
         void onErrorUIAction(String msg);
+        void handleGoogleSignInResult(String idToken); // New method
     }
 
     interface Presenter {
         // caller: view, callee: presenter
         void callLoginModelAction(String email, String password);
         void callLoginWithGoogleModelAction(GoogleSignInClient googleSignInClient);
-
+        public void detachView();
+        public void handleGoogleSignInResult(String idToken);
     }
 
     interface Model {

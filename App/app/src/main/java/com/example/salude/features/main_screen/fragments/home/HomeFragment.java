@@ -1,9 +1,18 @@
 package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +25,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -45,7 +55,15 @@ import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+
+import android.Manifest;
+
+
 import com.bumptech.glide.Glide;
 import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
@@ -164,19 +182,21 @@ public class HomeFragment extends Fragment
 
         // Calendar button click
         addToCalBtn.setOnClickListener(v -> {
-            // save fav in db (toggle to undo it)
+            if (!hasCalendarPermissions()) {
+                requestCalendarPermissions();
+                return;
+            }
+
             if (mealOfTheDay.getPlannedMealDate() == null) {
-                // Open date picker dialog to set a new date
                 DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
                     mealOfTheDay.setPlannedMealDate(selectedDate);
                     presenter.addMealToPlanned(mealOfTheDay);
                     Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
                 });
-            }
-            else {
-                // Clear the date
+            } else {
                 mealOfTheDay.setPlannedMealDate(null);
                 presenter.removeMealFromPlanned(mealOfTheDay);
+                removeMealFromCalendar(mealOfTheDay);
                 Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
             }
         });
@@ -324,5 +344,100 @@ public class HomeFragment extends Fragment
     @Override
     public void onNetworkConnectionFailure() {
 
+    }
+
+    @Override
+    public void addMealToCalendar(Meal meal) {
+        // Make sure the app has calendar permissions before this
+        long calendarId = getPrimaryCalendarId();
+        if (calendarId == -1) return;
+
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = sdf.parse(meal.getPlannedMealDate());
+            if (date == null) return;
+
+            long startMillis = date.getTime();
+            long endMillis = startMillis + 60 * 60 * 1000;
+
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.DTSTART, startMillis);
+            values.put(CalendarContract.Events.DTEND, endMillis);
+            values.put(CalendarContract.Events.TITLE, meal.getStrMeal());
+            values.put(CalendarContract.Events.DESCRIPTION, "Planned meal: " + meal.getStrMeal());
+            values.put(CalendarContract.Events.CALENDAR_ID, calendarId);
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+
+            Uri uri = requireContext().getContentResolver().insert(CalendarContract.Events.CONTENT_URI, values);
+            if (uri != null) {
+                long eventId = Long.parseLong(uri.getLastPathSegment());
+
+                // Save eventId tied to the meal ID
+                SharedPreferences prefs = requireContext().getSharedPreferences("MealCalendarPrefs", Context.MODE_PRIVATE);
+                prefs.edit().putLong("event_" + meal.getIdMeal(), eventId).apply();
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private long getPrimaryCalendarId() {
+        Cursor cursor = requireContext().getContentResolver().query(
+                CalendarContract.Calendars.CONTENT_URI,
+                new String[]{CalendarContract.Calendars._ID},
+                CalendarContract.Calendars.IS_PRIMARY + "=1",
+                null, null
+        );
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    return cursor.getLong(0);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return -1;
+    }
+
+    private void removeMealFromCalendar(Meal meal) {
+        SharedPreferences prefs = requireContext().getSharedPreferences("MealCalendarPrefs", Context.MODE_PRIVATE);
+        long eventId = prefs.getLong("event_" + meal.getIdMeal(), -1);
+        if (eventId != -1) {
+            Uri deleteUri = ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, eventId);
+            requireContext().getContentResolver().delete(deleteUri, null, null);
+
+            // Remove saved ID
+            prefs.edit().remove("event_" + meal.getIdMeal()).apply();
+        }
+    }
+
+    private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
+
+    private boolean hasCalendarPermissions() {
+        return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void requestCalendarPermissions() {
+        requestPermissions(
+                new String[]{Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR},
+                CALENDAR_PERMISSION_REQUEST_CODE
+        );
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == CALENDAR_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted, but you might need to retry the calendar action here manually if needed
+                Toast.makeText(getContext(), "Calendar permissions granted. Tap again to schedule.", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(getContext(), "Calendar permissions are required to schedule meals.", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 }

@@ -6,6 +6,7 @@ import com.example.salude.R;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -18,8 +19,10 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-
+import android.Manifest;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionLostFragment;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionRestoredFragment;
 import com.example.salude.features.main_screen.fragments.home.HomeFragment;
@@ -32,7 +35,6 @@ import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitReposit
 import com.example.salude.utils.clicklistener.OnConnectionRestoredListener;
 import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity
@@ -56,6 +58,17 @@ public class MainScreenActivity extends AppCompatActivity
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(Color.parseColor("#1E88E5")); // same blue hue as nav bar
 
+        // runtime permission to use access system calendar (it is a MUST)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 1);
+
+        }
+
+
+        // network listener shenanigans
         networkChangeReceiver = new NetworkChangeReceiver(this);
         registerReceiver(networkChangeReceiver,
                 new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));

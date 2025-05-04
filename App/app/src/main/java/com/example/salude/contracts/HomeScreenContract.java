@@ -24,6 +24,7 @@ public interface HomeScreenContract {
         public void showMealSearchFailure(String err);
         public void showMealWithName(List<Meal> meals);
         public void showMealsWithFirstLetter(List<FilteredMeal> meals);
+        public void addMealToCalendar(Meal meal);
     }
 
     public interface Presenter {

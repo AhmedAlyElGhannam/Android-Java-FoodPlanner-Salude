@@ -1,6 +1,8 @@
 package com.example.salude.features.main_screen.fragments.home;
 
 import android.annotation.SuppressLint;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,6 +35,7 @@ import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
+import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.repo.RoomLocalRepository;
@@ -47,7 +50,12 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
-public class HomeFragment extends Fragment implements HomeScreenContract.View, OnFavouriteClickListener, OnPlannedClickListener, OnMealItemClickListener, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener {
+public class HomeFragment extends Fragment
+        implements HomeScreenContract.View,
+        OnFavouriteClickListener, OnPlannedClickListener,
+        OnMealItemClickListener, OnAreaClickListener,
+        OnCategoryClickListener, OnIngredientClickListener,
+        NetworkChangeReceiver.NetworkChangeListener {
     HomeScreenContract.Presenter presenter;
     MealCategoryAdapter categoryAdapter;
     MealAreaAdapter areaAdapter;
@@ -69,6 +77,17 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
     TextView txtMealIngredientsLabel;
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
+    private NetworkChangeReceiver networkChangeReceiver;     // for connection loss
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // initialize and register network listener
+        networkChangeReceiver = new NetworkChangeReceiver(this);
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        requireContext().registerReceiver(networkChangeReceiver, filter);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -301,4 +320,33 @@ public class HomeFragment extends Fragment implements HomeScreenContract.View, O
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // unregister the receiver when fragment is destroyed
+        if (networkChangeReceiver != null) {
+            requireContext().unregisterReceiver(networkChangeReceiver);
+        }
+    }
+
+    @Override
+    public void onNetworkChanged(boolean isConnected) {
+        if (getActivity() != null) {
+            getActivity().runOnUiThread(() -> {
+                if (!isConnected) {
+                    // Show no internet connection message
+                    Toast.makeText(getContext(), "No internet connection", Toast.LENGTH_SHORT).show();
+                    // You might want to disable certain UI elements or show cached data
+                } else {
+                    Toast.makeText(getContext(), "Internet connection restored", Toast.LENGTH_SHORT).show();
+
+                    // recall presenter to refetch data
+                    presenter.getAllCategories();
+                    presenter.getMealOfTheDay();
+                    presenter.getAllIngredients();
+                    presenter.getAllAreas();
+                }
+            });
+        }
+    }
 }

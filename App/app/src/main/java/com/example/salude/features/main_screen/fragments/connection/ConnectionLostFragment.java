@@ -25,7 +25,6 @@ import com.example.salude.features.splash_screen.view.SplashScreenActivity;
 
 public class ConnectionLostFragment extends Fragment {
 
-    private LottieAnimationView animationView;
     private Button btnContinueOffline;
 
     @Nullable
@@ -33,7 +32,6 @@ public class ConnectionLostFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.connection_lost, container, false);
 
-        animationView = view.findViewById(R.id.connectionLostAnimation);
         btnContinueOffline = view.findViewById(R.id.btnContinueOffline);
 
         return view;

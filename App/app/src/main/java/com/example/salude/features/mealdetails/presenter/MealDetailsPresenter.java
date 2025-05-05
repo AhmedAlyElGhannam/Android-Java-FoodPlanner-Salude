@@ -3,23 +3,21 @@ package com.example.salude.features.mealdetails.presenter;
 import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
+import com.example.salude.model.repository.SaludRepository;
 
 public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     private final MealDetailsContract.View view;
-    private final LocalDataSource.RoomLocalFavouriteRepository favRepo;
-    private final LocalDataSource.RoomLocalPlannedRepository planRepo;
 
-    public MealDetailsPresenter(MealDetailsContract.View view,
-                                LocalDataSource.RoomLocalFavouriteRepository favRepo,
-                                LocalDataSource.RoomLocalPlannedRepository planRepo) {
+    private final MealDetailsContract.Model repo;
+
+    public MealDetailsPresenter(MealDetailsContract.View view, MealDetailsContract.Model _repo) {
         this.view = view;
-        this.favRepo = favRepo;
-        this.planRepo = planRepo;
+        repo = _repo;
     }
 
     @Override
     public void checkFavoriteStatus(Meal meal) {
-        favRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        repo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isFavorite = false;
             if (meals != null) {
                 for (Meal m : meals) {
@@ -36,7 +34,7 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
 
     @Override
     public void checkPlannedStatus(Meal meal) {
-        planRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        repo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isPlanned = false;
             String plannedDate = null;
             if (meals != null) {
@@ -56,9 +54,9 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     @Override
     public void toggleFavorite(Meal meal) {
         if (meal.getIsFavouriteMeal()) {
-            favRepo.removeMealFromFavourites(meal);
+            repo.removeMealFromFavourites(meal);
         } else {
-            favRepo.addMealToFavourites(meal);
+            repo.addMealToFavourites(meal);
         }
         view.updateFavoriteButton(meal.getIsFavouriteMeal());
     }
@@ -67,11 +65,11 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     public void togglePlanned(Meal meal, String selectedDate) {
         if (selectedDate != null) {
             meal.setPlannedMealDate(selectedDate);
-            planRepo.addToPlannedMeals(meal, selectedDate);
+            repo.addToPlannedMeals(meal, selectedDate);
             view.updateCalendarButton(true);
         } else {
             meal.setPlannedMealDate(null);
-            planRepo.removeFromPlannedMeals(meal);
+            repo.removeFromPlannedMeals(meal);
             view.updateCalendarButton(false);
         }
     }

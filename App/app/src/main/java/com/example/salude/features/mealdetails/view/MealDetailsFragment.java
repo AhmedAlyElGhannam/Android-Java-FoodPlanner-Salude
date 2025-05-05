@@ -33,6 +33,7 @@ import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
@@ -62,20 +63,18 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
     private RecyclerView rvIngredients;
     private IngredientsAdapter adapter;
     private MealDetailsPresenter presenter;
-    // Add these constants at the top of the class
+
     private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
     private static final String[] CALENDAR_PERMISSIONS = {
             Manifest.permission.READ_CALENDAR,
             Manifest.permission.WRITE_CALENDAR
     };
 
-    // Add this method to check permissions
     private boolean hasCalendarPermissions() {
         return ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.READ_CALENDAR) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.WRITE_CALENDAR) == PackageManager.PERMISSION_GRANTED;
     }
 
-    // Add this method to request permissions
     private void requestCalendarPermissions() {
         requestPermissions(CALENDAR_PERMISSIONS, CALENDAR_PERMISSION_REQUEST_CODE);
     }
@@ -86,9 +85,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.full_meal_details, container, false);
 
-        presenter = new MealDetailsPresenter(this,
-                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()));
+        presenter = new MealDetailsPresenter(this, SaludRepository.getInstance(getContext()));
 
         // Retrieve the Meal object from the Bundle
         if (getArguments() != null) {

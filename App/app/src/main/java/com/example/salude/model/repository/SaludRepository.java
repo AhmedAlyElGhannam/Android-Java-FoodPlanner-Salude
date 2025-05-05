@@ -2,16 +2,22 @@ package com.example.salude.model.repository;
 
 import android.content.Context;
 
+import androidx.lifecycle.LiveData;
+
 import com.example.salude.contracts.LoginContract;
+import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
+import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 import com.google.firebase.auth.FirebaseUser;
 
-public class SaludRepository implements RegistrationContract.Model, LoginContract.Model{
+import java.util.List;
+
+public class SaludRepository implements RegistrationContract.Model, LoginContract.Model, MealDetailsContract.Model {
     private static SaludRepository salud_repo;
     private UserRegAndAuthDataSource auth_source;
     private LocalDataSource.RoomLocalFavouriteRepository local_fav_source;
@@ -57,4 +63,33 @@ public class SaludRepository implements RegistrationContract.Model, LoginContrac
         auth_source.userGoogleLogin(idToken, listener);
     }
 
+    @Override
+    public void addToPlannedMeals(Meal meal, String date) {
+        local_plan_source.addToPlannedMeals(meal, date);
+    }
+
+    @Override
+    public void removeFromPlannedMeals(Meal meal) {
+        local_plan_source.removeFromPlannedMeals(meal);
+    }
+
+    @Override
+    public LiveData<List<Meal>> getListOfPlannedMeals() {
+        return local_plan_source.getListOfPlannedMeals();
+    }
+
+    @Override
+    public void addMealToFavourites(Meal meal) {
+        local_fav_source.addMealToFavourites(meal);
+    }
+
+    @Override
+    public void removeMealFromFavourites(Meal meal) {
+        local_fav_source.removeMealFromFavourites(meal);
+    }
+
+    @Override
+    public LiveData<List<Meal>> getListOfFavouriteMeals() {
+        return local_fav_source.getListOfFavouriteMeals();
+    }
 }

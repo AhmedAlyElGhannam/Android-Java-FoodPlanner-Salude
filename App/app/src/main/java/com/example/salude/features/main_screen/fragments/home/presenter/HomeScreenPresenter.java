@@ -1,11 +1,12 @@
-package com.example.salude.features.main_screen.presenter;
+package com.example.salude.features.main_screen.fragments.home.presenter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.provider.CalendarContract;
 import android.util.Log;
 
 import com.example.salude.contracts.HomeScreenContract;
-import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.FilteredMeal;
@@ -22,19 +23,15 @@ import java.util.Locale;
 
 public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     private final HomeScreenContract.View view;
-    private final RemoteDataSource remoteRepo;
-    private final LocalDataSource.RoomLocalFavouriteRepository localFavRepo;
-    private final LocalDataSource.RoomLocalPlannedRepository localPlanRepo;
+    private final HomeScreenContract.Model repo;
 
     private final SharedPreferences sharedPreferences;
     private Context context;
 
-    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteDataSource _repo, LocalDataSource.RoomLocalFavouriteRepository _localRepo, LocalDataSource.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+    public HomeScreenPresenter(HomeScreenContract.View _view, HomeScreenContract.Model _repo, Context _context) {
         context = _context;
         view = _view;
-        remoteRepo = _repo;
-        localFavRepo = _localRepo;
-        localPlanRepo = _localPlanRepo;
+        repo = _repo;
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
     }
 
@@ -59,8 +56,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
             }
         }
 
-        // If we get here, either date doesn't match or no saved meal exists
-        remoteRepo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+        repo.getMealOfTheDay(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 if (meals != null && !meals.isEmpty()) {
@@ -84,7 +80,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getAllCategories() {
-        remoteRepo.getMealsCategories(new RemoteRetrofitCallback.RemoteRetrofitCategoryCallback() {
+        repo.getMealsCategories(new RemoteRetrofitCallback.RemoteRetrofitCategoryCallback() {
             @Override
             public void onSuccess(List<Category> categories) {
                 if (categories != null && !categories.isEmpty()) {
@@ -92,7 +88,6 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
                 }
                 else {
                     Log.i("TAG", "Categories list is null or empty");
-                    // Optionally, show an error message in the UI
                 }
             }
 
@@ -105,7 +100,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getAllAreas() {
-        remoteRepo.getMealAreas(new RemoteRetrofitCallback.RemoteRetrofitAreaCallback() {
+        repo.getMealAreas(new RemoteRetrofitCallback.RemoteRetrofitAreaCallback() {
             @Override
             public void onSuccess(List<Area> areas) {
                 if (areas != null && !areas.isEmpty()) {
@@ -126,7 +121,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getAllIngredients() {
-        remoteRepo.getMealsIngredients(new RemoteRetrofitCallback.RemoteRetrofitIngredientCallback() {
+        repo.getMealsIngredients(new RemoteRetrofitCallback.RemoteRetrofitIngredientCallback() {
             @Override
             public void onSuccess(List<Ingredient> ingredients) {
                 if (ingredients != null && !ingredients.isEmpty()) {
@@ -146,7 +141,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getFavouriteMealBtnStatus(Meal meal) {
-        localFavRepo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        repo.getListOfFavouriteMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isFavorite = false;
             if (meals != null) {
                 for (Meal m : meals) {
@@ -163,17 +158,17 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void addMealToFavourites(Meal meal) {
-        localFavRepo.addMealToFavourites(meal);
+        repo.addMealToFavourites(meal);
     }
 
     @Override
     public void removeMealFromFavourites(Meal meal) {
-        localFavRepo.removeMealFromFavourites(meal);
+        repo.removeMealFromFavourites(meal);
     }
 
     @Override
     public void getPlannedMealBtnStatus(Meal meal) {
-        localPlanRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        repo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
             boolean isPlanned = false;
             String plannedDate = null;
             if (meals != null) {
@@ -192,7 +187,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getMealsFilteredByIngredient(String ingredient) {
-        remoteRepo.getMealsFilteredByIngredient(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback(){
+        repo.getMealsFilteredByIngredient(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback(){
             @Override
             public void onSuccess(List<FilteredMeal> filteredMeals) {
                 if (filteredMeals != null && !filteredMeals.isEmpty()) {
@@ -212,7 +207,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getMealsFilteredByArea(String area) {
-        remoteRepo.getMealsFilteredByArea(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+        repo.getMealsFilteredByArea(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
             @Override
             public void onSuccess(List<FilteredMeal> filteredMeals) {
                 if (filteredMeals != null && !filteredMeals.isEmpty()) {
@@ -232,7 +227,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getMealsFilteredByCategory(String category) {
-        remoteRepo.getMealsFilteredByCategory(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+        repo.getMealsFilteredByCategory(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
             @Override
             public void onSuccess(List<FilteredMeal> filteredMeals) {
                 if (filteredMeals != null && !filteredMeals.isEmpty()) {
@@ -252,7 +247,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getMealsFilteredByFirstLetter(String str) {
-        remoteRepo.getMealsFilteredByFirstLetter(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
+        repo.getMealsFilteredByFirstLetter(new RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback() {
             @Override
             public void onSuccess(List<FilteredMeal> filteredMeals) {
                 view.showFilteredMeals(filteredMeals);
@@ -267,7 +262,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void getMealByName(String str) {
-        remoteRepo.getMealByName(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+        repo.getMealByName(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 view.showMealWithName(meals);
@@ -281,7 +276,7 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     }
 
     public void getMealByID(String id) {
-        remoteRepo.getMealByID(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
+        repo.getMealByID(new RemoteRetrofitCallback.RemoteRetrofitMealCallback() {
             @Override
             public void onSuccess(List<Meal> meals) {
                 // it returned a list so I will assume the first is the one I want
@@ -297,13 +292,50 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
 
     @Override
     public void addMealToPlanned(Meal meal) {
-        localPlanRepo.addToPlannedMeals(meal, meal.getPlannedMealDate());
+        repo.addToPlannedMeals(meal, meal.getPlannedMealDate());
         view.updatePlannedMealBtn(true);
     }
 
     @Override
     public void removeMealFromPlanned(Meal meal) {
-        localPlanRepo.removeFromPlannedMeals(meal);
+        repo.removeFromPlannedMeals(meal);
         view.updatePlannedMealBtn(false);
+    }
+
+    @Override
+    public void onAddMealToCalendarRequested(Meal meal) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = sdf.parse(meal.getPlannedMealDate());
+            if (date == null) return;
+
+            long startMillis = date.getTime();
+            long endMillis = startMillis + 60 * 60 * 1000;
+
+            view.performCalendarInsertion(meal, startMillis, endMillis);
+        } catch (Exception e) {
+            Log.i("TAG", "MealDetailsPresenter - onAddMealToCalendarRequested: caught an exception " + e.getMessage());
+        }
+    }
+
+    @Override
+    public long getPrimaryCalendarId(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                CalendarContract.Calendars.CONTENT_URI,
+                new String[]{CalendarContract.Calendars._ID},
+                CalendarContract.Calendars.IS_PRIMARY + "=1",
+                null, null
+        );
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    return cursor.getLong(0);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return -1;
     }
 }

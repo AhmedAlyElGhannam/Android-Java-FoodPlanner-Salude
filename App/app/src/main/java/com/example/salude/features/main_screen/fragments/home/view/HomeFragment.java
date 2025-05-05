@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.fragments.home;
+package com.example.salude.features.main_screen.fragments.home.view;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -30,8 +30,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
-import com.example.salude.contracts.HomeScreenContract;
-import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.contracts.MainScreenContract;
+import com.example.salude.features.main_screen.presenter.MainScreenPresenter;
 import com.example.salude.features.main_screen.view.MealAreaAdapter;
 import com.example.salude.features.main_screen.view.MealCategoryAdapter;
 import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
@@ -39,17 +39,14 @@ import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
 import com.example.salude.utils.network.OnNetworkConnectionListener;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
-import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
-import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
-import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -66,20 +63,15 @@ import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 public class HomeFragment extends Fragment
-        implements HomeScreenContract.View,
+        implements MainScreenContract.View,
         OnFavouriteClickListener, OnPlannedClickListener,
         OnMealItemClickListener, OnAreaClickListener,
         OnCategoryClickListener, OnIngredientClickListener,
         OnNetworkConnectionListener {
-    HomeScreenContract.Presenter presenter;
+    MainScreenContract.Presenter presenter;
     MealCategoryAdapter categoryAdapter;
     MealAreaAdapter areaAdapter;
     MealIngredientsAdapter ingredientsAdapter;
-//    RecyclerView mealOfTheDayRecyclerView;
-    RecyclerView mealCategoriesRecyclerView;
-    RecyclerView mealAreasRecyclerView;
-    RecyclerView mealIngredientsRecyclerView;
-
     ImageButton addToFavBtn;
     ImageButton addToCalBtn;
     ImageView mealThumbnailImg;
@@ -92,17 +84,20 @@ public class HomeFragment extends Fragment
     TextView txtMealIngredientsLabel;
     ConstraintLayout mealItemLayout;
     Meal mealOfTheDay;
+    // calendar permission request code (needed by requestPermissions)
     private static final int CALENDAR_PERMISSION_REQUEST_CODE = 101;
 
+    // string array for required permissions (needed by requestPermissions)
+    private static final String[] CALENDAR_PERMISSIONS = {
+            Manifest.permission.READ_CALENDAR,
+            Manifest.permission.WRITE_CALENDAR
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
-        presenter = new HomeScreenPresenter(this, RemoteDataSource.getInstance(RemoteRetrofitClient.getInstance(getContext())),
-                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new MainScreenPresenter(this, SaludRepository.getInstance(requireContext()), requireContext());
 
         categoryAdapter = new MealCategoryAdapter(getContext(), this);
         areaAdapter = new MealAreaAdapter(getContext(), this);
@@ -114,9 +109,6 @@ public class HomeFragment extends Fragment
         mealNameTxt = view.findViewById(R.id.txtMealName);
         mealCategoryTxt = view.findViewById(R.id.txtCategory);
         mealCountryTxt = view.findViewById(R.id.txtCountry);
-        mealCategoriesRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewCategories);
-        mealAreasRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewAreas);
-        mealIngredientsRecyclerView = (RecyclerView) view.findViewById(R.id.recyclerViewIngredients);
         mealItemLayout = view.findViewById(R.id.mealItemLayout);
         mealOfTheDayTxt = view.findViewById(R.id.textViewMealOfTheDay);
         txtMealCategoriesLabel = view.findViewById(R.id.txtMealCategoriesLabel);
@@ -389,6 +381,16 @@ public class HomeFragment extends Fragment
         }
     }
 
+    @Override
+    public void updateFavoriteButton(boolean isFavorite) {
+
+    }
+
+    @Override
+    public void updateCalendarButton(boolean isPlanned) {
+
+    }
+
     private long getPrimaryCalendarId() {
         Cursor cursor = requireContext().getContentResolver().query(
                 CalendarContract.Calendars.CONTENT_URI,
@@ -409,7 +411,7 @@ public class HomeFragment extends Fragment
         return -1;
     }
 
-    private void removeMealFromCalendar(Meal meal) {
+    public void removeMealFromCalendar(Meal meal) {
         SharedPreferences prefs = requireContext().getSharedPreferences("MealCalendarPrefs", Context.MODE_PRIVATE);
         long eventId = prefs.getLong("event_" + meal.getIdMeal(), -1);
         if (eventId != -1) {
@@ -419,6 +421,11 @@ public class HomeFragment extends Fragment
             // Remove saved ID
             prefs.edit().remove("event_" + meal.getIdMeal()).apply();
         }
+    }
+
+    @Override
+    public void performCalendarInsertion(Meal meal, long startMillis, long endMillis) {
+
     }
 
     private boolean hasCalendarPermissions() {

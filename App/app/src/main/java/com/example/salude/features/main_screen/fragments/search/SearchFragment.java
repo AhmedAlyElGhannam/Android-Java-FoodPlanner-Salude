@@ -18,12 +18,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
-import com.example.salude.contracts.HomeScreenContract;
+import com.example.salude.contracts.MainScreenContract;
 import com.example.salude.features.main_screen.view.ListOfFilteredMealsAdapter;
 import com.example.salude.features.main_screen.view.MealAreaAdapter;
 import com.example.salude.features.main_screen.view.MealCategoryAdapter;
 import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
-import com.example.salude.features.main_screen.presenter.HomeScreenPresenter;
+import com.example.salude.features.main_screen.presenter.MainScreenPresenter;
 import com.example.salude.features.main_screen.view.MealSearchResultsAdapter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
@@ -46,7 +46,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements HomeScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
+public class SearchFragment extends Fragment implements MainScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
     public SearchFragment() { }
 
     TextInputEditText searchTxt;
@@ -60,14 +60,14 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     MealCategoryAdapter categoryAdapter;
     ListOfFilteredMealsAdapter filterAdapter;
     MealSearchResultsAdapter searchAdapter;
-    HomeScreenPresenter presenter;
+    MainScreenPresenter presenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        presenter = new HomeScreenPresenter(this, RemoteDataSource.getInstance(RemoteRetrofitClient.getInstance(getContext())),
+        presenter = new MainScreenPresenter(this, RemoteDataSource.getInstance(RemoteRetrofitClient.getInstance(getContext())),
                 LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
                 LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
@@ -292,12 +292,27 @@ public class SearchFragment extends Fragment implements HomeScreenContract.View,
     }
 
     @Override
-    public void showMealsWithFirstLetter(List<FilteredMeal> meals) {
+    public void addMealToCalendar(Meal meal) {
 
     }
 
     @Override
-    public void addMealToCalendar(Meal meal) {
+    public void updateFavoriteButton(boolean isFavorite) {
+
+    }
+
+    @Override
+    public void updateCalendarButton(boolean isPlanned) {
+
+    }
+
+    @Override
+    public void removeMealFromCalendar(Meal meal) {
+
+    }
+
+    @Override
+    public void performCalendarInsertion(Meal meal, long startMillis, long endMillis) {
 
     }
 

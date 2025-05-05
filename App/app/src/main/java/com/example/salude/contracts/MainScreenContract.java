@@ -9,11 +9,10 @@ import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
-import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 
 import java.util.List;
 
-public interface HomeScreenContract {
+public interface MainScreenContract {
     public interface View {
         public void showMealOfTheDay(Meal meal);
         public void showMealCategories(List<Category> categories);
@@ -61,13 +60,4 @@ public interface HomeScreenContract {
         public long getPrimaryCalendarId(Context context);
     }
 
-    public interface Model {
-        public void getMealOfTheDay(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf);
-        public void getMealsCategories(RemoteRetrofitCallback.RemoteRetrofitCategoryCallback cbf);
-        public void getMealAreas(RemoteRetrofitCallback.RemoteRetrofitAreaCallback cbf);
-        public void getMealsIngredients(RemoteRetrofitCallback.RemoteRetrofitIngredientCallback cbf);
-        public void getMealsFilteredByIngredient(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String ingredient);
-
-
-        }
 }

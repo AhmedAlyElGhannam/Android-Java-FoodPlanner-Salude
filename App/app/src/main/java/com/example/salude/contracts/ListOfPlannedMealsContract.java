@@ -18,4 +18,8 @@ public interface ListOfPlannedMealsContract {
         void getPlannedMeals();
         void removeMealFromPlanned(Meal meal);
     }
+
+    interface Model {
+
+    }
 }

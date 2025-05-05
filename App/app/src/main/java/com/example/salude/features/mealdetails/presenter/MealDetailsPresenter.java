@@ -22,8 +22,8 @@ public class MealDetailsPresenter implements MealDetailsContract.Presenter {
 
     private final MealDetailsContract.Model repo;
 
-    public MealDetailsPresenter(MealDetailsContract.View view, MealDetailsContract.Model _repo) {
-        this.view = view;
+    public MealDetailsPresenter(MealDetailsContract.View _view, MealDetailsContract.Model _repo) {
+        view = _view;
         repo = _repo;
     }
 

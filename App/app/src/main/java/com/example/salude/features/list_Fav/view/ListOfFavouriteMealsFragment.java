@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.features.list_Fav.presenter.ListOfFavouriteMealsPresenter;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
@@ -45,10 +46,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
         mealsRecyclerView = view.findViewById(R.id.listOfFavMealsRecyclerView);
         favMealsid = view.findViewById(R.id.favMealsid);
-        presenter = new ListOfFavouriteMealsPresenter(this,
-                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new ListOfFavouriteMealsPresenter(this, SaludRepository.getInstance(requireContext()));
 
         return view;
     }
@@ -77,6 +75,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         adapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showEmptyState() {
         adapter.setMeals(new ArrayList<>());
@@ -87,11 +86,6 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
     @Override
     public LifecycleOwner getViewLifecycleOwner() {
         return this;
-    }
-
-    @Override
-    public void showMealDetails(Meal meal) {
-
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -16,4 +16,5 @@
     <string name="add_to_calendar">Add to Calendar</string>
     <string name="add_to_favourites">Add to Favourites</string>
     <string name="search">Search</string>
+    <string name="continue_as_a_guest">Continue As A Guest</string>
 </resources>

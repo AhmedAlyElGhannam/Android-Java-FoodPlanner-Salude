@@ -125,8 +125,8 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
                             .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    // nullify date field in meal
-                                    Intent intent = new Intent(getActivity(), RegisterAuthFirebaseActivity.class);
+                                    GuestMode.setGuestModeState(false);
+                                    Intent intent = new Intent(getActivity(), LoginAuthFirebaseActivity.class);
                                     startActivity(intent);
                                     getActivity().finish();
                                 }

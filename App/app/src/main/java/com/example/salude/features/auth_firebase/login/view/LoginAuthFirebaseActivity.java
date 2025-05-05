@@ -20,6 +20,7 @@ import com.example.salude.features.auth_firebase.register.view.RegisterAuthFireb
 import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 import com.example.salude.model.repository.SaludRepository;
+import com.example.salude.utils.guest.GuestMode;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -35,6 +36,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     TextInputEditText editTextPassword;
     Button googleBtn;
     Button loginBtn;
+    Button guestBtn;
     TextView registerTxt;
     TextView forgotPassTxt;
     ProgressBar progressBar;
@@ -76,9 +78,11 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         editTextPassword = findViewById(R.id.inputPassword);
         googleBtn = findViewById(R.id.buttonGoogle);
         loginBtn = findViewById(R.id.buttonLogin);
+        guestBtn = findViewById(R.id.buttonGuest);
         registerTxt = findViewById(R.id.registerTxt);
         forgotPassTxt = findViewById(R.id.forgotPassTxt);
         progressBar = findViewById(R.id.progressBar2);
+
 
         // I WILL NOT HANDLE YOU!
         forgotPassTxt.setVisibility(View.INVISIBLE);
@@ -105,7 +109,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
             }
         });
 
-        // googleBtn click handler
+        // googleBtn click listener
         googleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,7 +118,18 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
             }
         });
 
-        // registerTxt click handler
+        // guest mode click listener
+        guestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuestMode.setGuestModeState(true);
+                Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // registerTxt click listener
         registerTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.view;
+package com.example.salude.features.main_screen.fragments.search.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -16,11 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.model.pojo.FilteredMeal;
-import com.example.salude.model.pojo.Meal;
-import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
-import com.example.salude.utils.clicklistener.OnMealItemClickListener;
-import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.fragments.search;
+package com.example.salude.features.main_screen.fragments.search.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -19,22 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.salude.R;
 import com.example.salude.contracts.MainScreenContract;
-import com.example.salude.features.main_screen.view.ListOfFilteredMealsAdapter;
-import com.example.salude.features.main_screen.view.MealAreaAdapter;
-import com.example.salude.features.main_screen.view.MealCategoryAdapter;
-import com.example.salude.features.main_screen.view.MealIngredientsAdapter;
-import com.example.salude.features.main_screen.presenter.MainScreenPresenter;
-import com.example.salude.features.main_screen.view.MealSearchResultsAdapter;
+import com.example.salude.contracts.SearchScreenContract;
+import com.example.salude.features.main_screen.fragments.search.presenter.SearchScreenPresenter;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
-import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
-import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
-import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
 import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
@@ -46,7 +39,13 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchScreenFragment extends Fragment implements MainScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
+public class SearchScreenFragment extends Fragment implements
+        SearchScreenContract.View,
+        OnAreaClickListener,
+        OnCategoryClickListener,
+        OnIngredientClickListener,
+        OnFilteredMealItemClickListener,
+        OnMealItemClickListener{
     public SearchScreenFragment() { }
 
     TextInputEditText searchTxt;
@@ -60,17 +59,14 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
     MealCategoryAdapter categoryAdapter;
     ListOfFilteredMealsAdapter filterAdapter;
     MealSearchResultsAdapter searchAdapter;
-    MainScreenPresenter presenter;
+    SearchScreenPresenter presenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-        presenter = new MainScreenPresenter(this, RemoteDataSource.getInstance(RemoteRetrofitClient.getInstance(getContext())),
-                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new SearchScreenPresenter(this, SaludRepository.getInstance(requireContext()));
 
         areaAdapter = new MealAreaAdapter(getContext(), this);
         categoryAdapter = new MealCategoryAdapter(getContext(), this);
@@ -129,6 +125,7 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
         });
 
         // I left it out cuz its performance is abysmally slow
+        // I decided to include it anyway
 //        ingredientChip.setVisibility(View.INVISIBLE);
         ingredientChip.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,9 +173,6 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
         });
     }
 
-    @Override
-    public void showMealOfTheDay(Meal meal) {}
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealCategories(List<Category> categories) {
@@ -199,12 +193,6 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
         areaAdapter.setAreas(areas);
         areaAdapter.notifyDataSetChanged();
     }
-
-    @Override
-    public void updateFavouriteMealBtn(boolean state) {}
-
-    @Override
-    public void updatePlannedMealBtn(boolean state) {}
 
     @SuppressLint("NotifyDataSetChanged")
     @Override
@@ -267,11 +255,6 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
                 .commit();
     }
 
-    @Override
-    public void showMealSearchFailure(String err) {
-
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showMealWithName(List<Meal> meals) {
@@ -289,41 +272,6 @@ public class SearchScreenFragment extends Fragment implements MainScreenContract
         } else {
             searchResLabel.setText("No results found");
         }
-    }
-
-    @Override
-    public void addMealToCalendar(Meal meal) {
-
-    }
-
-    @Override
-    public void updateFavoriteButton(boolean isFavorite) {
-
-    }
-
-    @Override
-    public void updateCalendarButton(boolean isPlanned) {
-
-    }
-
-    @Override
-    public void removeMealFromCalendar(Meal meal) {
-
-    }
-
-    @Override
-    public void performCalendarInsertion(Meal meal, long startMillis, long endMillis) {
-
-    }
-
-    @Override
-    public void showConnectionRestoredAnimation() {
-
-    }
-
-    @Override
-    public void showConnectionLostFragment() {
-
     }
 
     @Override

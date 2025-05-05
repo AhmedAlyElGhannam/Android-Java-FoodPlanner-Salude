@@ -11,6 +11,7 @@ import com.example.salude.contracts.LoginContract;
 import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.contracts.ProfileScreenContract;
 import com.example.salude.contracts.RegistrationContract;
+import com.example.salude.contracts.SearchScreenContract;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
@@ -29,7 +30,8 @@ public class SaludRepository implements
         ListOfFavouriteMealsContract.Model,
         ListOfPlannedMealsContract.Model,
         HomeScreenContract.Model,
-        ProfileScreenContract.Model {
+        ProfileScreenContract.Model,
+        SearchScreenContract.Model {
     private static SaludRepository salud_repo;
     private UserRegAndAuthDataSource auth_source;
     private LocalDataSource.RoomLocalFavouriteRepository local_fav_source;
@@ -113,5 +115,50 @@ public class SaludRepository implements
     @Override
     public LiveData<List<Meal>> getListOfFavouriteMeals() {
         return local_fav_source.getListOfFavouriteMeals();
+    }
+
+    @Override
+    public void getMealByName(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf, String name) {
+        remote_source.getMealByName(cbf, name);
+    }
+
+    @Override
+    public void getMealByID(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf, String id) {
+        remote_source.getMealByID(cbf, id);
+    }
+
+    @Override
+    public void getMealAreas(RemoteRetrofitCallback.RemoteRetrofitAreaCallback cbf) {
+        remote_source.getMealAreas(cbf);
+    }
+
+    @Override
+    public void getMealsIngredients(RemoteRetrofitCallback.RemoteRetrofitIngredientCallback cbf) {
+        remote_source.getMealsIngredients(cbf);
+    }
+
+    @Override
+    public void getMealsCategories(RemoteRetrofitCallback.RemoteRetrofitCategoryCallback cbf) {
+        remote_source.getMealsCategories(cbf);
+    }
+
+    @Override
+    public void getMealsFilteredByCategory(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String category) {
+        remote_source.getMealsFilteredByCategory(cbf, category);
+    }
+
+    @Override
+    public void getMealsFilteredByArea(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String area) {
+        remote_source.getMealsFilteredByArea(cbf, area);
+    }
+
+    @Override
+    public void getMealsFilteredByIngredient(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String ingredient) {
+        remote_source.getMealsFilteredByIngredient(cbf, ingredient);
+    }
+
+    @Override
+    public void getMealsFilteredByFirstLetter(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String letter) {
+        remote_source.getMealsFilteredByFirstLetter(cbf, letter);
     }
 }

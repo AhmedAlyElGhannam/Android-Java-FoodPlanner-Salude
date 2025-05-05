@@ -4,6 +4,7 @@ import android.content.Intent;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.firebase.auth.FirebaseUser;
 
 public interface LoginContract {
     interface View {
@@ -18,13 +19,15 @@ public interface LoginContract {
 
     interface Presenter {
         // caller: view, callee: presenter
-        void callLoginModelAction(String email, String password);
+        public void initiateUserAccountLogin(String email, String password); // call presenter stuff
+        public void initiateGoogleLogin(String userIdToken);
     }
 
     interface Model {
-        // caller: presenter, callee: model
-        void userAccountLogin(String email, String password, LoginContract.OnLoginFinishedListener listener); // call presenter stuff
-        void userGoogleLogin(String idToken, LoginContract.OnLoginFinishedListener listener);
+        public FirebaseUser getCurrentUser();
+        public void userAccountLogin(String email, String password, LoginContract.OnLoginFinishedListener listener);
+        public void userGoogleLogin(String idToken, LoginContract.OnLoginFinishedListener listener);
+
     }
 
     interface OnLoginFinishedListener {

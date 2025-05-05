@@ -1,21 +1,21 @@
-package com.example.salude.model.remote.retrofit.repository;
+package com.example.salude.model.remote.retrofit.datasource;
 
 import android.util.Log;
 
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 
-public class RemoteRetrofitRepository {
+public class RemoteDataSource {
     private final RemoteRetrofitClient client;
-    private static RemoteRetrofitRepository repo = null;
+    private static RemoteDataSource repo = null;
 
-    private RemoteRetrofitRepository(RemoteRetrofitClient _client) {
+    private RemoteDataSource(RemoteRetrofitClient _client) {
         client = _client;
     }
 
-    public static synchronized RemoteRetrofitRepository getInstance(RemoteRetrofitClient _client) {
+    public static synchronized RemoteDataSource getInstance(RemoteRetrofitClient _client) {
         if (repo == null) {
-            repo = new RemoteRetrofitRepository(_client);
+            repo = new RemoteDataSource(_client);
         }
 
         return repo;

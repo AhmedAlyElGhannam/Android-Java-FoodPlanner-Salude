@@ -1,6 +1,8 @@
 package com.example.salude.features.list_Fav.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,11 +20,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.features.list_Fav.presenter.ListOfFavouriteMealsPresenter;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.ArrayList;
@@ -45,10 +48,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
 
         mealsRecyclerView = view.findViewById(R.id.listOfFavMealsRecyclerView);
         favMealsid = view.findViewById(R.id.favMealsid);
-        presenter = new ListOfFavouriteMealsPresenter(this,
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new ListOfFavouriteMealsPresenter(this, SaludRepository.getInstance(requireContext()));
 
         return view;
     }
@@ -77,6 +77,7 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         adapter.notifyDataSetChanged();
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Override
     public void showEmptyState() {
         adapter.setMeals(new ArrayList<>());
@@ -89,17 +90,22 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         return this;
     }
 
-    @Override
-    public void showMealDetails(Meal meal) {
-
-    }
-
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onFavouriteClickListener(Meal meal) {
-        presenter.removeMealFromFavourites(meal);
-        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
-    }
+        new AlertDialog.Builder(getContext())
+                .setTitle("Favourite Meal")
+                .setMessage("Are you sure you want to remove this meal from favourites?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.removeMealFromFavourites(meal);
+                        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+   }
 
     @Override
     public void onMealItemClickListener(Meal meal) {

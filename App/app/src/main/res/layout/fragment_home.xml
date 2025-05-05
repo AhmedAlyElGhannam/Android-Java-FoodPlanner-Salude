@@ -6,16 +6,11 @@
     android:layout_height="match_parent"
     android:fillViewport="true">
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Header section with TextView -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -35,12 +30,12 @@
                 android:visibility="visible" />
         </LinearLayout>
 
-        <!-- Meal Card View -->
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/mealCardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_gravity="center"
             app:cardElevation="8dp"
             app:cardCornerRadius="16dp"
             app:cardBackgroundColor="@color/white">
@@ -147,95 +142,5 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- Meal Categories Section -->
-        <TextView
-            android:id="@+id/txtMealCategoriesLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"
-            android:text="Meal Categories:"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewCategories"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:clipToPadding="false"
-                android:padding="8dp" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Meal Areas Section -->
-        <TextView
-            android:id="@+id/txtMealAreasLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"
-            android:text="Meal Areas:"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewAreas"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:clipToPadding="false"
-                android:padding="8dp" />
-        </com.google.android.material.card.MaterialCardView>
-
-        <!-- Meal Ingredients Section -->
-        <TextView
-            android:id="@+id/txtMealIngredientsLabel"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="4dp"
-            android:text="Meal Ingredients:"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight="1"
-            app:cardBackgroundColor="@color/white"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="8dp">
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerViewIngredients"
-                android:layout_width="match_parent"
-                android:layout_height="240dp"
-                android:clipToPadding="false"
-                android:padding="8dp" />
-        </com.google.android.material.card.MaterialCardView>
-
-    </LinearLayout>
+    </FrameLayout>
 </androidx.core.widget.NestedScrollView>

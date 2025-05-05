@@ -1,4 +1,4 @@
-package com.example.salude.features.main_screen.view;
+package com.example.salude.features.main_screen.fragments.search.view;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

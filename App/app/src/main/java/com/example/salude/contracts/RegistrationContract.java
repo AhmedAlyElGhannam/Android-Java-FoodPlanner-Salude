@@ -1,5 +1,7 @@
 package com.example.salude.contracts;
 
+import com.google.firebase.auth.FirebaseUser;
+
 public interface RegistrationContract {
     interface View {
         // methods to show and hide progress bar
@@ -17,8 +19,8 @@ public interface RegistrationContract {
     }
 
     interface Model {
-        // caller: presenter, callee: model
-        void registerUser(String name, String email, String password, OnRegistrationFinishedListener listener); // call presenter stuff
+        public void registerUser(String name, String email, String password, RegistrationContract.OnRegistrationFinishedListener listener);
+        public FirebaseUser getCurrentUser();
     }
 
     interface OnRegistrationFinishedListener {

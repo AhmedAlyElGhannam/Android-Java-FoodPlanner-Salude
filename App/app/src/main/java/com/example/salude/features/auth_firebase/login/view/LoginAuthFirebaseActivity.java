@@ -10,11 +10,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.result.ActivityResult;
-import androidx.activity.result.ActivityResultCallback;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -23,33 +18,34 @@ import com.example.salude.contracts.LoginContract;
 import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFirebasePresenter;
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
-import com.example.salude.model.remote.firebase.login.LoginAuthRepository;
+import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
+import com.example.salude.model.repository.SaludRepository;
+import com.example.salude.utils.guest.GuestMode;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
 
 public class LoginAuthFirebaseActivity extends AppCompatActivity implements LoginContract.View {
     TextInputEditText editTextMail;
     TextInputEditText editTextPassword;
     Button googleBtn;
     Button loginBtn;
+    Button guestBtn;
     TextView registerTxt;
     TextView forgotPassTxt;
     ProgressBar progressBar;
     LoginAuthFirebasePresenter presenter;
     FirebaseAuth mAuth;
 
+    // defining a request code for sign in operation (used with startActivityWithResult)
     private static final int RC_SIGN_IN = 9001;
+    // object of google's sign in client
     private GoogleSignInClient mGoogleSignInClient;
 
 
@@ -60,11 +56,8 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         // inflate login screen xml layout
         setContentView(R.layout.login_screen);
 
-        // create an instance of firebase
+        // get an instance of firebase authenticator
         mAuth = FirebaseAuth.getInstance();
-
-        // create an object of login presenter
-        presenter = new LoginAuthFirebasePresenter(this, LoginAuthRepository.getInstance());
 
         // sign in with google shenanigans
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -72,7 +65,12 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
                 .requestEmail()
                 .build();
 
+        // get google client instance
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
+
+
+        // create an object of login presenter (reference to view + repo instance + reference to google signin client)
+        presenter = new LoginAuthFirebasePresenter(this, SaludRepository.getInstance(this), mGoogleSignInClient);
 
 
         // get references to UI elements by id
@@ -80,37 +78,58 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
         editTextPassword = findViewById(R.id.inputPassword);
         googleBtn = findViewById(R.id.buttonGoogle);
         loginBtn = findViewById(R.id.buttonLogin);
+        guestBtn = findViewById(R.id.buttonGuest);
         registerTxt = findViewById(R.id.registerTxt);
         forgotPassTxt = findViewById(R.id.forgotPassTxt);
         progressBar = findViewById(R.id.progressBar2);
+
+
+        // I WILL NOT HANDLE YOU!
+        forgotPassTxt.setVisibility(View.INVISIBLE);
 
         // loginBtn click handler
         loginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // get email and check it is not empty
                 String email = String.valueOf(editTextMail.getText());
                 if (TextUtils.isEmpty(email)) {
                     Toast.makeText(LoginAuthFirebaseActivity.this, "Please enter your email.", Toast.LENGTH_LONG).show();
                     return;
                 }
-
+                // get password and check it is not empty
                 String password = String.valueOf(editTextPassword.getText());
                 if (TextUtils.isEmpty(password)) {
                     Toast.makeText(LoginAuthFirebaseActivity.this, "Please enter a password.", Toast.LENGTH_LONG).show();
                     return;
                 }
 
-                presenter.callLoginModelAction(email, password);
+                // call presenter to handle login operation
+                presenter.initiateUserAccountLogin(email, password);
             }
         });
 
-        // Update googleBtn click handler
-        googleBtn.setOnClickListener(v -> {
-            Intent signInIntent = mGoogleSignInClient.getSignInIntent();
-            startActivityForResult(signInIntent, RC_SIGN_IN);
+        // googleBtn click listener
+        googleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent signInIntent = mGoogleSignInClient.getSignInIntent();
+                startActivityForResult(signInIntent, RC_SIGN_IN);
+            }
         });
 
-        // registerTxt click handler
+        // guest mode click listener
+        guestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                GuestMode.setGuestModeState(true);
+                Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        // registerTxt click listener
         registerTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,32 +144,17 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        // for started activity with code RC_SIGN_IN aka google sign in
         if (requestCode == RC_SIGN_IN) {
             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
             try {
+                //
                 GoogleSignInAccount account = task.getResult(ApiException.class);
-                firebaseAuthWithGoogle(account.getIdToken());
+                presenter.initiateGoogleLogin(account.getIdToken());
             } catch (ApiException e) {
-                Log.w("SignIn", "Google sign in failed", e);
+                Log.w("TAG", "Google sign in failed", e);
             }
         }
-    }
-
-    private void firebaseAuthWithGoogle(String idToken) {
-        AuthCredential credential = GoogleAuthProvider.getCredential(idToken, null);
-        mAuth.signInWithCredential(credential)
-                .addOnCompleteListener(this, task -> {
-                    if (task.isSuccessful()) {
-                        FirebaseUser user = mAuth.getCurrentUser();
-                        Log.d("SignIn", "signInWithCredential:success - " + user.getEmail());
-                        Intent intent = new Intent(LoginAuthFirebaseActivity.this, MainScreenActivity.class);
-                        startActivity(intent);
-                        finish();
-                    } else {
-                        Log.w("SignIn", "signInWithCredential:failure", task.getException());
-                    }
-                });
     }
 
     @Override

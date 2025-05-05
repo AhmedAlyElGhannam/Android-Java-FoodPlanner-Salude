@@ -1,8 +1,10 @@
 package com.example.salude.features.list_plan.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,11 +25,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.ListOfPlannedMealsContract;
 import com.example.salude.features.list_plan.presenter.ListOfPlannedMealsPresenter;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.ArrayList;
@@ -50,10 +53,7 @@ public class ListOfPlannedMealsFragment extends Fragment implements ListOfPlanne
 
         mealsRecyclerView = view.findViewById(R.id.listOfPlannedMealsRecyclerView);
         favMealsid = view.findViewById(R.id.plannedMealsid);
-        presenter = new ListOfPlannedMealsPresenter(this,
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new ListOfPlannedMealsPresenter(this, SaludRepository.getInstance(requireContext()));
 
         return view;
     }
@@ -120,9 +120,19 @@ public class ListOfPlannedMealsFragment extends Fragment implements ListOfPlanne
 
     @Override
     public void onPlannedClickListener(Meal meal) {
-        presenter.removeMealFromPlanned(meal);
-        removeMealFromCalendar(meal);
-        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Favourite Meal")
+                .setMessage("Are you sure you want to remove this meal from planned?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.removeMealFromPlanned(meal);
+                        removeMealFromCalendar(meal);
+                        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void removeMealFromCalendar(Meal meal) {

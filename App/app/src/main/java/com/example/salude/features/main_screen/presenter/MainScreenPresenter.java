@@ -2,17 +2,19 @@ package com.example.salude.features.main_screen.presenter;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.provider.CalendarContract;
 import android.util.Log;
 
-import com.example.salude.contracts.HomeScreenContract;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.contracts.MainScreenContract;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
-import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -20,16 +22,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class HomeScreenPresenter implements HomeScreenContract.Presenter {
-    private final HomeScreenContract.View view;
-    private final RemoteRetrofitRepository remoteRepo;
-    private final RoomLocalRepository.RoomLocalFavouriteRepository localFavRepo;
-    private final RoomLocalRepository.RoomLocalPlannedRepository localPlanRepo;
+public class MainScreenPresenter implements MainScreenContract.Presenter {
+    private final MainScreenContract.View view;
+    private final RemoteDataSource remoteRepo;
+    private final LocalDataSource.RoomLocalFavouriteRepository localFavRepo;
+    private final LocalDataSource.RoomLocalPlannedRepository localPlanRepo;
 
     private final SharedPreferences sharedPreferences;
     private Context context;
 
-    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+    public MainScreenPresenter(MainScreenContract.View _view, RemoteDataSource _repo, LocalDataSource.RoomLocalFavouriteRepository _localRepo, LocalDataSource.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
         context = _context;
         view = _view;
         remoteRepo = _repo;
@@ -37,6 +39,24 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
         localPlanRepo = _localPlanRepo;
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     @Override
     public void getMealOfTheDay() {
@@ -305,5 +325,53 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     public void removeMealFromPlanned(Meal meal) {
         localPlanRepo.removeFromPlannedMeals(meal);
         view.updatePlannedMealBtn(false);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    @Override
+    public void onAddMealToCalendarRequested(Meal meal) {
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+            Date date = sdf.parse(meal.getPlannedMealDate());
+            if (date == null) return;
+
+            long startMillis = date.getTime();
+            long endMillis = startMillis + 60 * 60 * 1000;
+
+            view.performCalendarInsertion(meal, startMillis, endMillis);
+        } catch (Exception e) {
+            Log.i("TAG", "MealDetailsPresenter - onAddMealToCalendarRequested: caught an exception " + e.getMessage());
+        }
+    }
+
+    @Override
+    public long getPrimaryCalendarId(Context context) {
+        Cursor cursor = context.getContentResolver().query(
+                CalendarContract.Calendars.CONTENT_URI,
+                new String[]{CalendarContract.Calendars._ID},
+                CalendarContract.Calendars.IS_PRIMARY + "=1",
+                null, null
+        );
+
+        if (cursor != null) {
+            try {
+                if (cursor.moveToFirst()) {
+                    return cursor.getLong(0);
+                }
+            } finally {
+                cursor.close();
+            }
+        }
+        return -1;
     }
 }

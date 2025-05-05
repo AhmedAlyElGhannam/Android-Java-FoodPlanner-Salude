@@ -3,6 +3,7 @@ package com.example.salude.features.auth_firebase.register.presenter;
 import android.util.Log;
 
 import com.example.salude.contracts.RegistrationContract;
+import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 
 public class RegisterAuthFirebasePresenter implements RegistrationContract.Presenter, RegistrationContract.OnRegistrationFinishedListener {
     RegistrationContract.View view;

@@ -1,19 +1,13 @@
 package com.example.salude.features.main_screen.view;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.example.salude.R;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -25,17 +19,12 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionLostFragment;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionRestoredFragment;
-import com.example.salude.features.main_screen.fragments.home.HomeFragment;
-import com.example.salude.features.main_screen.fragments.profile.ProfileFragment;
-import com.example.salude.features.main_screen.fragments.search.SearchFragment;
-import com.example.salude.model.pojo.Meal;
-import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
-import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
-import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.features.main_screen.fragments.home.view.HomeScreenFragment;
+import com.example.salude.features.main_screen.fragments.profile.view.ProfileScreenFragment;
+import com.example.salude.features.main_screen.fragments.search.view.SearchScreenFragment;
 import com.example.salude.utils.clicklistener.OnConnectionRestoredListener;
 import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity
         implements NetworkChangeReceiver.NetworkChangeListener,
@@ -84,15 +73,15 @@ public class MainScreenActivity extends AppCompatActivity
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
+                selectedFragment = new HomeScreenFragment();
             } else if (id == R.id.nav_search) {
                 if (isOfflineMode) {
                     Toast.makeText(this, "Search requires internet connection", Toast.LENGTH_SHORT).show();
                     return false;
                 }
-                selectedFragment = new SearchFragment();
+                selectedFragment = new SearchScreenFragment();
             } else if (id == R.id.nav_profile) {
-                selectedFragment = new ProfileFragment();
+                selectedFragment = new ProfileScreenFragment();
             }
 
             if (selectedFragment != null) {
@@ -121,7 +110,7 @@ public class MainScreenActivity extends AppCompatActivity
         Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
 
         // if current fragment is Profile or Search, navigate to Home
-        if (currentFragment instanceof ProfileFragment || currentFragment instanceof SearchFragment) {
+        if (currentFragment instanceof ProfileScreenFragment || currentFragment instanceof SearchScreenFragment) {
             bottomNav.setSelectedItemId(R.id.nav_home);
         } else {
             // otherwise, perform default back behavior
@@ -135,7 +124,7 @@ public class MainScreenActivity extends AppCompatActivity
             this.isConnected = isConnected;
             runOnUiThread(() -> {
                 if (isConnected) {
-                    isOfflineMode = false; // Reset offline mode when connection is restored
+                    isOfflineMode = false; // reset offline mode when connection is restored
                     showConnectionRestoredAnimation();
                 } else {
                     showConnectionLostFragment();
@@ -156,7 +145,7 @@ public class MainScreenActivity extends AppCompatActivity
                 .commit();
     }
 
-    public void showConnectionRestoredAnimation() {
+    private void showConnectionRestoredAnimation() {
         isShowingConnectionFragment = true;
         bottomNav.setVisibility(View.GONE);
 
@@ -170,21 +159,6 @@ public class MainScreenActivity extends AppCompatActivity
                 .commit();
     }
 
-    private void restoreAppState() {
-        isShowingConnectionFragment = false;
-        bottomNav.setVisibility(View.VISIBLE);
-
-        // Refresh data and return to HomeFragment
-        bottomNav.setSelectedItemId(R.id.nav_home);
-
-        // Notify current fragment (HomeFragment) to refresh data
-        Fragment currentFragment = getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof HomeFragment) {
-            ((HomeFragment) currentFragment).onNetworkConnectionSuccess();
-        }
-    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -196,17 +170,17 @@ public class MainScreenActivity extends AppCompatActivity
 
     @Override
     public void onConnectionRestored() {
-        isShowingConnectionFragment = false;  // Flag that we're no longer showing connection fragments
-        bottomNav.setVisibility(View.VISIBLE);  // Make the bottom navigation visible again
+        isShowingConnectionFragment = false;
+        bottomNav.setVisibility(View.VISIBLE);
 
-        // Refresh data and return to HomeFragment
+        // refresh data and return to HomeFragment
         bottomNav.setSelectedItemId(R.id.nav_home);
 
-        // Notify current fragment (HomeFragment) to refresh data
+        // notify current fragment to refresh data
         Fragment currentFragment = getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof HomeFragment) {
-            ((HomeFragment) currentFragment).onNetworkConnectionSuccess();
+        if (currentFragment instanceof HomeScreenFragment) {
+            ((HomeScreenFragment) currentFragment).onNetworkConnectionSuccess();
         }
     }
 
@@ -214,10 +188,10 @@ public class MainScreenActivity extends AppCompatActivity
         isShowingConnectionFragment = false;
         bottomNav.setVisibility(View.VISIBLE);
 
-        // Set a flag that we're in offline mode
+        // in offline mode
         isOfflineMode = true;
 
-        // Return to home fragment
+        // return to home fragment
         bottomNav.setSelectedItemId(R.id.nav_home);
     }
 }

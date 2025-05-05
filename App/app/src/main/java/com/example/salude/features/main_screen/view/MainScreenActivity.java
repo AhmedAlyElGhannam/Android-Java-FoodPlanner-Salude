@@ -20,7 +20,7 @@ import android.Manifest;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionLostFragment;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionRestoredFragment;
 import com.example.salude.features.main_screen.fragments.home.view.HomeScreenFragment;
-import com.example.salude.features.main_screen.fragments.profile.ProfileScreenFragment;
+import com.example.salude.features.main_screen.fragments.profile.view.ProfileScreenFragment;
 import com.example.salude.features.main_screen.fragments.search.SearchScreenFragment;
 import com.example.salude.utils.clicklistener.OnConnectionRestoredListener;
 import com.example.salude.utils.network.NetworkChangeReceiver;

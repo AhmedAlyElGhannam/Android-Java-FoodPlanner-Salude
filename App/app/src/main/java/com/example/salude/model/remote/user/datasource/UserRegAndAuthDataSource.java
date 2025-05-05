@@ -120,4 +120,8 @@ public class UserRegAndAuthDataSource {
                     }
                 });
     }
+
+    public void userSignOut() {
+        mAuth.signOut();
+    }
 }

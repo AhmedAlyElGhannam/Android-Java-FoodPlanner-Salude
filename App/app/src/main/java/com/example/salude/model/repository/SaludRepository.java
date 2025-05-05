@@ -9,6 +9,7 @@ import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.contracts.ListOfPlannedMealsContract;
 import com.example.salude.contracts.LoginContract;
 import com.example.salude.contracts.MealDetailsContract;
+import com.example.salude.contracts.ProfileScreenContract;
 import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
@@ -27,7 +28,8 @@ public class SaludRepository implements
         MealDetailsContract.Model,
         ListOfFavouriteMealsContract.Model,
         ListOfPlannedMealsContract.Model,
-        HomeScreenContract.Model {
+        HomeScreenContract.Model,
+        ProfileScreenContract.Model {
     private static SaludRepository salud_repo;
     private UserRegAndAuthDataSource auth_source;
     private LocalDataSource.RoomLocalFavouriteRepository local_fav_source;
@@ -71,6 +73,11 @@ public class SaludRepository implements
     @Override
     public void userGoogleLogin(String idToken, LoginContract.OnLoginFinishedListener listener) {
         auth_source.userGoogleLogin(idToken, listener);
+    }
+
+    @Override
+    public void userSignOut() {
+        auth_source.userSignOut();
     }
 
     @Override

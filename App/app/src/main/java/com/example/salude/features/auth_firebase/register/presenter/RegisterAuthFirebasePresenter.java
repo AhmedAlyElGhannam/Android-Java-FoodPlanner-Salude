@@ -3,11 +3,12 @@ package com.example.salude.features.auth_firebase.register.presenter;
 import android.util.Log;
 
 import com.example.salude.contracts.RegistrationContract;
+import com.example.salude.model.remote.firebase.FirebaseRepository;
 
 public class RegisterAuthFirebasePresenter implements RegistrationContract.Presenter, RegistrationContract.OnRegistrationFinishedListener {
     RegistrationContract.View view;
-    RegistrationContract.Model repo;
-    public RegisterAuthFirebasePresenter(RegistrationContract.View _view, RegistrationContract.Model _repo) {
+    FirebaseRepository repo;
+    public RegisterAuthFirebasePresenter(RegistrationContract.View _view, FirebaseRepository _repo) {
         repo = _repo;
         view = _view;
     }

@@ -18,7 +18,8 @@ public interface LoginContract {
 
     interface Presenter {
         // caller: view, callee: presenter
-        void callLoginModelAction(String email, String password);
+        public void initiateUserAccountLogin(String email, String password); // call presenter stuff
+        public void initiateGoogleLogin(String userIdToken);
     }
 
     interface Model {

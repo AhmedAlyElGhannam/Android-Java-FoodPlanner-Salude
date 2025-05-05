@@ -24,6 +24,9 @@ public class Meal implements Parcelable{
     // for storing data unique to a certain user
     private String userID;
 
+    // for firebase store
+    private long lastUpdated;
+
     private String strMeal;
 
     private String strDrinkAlternate;
@@ -125,8 +128,13 @@ public class Meal implements Parcelable{
 
     public Meal() {}
 
-    // --- Getters and Setters ---
+    public long getLastUpdated() {
+        return lastUpdated;
+    }
 
+    public void setLastUpdated(long lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
     public String getUserID() {
         return userID;
     }
@@ -606,6 +614,7 @@ public class Meal implements Parcelable{
         strMeasure19 = in.readString();
         strMeasure20 = in.readString();
         strSource = in.readString();
+        lastUpdated = in.readLong();
     }
 
     public static final Creator<Meal> CREATOR = new Creator<Meal>() {
@@ -679,6 +688,7 @@ public class Meal implements Parcelable{
         dest.writeString(strMeasure19);
         dest.writeString(strMeasure20);
         dest.writeString(strSource);
+        dest.writeLong(lastUpdated);
     }
 
     public List<Ingredient> getIngredientsList() {

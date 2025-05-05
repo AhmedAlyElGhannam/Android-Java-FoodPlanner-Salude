@@ -8,13 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.example.salude.R;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
@@ -23,9 +20,9 @@ import com.example.salude.features.list_plan.view.ListOfPlannedMealsFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class ProfileFragment extends Fragment {
+public class ProfileScreenFragment extends Fragment {
 
-    public ProfileFragment() { }
+    public ProfileScreenFragment() { }
 
     TextView profileTxt;
     TextView usernameTxt;

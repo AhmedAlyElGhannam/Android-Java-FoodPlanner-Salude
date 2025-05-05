@@ -40,6 +40,24 @@ public class MainScreenPresenter implements MainScreenContract.Presenter {
         sharedPreferences = _context.getSharedPreferences("Meal_Preferences", Context.MODE_PRIVATE);
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     @Override
     public void getMealOfTheDay() {
         String savedDate = sharedPreferences.getString("mealDate", "");

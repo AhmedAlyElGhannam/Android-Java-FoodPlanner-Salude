@@ -30,6 +30,8 @@ public interface MainScreenContract {
         void updateCalendarButton(boolean isPlanned);
         void removeMealFromCalendar(Meal meal);
         public void performCalendarInsertion(Meal meal, long startMillis, long endMillis);
+        public void showConnectionRestoredAnimation();
+        public void showConnectionLostFragment();
     }
 
     public interface Presenter {

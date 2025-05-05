@@ -46,8 +46,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import java.util.List;
 import java.util.Objects;
 
-public class SearchFragment extends Fragment implements MainScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
-    public SearchFragment() { }
+public class SearchScreenFragment extends Fragment implements MainScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
+    public SearchScreenFragment() { }
 
     TextInputEditText searchTxt;
     Chip ingredientChip;
@@ -313,6 +313,16 @@ public class SearchFragment extends Fragment implements MainScreenContract.View,
 
     @Override
     public void performCalendarInsertion(Meal meal, long startMillis, long endMillis) {
+
+    }
+
+    @Override
+    public void showConnectionRestoredAnimation() {
+
+    }
+
+    @Override
+    public void showConnectionLostFragment() {
 
     }
 

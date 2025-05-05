@@ -68,5 +68,32 @@ public interface MealDAO {
         boolean isMealInDB(String id);
     }
 
+    @Dao
+    interface RecentMealDAO {
+//        // insert
+//        @Insert(onConflict = OnConflictStrategy.IGNORE)
+//        void insertPlannedMeal(Meal meal);
+//
+//        // get
+//        @Query("SELECT * FROM meals WHERE plannedMealDate IS NOT NULL")
+//        LiveData<List<Meal>> getPlannedMeals();
+//
+//        // remove
+//        @Delete
+//        void removeMealFromPlanned(Meal meal);
+//
+//        // isPlanned
+//        @Query("SELECT plannedMealDate FROM meals WHERE idMeal = :id")
+//        boolean isMealPlanned(String id);
+//
+//        // statUpdate
+//        @Query("UPDATE meals SET plannedMealDate = :date WHERE idMeal = :id")
+//        void updateMealPlannedStatus(String id, String date);
+//
+//        // if meal exists in db
+//        @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
+//        boolean isMealInDB(String id);
+    }
+
 
 }

@@ -1,18 +1,17 @@
 package com.example.salude.features.mealdetails.presenter;
 
 import com.example.salude.contracts.MealDetailsContract;
-import com.example.salude.features.mealdetails.view.MealDetailsFragment;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
 
 public class MealDetailsPresenter implements MealDetailsContract.Presenter {
     private final MealDetailsContract.View view;
-    private final RoomLocalRepository.RoomLocalFavouriteRepository favRepo;
-    private final RoomLocalRepository.RoomLocalPlannedRepository planRepo;
+    private final LocalDataSource.RoomLocalFavouriteRepository favRepo;
+    private final LocalDataSource.RoomLocalPlannedRepository planRepo;
 
     public MealDetailsPresenter(MealDetailsContract.View view,
-                                RoomLocalRepository.RoomLocalFavouriteRepository favRepo,
-                                RoomLocalRepository.RoomLocalPlannedRepository planRepo) {
+                                LocalDataSource.RoomLocalFavouriteRepository favRepo,
+                                LocalDataSource.RoomLocalPlannedRepository planRepo) {
         this.view = view;
         this.favRepo = favRepo;
         this.planRepo = planRepo;

@@ -1,17 +1,13 @@
-package com.example.salude.model.local.repo;
+package com.example.salude.model.local.datasource;
 
 import androidx.lifecycle.LiveData;
-import androidx.room.Delete;
-import androidx.room.Insert;
-import androidx.room.OnConflictStrategy;
-import androidx.room.Query;
 
 import com.example.salude.model.local.dao.MealDAO;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.List;
 
-public class RoomLocalRepository {
+public class LocalDataSource {
     public static class RoomLocalFavouriteRepository {
         private final MealDAO.FavouriteMealDAO dao;
         private static RoomLocalFavouriteRepository repo = null;

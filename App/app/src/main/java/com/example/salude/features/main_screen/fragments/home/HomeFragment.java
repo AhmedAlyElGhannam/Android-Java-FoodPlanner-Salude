@@ -5,12 +5,9 @@ import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.CalendarContract;
@@ -44,17 +41,15 @@ import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.utils.clicklistener.OnAreaClickListener;
 import com.example.salude.utils.clicklistener.OnCategoryClickListener;
-import com.example.salude.utils.clicklistener.OnFilteredMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnIngredientClickListener;
-import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.example.salude.utils.network.OnNetworkConnectionListener;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
-import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -104,9 +99,9 @@ public class HomeFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.fragment_home, container, false);
 
-        presenter = new HomeScreenPresenter(this, RemoteRetrofitRepository.getInstance(RemoteRetrofitClient.getInstance(getContext())),
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+        presenter = new HomeScreenPresenter(this, RemoteDataSource.getInstance(RemoteRetrofitClient.getInstance(getContext())),
+                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
         categoryAdapter = new MealCategoryAdapter(getContext(), this);

@@ -22,7 +22,7 @@ import com.example.salude.utils.clicklistener.OnFavouriteClickListener;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
 import com.example.salude.model.local.dao.RoomLocalDB;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
 
 import java.util.ArrayList;
@@ -46,8 +46,8 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
         mealsRecyclerView = view.findViewById(R.id.listOfFavMealsRecyclerView);
         favMealsid = view.findViewById(R.id.favMealsid);
         presenter = new ListOfFavouriteMealsPresenter(this,
-                RoomLocalRepository.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                RoomLocalRepository.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
+                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
+                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
                 getContext());
 
         return view;

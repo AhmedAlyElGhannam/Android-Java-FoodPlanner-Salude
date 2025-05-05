@@ -15,8 +15,8 @@ import com.example.salude.R;
 import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.features.auth_firebase.register.presenter.RegisterAuthFirebasePresenter;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
-import com.example.salude.model.remote.firebase.FirebaseRepository;
-import com.example.salude.model.remote.firebase.register.RegistrationAuthRepository;
+import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
+import com.example.salude.model.remote.user.register.RegistrationAuthRepository;
 import com.google.android.material.textfield.TextInputEditText;
 
 public class RegisterAuthFirebaseActivity extends AppCompatActivity implements RegistrationContract.View {
@@ -36,7 +36,7 @@ public class RegisterAuthFirebaseActivity extends AppCompatActivity implements R
         setContentView(R.layout.registeration_screen);
 
         // create an object of register presenter
-        presenter = new RegisterAuthFirebasePresenter(this, FirebaseRepository.getInstance());
+        presenter = new RegisterAuthFirebasePresenter(this, UserRegAndAuthDataSource.getInstance());
 
         // get references to UI elements by id
         registerBtn = findViewById(R.id.registerBtn);

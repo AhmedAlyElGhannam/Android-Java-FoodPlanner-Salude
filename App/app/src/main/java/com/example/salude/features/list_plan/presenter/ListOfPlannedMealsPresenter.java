@@ -2,19 +2,18 @@ package com.example.salude.features.list_plan.presenter;
 
 import android.content.Context;
 
-import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.contracts.ListOfPlannedMealsContract;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
 
 public class ListOfPlannedMealsPresenter implements ListOfPlannedMealsContract.Presenter {
     private final ListOfPlannedMealsContract.View view;
-    private final RoomLocalRepository.RoomLocalFavouriteRepository localFavRepo;
-    private final RoomLocalRepository.RoomLocalPlannedRepository localPlanRepo;
+    private final LocalDataSource.RoomLocalFavouriteRepository localFavRepo;
+    private final LocalDataSource.RoomLocalPlannedRepository localPlanRepo;
     private final Context context;
 
     public ListOfPlannedMealsPresenter(ListOfPlannedMealsContract.View _view,
-                                         RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+                                       LocalDataSource.RoomLocalFavouriteRepository _localRepo, LocalDataSource.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
         view = _view;
         localFavRepo = _localRepo;
         localPlanRepo = _localPlanRepo;

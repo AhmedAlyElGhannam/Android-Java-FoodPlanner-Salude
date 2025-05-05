@@ -1,14 +1,11 @@
-package com.example.salude.model.remote.firebase;
+package com.example.salude.model.remote.user.datasource;
 
-import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 
 import com.example.salude.contracts.LoginContract;
 import com.example.salude.contracts.RegistrationContract;
-import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
-import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
@@ -18,17 +15,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
-public class FirebaseRepository {
-    private static FirebaseRepository repo;
+public class UserRegAndAuthDataSource {
+    private static UserRegAndAuthDataSource repo;
     FirebaseAuth mAuth;
-    private FirebaseRepository() {
+    private UserRegAndAuthDataSource() {
         mAuth = FirebaseAuth.getInstance();
     }
-    public static synchronized FirebaseRepository getInstance() {
+    public static synchronized UserRegAndAuthDataSource getInstance() {
         if (repo == null) {
-            repo = new FirebaseRepository();
+            repo = new UserRegAndAuthDataSource();
         }
 
         return repo;

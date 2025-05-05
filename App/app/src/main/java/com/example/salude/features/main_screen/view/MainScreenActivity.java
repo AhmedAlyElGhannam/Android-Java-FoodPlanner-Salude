@@ -1,19 +1,13 @@
 package com.example.salude.features.main_screen.view;
 
-import com.airbnb.lottie.LottieAnimationView;
 import com.example.salude.R;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -28,14 +22,9 @@ import com.example.salude.features.main_screen.fragments.connection.ConnectionRe
 import com.example.salude.features.main_screen.fragments.home.HomeFragment;
 import com.example.salude.features.main_screen.fragments.profile.ProfileFragment;
 import com.example.salude.features.main_screen.fragments.search.SearchFragment;
-import com.example.salude.model.pojo.Meal;
-import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
-import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
-import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
 import com.example.salude.utils.clicklistener.OnConnectionRestoredListener;
 import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import java.util.List;
 
 public class MainScreenActivity extends AppCompatActivity
         implements NetworkChangeReceiver.NetworkChangeListener,

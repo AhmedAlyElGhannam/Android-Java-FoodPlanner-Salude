@@ -1,16 +1,16 @@
 package com.example.salude.features.auth_firebase.login.presenter;
 
 import com.example.salude.contracts.LoginContract;
-import com.example.salude.model.remote.firebase.FirebaseRepository;
+import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class LoginAuthFirebasePresenter implements LoginContract.Presenter, LoginContract.OnLoginFinishedListener {
     LoginContract.View view;
-    FirebaseRepository repo;
+    UserRegAndAuthDataSource repo;
     private GoogleSignInClient mGoogleSignInClient;
 
 
-    public LoginAuthFirebasePresenter(LoginContract.View _view, FirebaseRepository _repo, GoogleSignInClient client) {
+    public LoginAuthFirebasePresenter(LoginContract.View _view, UserRegAndAuthDataSource _repo, GoogleSignInClient client) {
         view = _view;
         repo = _repo;
         mGoogleSignInClient = client;

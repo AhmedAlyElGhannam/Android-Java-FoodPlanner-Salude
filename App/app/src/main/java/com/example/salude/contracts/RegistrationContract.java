@@ -16,11 +16,6 @@ public interface RegistrationContract {
         void callRegisterModelAction(String name, String email, String password);
     }
 
-    interface Model {
-        // caller: presenter, callee: model
-        void registerUser(String name, String email, String password, OnRegistrationFinishedListener listener); // call presenter stuff
-    }
-
     interface OnRegistrationFinishedListener {
         // caller: model, callee: presenter
         public void OnRegistrationSuccess();

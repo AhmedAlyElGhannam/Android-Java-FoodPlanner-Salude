@@ -5,14 +5,14 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.salude.contracts.HomeScreenContract;
-import com.example.salude.model.local.repo.RoomLocalRepository;
+import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Area;
 import com.example.salude.model.pojo.Category;
 import com.example.salude.model.pojo.FilteredMeal;
 import com.example.salude.model.pojo.Ingredient;
 import com.example.salude.model.pojo.Meal;
 import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
-import com.example.salude.model.remote.retrofit.repository.RemoteRetrofitRepository;
+import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 import com.google.gson.Gson;
 
 import java.text.SimpleDateFormat;
@@ -22,14 +22,14 @@ import java.util.Locale;
 
 public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     private final HomeScreenContract.View view;
-    private final RemoteRetrofitRepository remoteRepo;
-    private final RoomLocalRepository.RoomLocalFavouriteRepository localFavRepo;
-    private final RoomLocalRepository.RoomLocalPlannedRepository localPlanRepo;
+    private final RemoteDataSource remoteRepo;
+    private final LocalDataSource.RoomLocalFavouriteRepository localFavRepo;
+    private final LocalDataSource.RoomLocalPlannedRepository localPlanRepo;
 
     private final SharedPreferences sharedPreferences;
     private Context context;
 
-    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteRetrofitRepository _repo, RoomLocalRepository.RoomLocalFavouriteRepository _localRepo, RoomLocalRepository.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+    public HomeScreenPresenter(HomeScreenContract.View _view, RemoteDataSource _repo, LocalDataSource.RoomLocalFavouriteRepository _localRepo, LocalDataSource.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
         context = _context;
         view = _view;
         remoteRepo = _repo;

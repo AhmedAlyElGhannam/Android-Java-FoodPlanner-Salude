@@ -1,8 +1,10 @@
 package com.example.salude.features.list_plan.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.ContentUris;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -118,9 +120,19 @@ public class ListOfPlannedMealsFragment extends Fragment implements ListOfPlanne
 
     @Override
     public void onPlannedClickListener(Meal meal) {
-        presenter.removeMealFromPlanned(meal);
-        removeMealFromCalendar(meal);
-        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+        new AlertDialog.Builder(getContext())
+                .setTitle("Favourite Meal")
+                .setMessage("Are you sure you want to remove this meal from planned?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.removeMealFromPlanned(meal);
+                        removeMealFromCalendar(meal);
+                        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
     }
 
     private void removeMealFromCalendar(Meal meal) {

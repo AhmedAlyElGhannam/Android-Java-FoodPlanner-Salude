@@ -166,14 +166,25 @@ public class HomeScreenFragment extends Fragment
             public void onClick(View v) {
                 // toast message depending on the NEXT fav state of meal
                 if (!mealOfTheDay.getIsFavouriteMeal()) {
+                    // toggle meal state
+                    presenter.toggleFavorite(mealOfTheDay);
                     Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                    new AlertDialog.Builder(getContext())
+                            .setTitle("Favourite Meal")
+                            .setMessage("Are you sure you want to remove this meal from favourites?")
+                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    // toggle meal state
+                                    presenter.toggleFavorite(mealOfTheDay);
+                                    Toast.makeText(requireContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
                 }
-
-                // toggle meal state
-                presenter.toggleFavorite(mealOfTheDay);
             }
         });
     }

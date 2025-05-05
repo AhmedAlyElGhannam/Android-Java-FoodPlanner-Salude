@@ -1,6 +1,8 @@
 package com.example.salude.features.list_Fav.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -91,9 +93,19 @@ public class ListOfFavouriteMealsFragment extends Fragment implements ListOfFavo
     @SuppressLint("NotifyDataSetChanged")
     @Override
     public void onFavouriteClickListener(Meal meal) {
-        presenter.removeMealFromFavourites(meal);
-        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
-    }
+        new AlertDialog.Builder(getContext())
+                .setTitle("Favourite Meal")
+                .setMessage("Are you sure you want to remove this meal from favourites?")
+                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        presenter.removeMealFromFavourites(meal);
+                        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .show();
+   }
 
     @Override
     public void onMealItemClickListener(Meal meal) {

@@ -7,6 +7,7 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -33,6 +34,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.contracts.MealDetailsContract;
+import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
 import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.guest.GuestMode;
@@ -148,14 +150,25 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
                 if (!GuestMode.getGuestModeState()) {
                     // toast message depending on the NEXT fav state of meal
                     if (!meal.getIsFavouriteMeal()) {
-                        Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(requireContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                        // toggle meal state
+                        presenter.toggleFavorite(meal);
                     }
                     else {
-                        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Favourite Meal")
+                                .setMessage("Are you sure you want to remove this meal from favourites?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // toggle meal state
+                                        presenter.toggleFavorite(meal);
+                                        Toast.makeText(requireContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
                     }
-
-                    // toggle meal state
-                    presenter.toggleFavorite(meal);
                 }
                 else {
                     Toast.makeText(requireContext(), "Sign in to add to planned meals.", Toast.LENGTH_SHORT).show();
@@ -182,17 +195,17 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
                     // if previous planned status is empty
                     if (meal.getPlannedMealDate() == null) {
                         // show date picker dialog
-                        DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
+                        DatePickerDialogManager.showDatePickerDialog(requireContext(), selectedDate -> {
                             // pass meal && selected date to presenter
                             presenter.togglePlanned(meal, selectedDate);
                             // add meal to phone calendar
                             addMealToCalendar(meal);
                             // toast message describing operation
-                            Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(requireContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
                         });
                     } else {
                         // show alert dialog before unscheduling
-                        new AlertDialog.Builder(getContext())
+                        new AlertDialog.Builder(requireContext())
                                 .setTitle("Unscheduled Meal")
                                 .setMessage("Are you sure you want to unschedule this meal?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -203,7 +216,7 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
                                         // remove meal from calendar
                                         removeMealFromCalendar(meal);
                                         // toast action describing action
-                                        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(requireContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .setNegativeButton("No", null)

@@ -77,11 +77,6 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
                 favListener.onFavouriteClickListener(meal);
             }
         });
-
-//        holder.itemView.setOnClickListener(v -> {
-//            // Handle meal item click if needed
-//            view.showMealDetails(meal);
-//        });
     }
 
     @Override
@@ -107,8 +102,6 @@ public class ListOfFavouriteMealsAdapter extends RecyclerView.Adapter<ListOfFavo
             favButton = itemView.findViewById(R.id.btnAddToFavourites);
             planBtn = itemView.findViewById(R.id.btnAddToCalendar);
             layout = itemView.findViewById(R.id.mealItemLayout);
-
-
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.example.salude.contracts;
 
 import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.LiveData;
 
 import com.example.salude.model.pojo.Meal;
 
@@ -20,6 +21,7 @@ public interface ListOfPlannedMealsContract {
     }
 
     interface Model {
-
+        LiveData<List<Meal>> getListOfPlannedMeals();
+        void removeFromPlannedMeals(Meal meal);
     }
 }

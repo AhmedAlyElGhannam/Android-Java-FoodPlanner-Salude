@@ -53,7 +53,6 @@ public class ListOfPlannedMealsAdapter extends RecyclerView.Adapter<ListOfPlanne
         Meal meal = meals.get(position);
         holder.mealName.setText(meal.getStrMeal());
         holder.mealCategory.setText(meal.getPlannedMealDate());
-//        holder.mealArea.setText(meal.getStrArea());
         Glide.with(context).load(meal.getStrMealThumb()).into(holder.mealThumbnail);
 
         holder.favButton.setVisibility(View.INVISIBLE);

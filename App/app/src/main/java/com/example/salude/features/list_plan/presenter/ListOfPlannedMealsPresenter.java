@@ -8,21 +8,16 @@ import com.example.salude.model.pojo.Meal;
 
 public class ListOfPlannedMealsPresenter implements ListOfPlannedMealsContract.Presenter {
     private final ListOfPlannedMealsContract.View view;
-    private final LocalDataSource.RoomLocalFavouriteRepository localFavRepo;
-    private final LocalDataSource.RoomLocalPlannedRepository localPlanRepo;
-    private final Context context;
+    private final ListOfPlannedMealsContract.Model repo;
 
-    public ListOfPlannedMealsPresenter(ListOfPlannedMealsContract.View _view,
-                                       LocalDataSource.RoomLocalFavouriteRepository _localRepo, LocalDataSource.RoomLocalPlannedRepository _localPlanRepo, Context _context) {
+    public ListOfPlannedMealsPresenter(ListOfPlannedMealsContract.View _view, ListOfPlannedMealsContract.Model _repo) {
         view = _view;
-        localFavRepo = _localRepo;
-        localPlanRepo = _localPlanRepo;
-        context = _context;
+        repo = _repo;
     }
 
     @Override
     public void getPlannedMeals() {
-        localPlanRepo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
+        repo.getListOfPlannedMeals().observe(view.getViewLifecycleOwner(), meals -> {
             if (meals != null) {
                 if (!meals.isEmpty()) {
                     view.showPlannedMeals(meals);
@@ -35,20 +30,7 @@ public class ListOfPlannedMealsPresenter implements ListOfPlannedMealsContract.P
 
     @Override
     public void removeMealFromPlanned(Meal meal) {
-        localPlanRepo.removeFromPlannedMeals(meal);
+        repo.removeFromPlannedMeals(meal);
     }
-
-//    @Override
-//    public void togglePlanned(Meal meal, String selectedDate) {
-//        if (selectedDate != null) {
-//            meal.setPlannedMealDate(selectedDate);
-//            localPlanRepo.addToPlannedMeals(meal, selectedDate);
-//            view.updateCalendarButton(true);
-//        } else {
-//            meal.setPlannedMealDate(null);
-//            localPlanRepo.removeFromPlannedMeals(meal);
-//            view.updateCalendarButton(false);
-//        }
-//    }
 }
 

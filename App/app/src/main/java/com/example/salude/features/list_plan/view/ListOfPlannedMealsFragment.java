@@ -23,6 +23,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.salude.R;
 import com.example.salude.contracts.ListOfPlannedMealsContract;
 import com.example.salude.features.list_plan.presenter.ListOfPlannedMealsPresenter;
+import com.example.salude.model.repository.SaludRepository;
 import com.example.salude.utils.clicklistener.OnMealItemClickListener;
 import com.example.salude.utils.clicklistener.OnPlannedClickListener;
 import com.example.salude.features.mealdetails.view.MealDetailsFragment;
@@ -50,10 +51,7 @@ public class ListOfPlannedMealsFragment extends Fragment implements ListOfPlanne
 
         mealsRecyclerView = view.findViewById(R.id.listOfPlannedMealsRecyclerView);
         favMealsid = view.findViewById(R.id.plannedMealsid);
-        presenter = new ListOfPlannedMealsPresenter(this,
-                LocalDataSource.RoomLocalFavouriteRepository.getInstance(RoomLocalDB.getInstance(getContext()).getFavouriteMealDAO()),
-                LocalDataSource.RoomLocalPlannedRepository.getInstance(RoomLocalDB.getInstance(getContext()).getPlannedMealDAO()),
-                getContext());
+        presenter = new ListOfPlannedMealsPresenter(this, SaludRepository.getInstance(requireContext()));
 
         return view;
     }

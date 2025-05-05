@@ -35,6 +35,7 @@ import com.example.salude.R;
 import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.features.mealdetails.presenter.MealDetailsPresenter;
 import com.example.salude.model.repository.SaludRepository;
+import com.example.salude.utils.guest.GuestMode;
 import com.example.salude.utils.plannedmeal.DatePickerDialogManager;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
@@ -143,62 +144,76 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
         btnFavorite.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // toast message depending on the NEXT fav state of meal
-                if (!meal.getIsFavouriteMeal()) {
-                    Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                // user must not be a guest
+                if (!GuestMode.getGuestModeState()) {
+                    // toast message depending on the NEXT fav state of meal
+                    if (!meal.getIsFavouriteMeal()) {
+                        Toast.makeText(getContext(), "Meal Added to Favourites", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                    }
+
+                    // toggle meal state
+                    presenter.toggleFavorite(meal);
                 }
                 else {
-                    Toast.makeText(getContext(), "Meal Removed from Favourites", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(requireContext(), "Sign in to add to planned meals.", Toast.LENGTH_SHORT).show();
                 }
 
-                // toggle meal state
-                presenter.toggleFavorite(meal);
             }
         });
 
         btnAddToCalendar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // if app does not have permissions request it before clicking again
-                if (!(
-                        ContextCompat.checkSelfPermission(requireContext(), CALENDAR_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
-                        &&
-                        ContextCompat.checkSelfPermission(requireContext(), CALENDAR_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED
-                        )) {
-                    requestPermissions(CALENDAR_PERMISSIONS, CALENDAR_PERMISSION_REQUEST_CODE);
-                    return;
+                // user must not be a guest
+                if (!GuestMode.getGuestModeState()) {
+                    // if app does not have permissions request it before clicking again
+                    if (!(
+                            ContextCompat.checkSelfPermission(requireContext(), CALENDAR_PERMISSIONS[0]) == PackageManager.PERMISSION_GRANTED
+                                    &&
+                                    ContextCompat.checkSelfPermission(requireContext(), CALENDAR_PERMISSIONS[1]) == PackageManager.PERMISSION_GRANTED
+                    )) {
+                        requestPermissions(CALENDAR_PERMISSIONS, CALENDAR_PERMISSION_REQUEST_CODE);
+                        return;
+                    }
+
+                    // if previous planned status is empty
+                    if (meal.getPlannedMealDate() == null) {
+                        // show date picker dialog
+                        DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
+                            // pass meal && selected date to presenter
+                            presenter.togglePlanned(meal, selectedDate);
+                            // add meal to phone calendar
+                            addMealToCalendar(meal);
+                            // toast message describing operation
+                            Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
+                        });
+                    } else {
+                        // show alert dialog before unscheduling
+                        new AlertDialog.Builder(getContext())
+                                .setTitle("Unscheduled Meal")
+                                .setMessage("Are you sure you want to unschedule this meal?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // nullify date field in meal
+                                        presenter.togglePlanned(meal, null);
+                                        // remove meal from calendar
+                                        removeMealFromCalendar(meal);
+                                        // toast action describing action
+                                        Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setNegativeButton("No", null)
+                                .show();
+                    }
+                }
+                else {
+                    Toast.makeText(requireContext(), "Sign in to add to favourite meals.", Toast.LENGTH_SHORT).show();
                 }
 
-                // if previous planned status is empty
-                if (meal.getPlannedMealDate() == null) {
-                    // show date picker dialog
-                    DatePickerDialogManager.showDatePickerDialog(getContext(), selectedDate -> {
-                        // pass meal && selected date to presenter
-                        presenter.togglePlanned(meal, selectedDate);
-                        // add meal to phone calendar
-                        addMealToCalendar(meal);
-                        // toast message describing operation
-                        Toast.makeText(getContext(), "Meal Scheduled for " + selectedDate, Toast.LENGTH_SHORT).show();
-                    });
-                } else {
-                    // show alert dialog before unscheduling
-                    new AlertDialog.Builder(getContext())
-                            .setTitle("Unscheduled Meal")
-                            .setMessage("Are you sure you want to unschedule this meal?")
-                            .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    // nullify date field in meal
-                                    presenter.togglePlanned(meal, null);
-                                    // remove meal from calendar
-                                    removeMealFromCalendar(meal);
-                                    // toast action describing action
-                                    Toast.makeText(getContext(), "Meal Unscheduled", Toast.LENGTH_SHORT).show();
-                                }
-                            })
-                            .setNegativeButton("No", null)
-                            .show();
-                }
             }
         });
     }

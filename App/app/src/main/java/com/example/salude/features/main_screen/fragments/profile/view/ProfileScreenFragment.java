@@ -67,6 +67,10 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
         profileTxt.setText("Profile");
         appIconImg.setImageResource(R.mipmap.app_icon_prof_foreground);
 
+        if (GuestMode.getGuestModeState()) {
+            signOutBtn.setText("Sign In");
+        }
+
         favMealsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,10 +108,6 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
                 }
             }
         });
-
-        if (GuestMode.getGuestModeState()) {
-            signOutBtn.setText("Sign In");
-        }
 
         signOutBtn.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -7,8 +7,8 @@ import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 
 public class RegisterAuthFirebasePresenter implements RegistrationContract.Presenter, RegistrationContract.OnRegistrationFinishedListener {
     RegistrationContract.View view;
-    UserRegAndAuthDataSource repo;
-    public RegisterAuthFirebasePresenter(RegistrationContract.View _view, UserRegAndAuthDataSource _repo) {
+    RegistrationContract.Model repo;
+    public RegisterAuthFirebasePresenter(RegistrationContract.View _view, RegistrationContract.Model _repo) {
         repo = _repo;
         view = _view;
     }

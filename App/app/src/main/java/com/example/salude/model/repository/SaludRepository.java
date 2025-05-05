@@ -11,7 +11,7 @@ import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
 import com.google.firebase.auth.FirebaseUser;
 
-public class SaludRepository {
+public class SaludRepository implements RegistrationContract.Model, LoginContract.Model{
     private static SaludRepository salud_repo;
     private UserRegAndAuthDataSource auth_source;
     private LocalDataSource.RoomLocalFavouriteRepository local_fav_source;
@@ -33,10 +33,12 @@ public class SaludRepository {
         return salud_repo;
     }
 
+    @Override
     public FirebaseUser getCurrentUser() {
         return auth_source.getCurrentUser();
     }
 
+    @Override
     public void registerUser(
             String name,
             String email,
@@ -45,10 +47,12 @@ public class SaludRepository {
         auth_source.registerUser(name, email, password, listener);
     }
 
+    @Override
     public void userAccountLogin(String email, String password, LoginContract.OnLoginFinishedListener listener) {
         auth_source.userAccountLogin(email, password, listener);
     }
 
+    @Override
     public void userGoogleLogin(String idToken, LoginContract.OnLoginFinishedListener listener) {
         auth_source.userGoogleLogin(idToken, listener);
     }

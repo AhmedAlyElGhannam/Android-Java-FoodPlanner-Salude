@@ -6,11 +6,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 public class LoginAuthFirebasePresenter implements LoginContract.Presenter, LoginContract.OnLoginFinishedListener {
     LoginContract.View view;
-    UserRegAndAuthDataSource repo;
+    LoginContract.Model repo;
     private GoogleSignInClient mGoogleSignInClient;
 
 
-    public LoginAuthFirebasePresenter(LoginContract.View _view, UserRegAndAuthDataSource _repo, GoogleSignInClient client) {
+    public LoginAuthFirebasePresenter(LoginContract.View _view, LoginContract.Model _repo, GoogleSignInClient client) {
         view = _view;
         repo = _repo;
         mGoogleSignInClient = client;

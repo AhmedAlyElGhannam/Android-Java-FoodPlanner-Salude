@@ -19,6 +19,7 @@ import com.example.salude.features.auth_firebase.login.presenter.LoginAuthFireba
 import com.example.salude.features.auth_firebase.register.view.RegisterAuthFirebaseActivity;
 import com.example.salude.features.main_screen.view.MainScreenActivity;
 import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
+import com.example.salude.model.repository.SaludRepository;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -67,7 +68,7 @@ public class LoginAuthFirebaseActivity extends AppCompatActivity implements Logi
 
 
         // create an object of login presenter (reference to view + repo instance + reference to google signin client)
-        presenter = new LoginAuthFirebasePresenter(this, UserRegAndAuthDataSource.getInstance(), mGoogleSignInClient);
+        presenter = new LoginAuthFirebasePresenter(this, SaludRepository.getInstance(this), mGoogleSignInClient);
 
 
         // get references to UI elements by id

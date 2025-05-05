@@ -1,5 +1,7 @@
 package com.example.salude.contracts;
 
+import android.content.Context;
+
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 
@@ -14,6 +16,7 @@ public interface MealDetailsContract {
         void updateCalendarButton(boolean isPlanned);
         void addMealToCalendar(Meal meal);
         void removeMealFromCalendar(Meal meal);
+        public void performCalendarInsertion(Meal meal, long startMillis, long endMillis);
     }
 
     interface Presenter {
@@ -21,6 +24,9 @@ public interface MealDetailsContract {
         void checkPlannedStatus(Meal meal);
         void toggleFavorite(Meal meal);
         void togglePlanned(Meal meal, String selectedDate);
+        String extractYouTubeId(String url);
+        public void onAddMealToCalendarRequested(Meal meal);
+        public long getPrimaryCalendarId(Context context);
     }
 
     interface Model {

@@ -19,7 +19,7 @@ import androidx.fragment.app.Fragment;
 import android.Manifest;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionLostFragment;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionRestoredFragment;
-import com.example.salude.features.main_screen.fragments.home.view.HomeFragment;
+import com.example.salude.features.main_screen.fragments.home.view.HomeScreenFragment;
 import com.example.salude.features.main_screen.fragments.profile.ProfileFragment;
 import com.example.salude.features.main_screen.fragments.search.SearchFragment;
 import com.example.salude.utils.clicklistener.OnConnectionRestoredListener;
@@ -73,7 +73,7 @@ public class MainScreenActivity extends AppCompatActivity
             int id = item.getItemId();
 
             if (id == R.id.nav_home) {
-                selectedFragment = new HomeFragment();
+                selectedFragment = new HomeScreenFragment();
             } else if (id == R.id.nav_search) {
                 if (isOfflineMode) {
                     Toast.makeText(this, "Search requires internet connection", Toast.LENGTH_SHORT).show();
@@ -169,8 +169,8 @@ public class MainScreenActivity extends AppCompatActivity
         // Notify current fragment (HomeFragment) to refresh data
         Fragment currentFragment = getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof HomeFragment) {
-            ((HomeFragment) currentFragment).onNetworkConnectionSuccess();
+        if (currentFragment instanceof HomeScreenFragment) {
+            ((HomeScreenFragment) currentFragment).onNetworkConnectionSuccess();
         }
     }
 
@@ -194,8 +194,8 @@ public class MainScreenActivity extends AppCompatActivity
         // Notify current fragment (HomeFragment) to refresh data
         Fragment currentFragment = getSupportFragmentManager()
                 .findFragmentById(R.id.fragment_container);
-        if (currentFragment instanceof HomeFragment) {
-            ((HomeFragment) currentFragment).onNetworkConnectionSuccess();
+        if (currentFragment instanceof HomeScreenFragment) {
+            ((HomeScreenFragment) currentFragment).onNetworkConnectionSuccess();
         }
     }
 

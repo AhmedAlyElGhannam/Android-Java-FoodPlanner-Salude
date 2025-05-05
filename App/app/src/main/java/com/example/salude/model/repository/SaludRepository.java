@@ -13,6 +13,7 @@ import com.example.salude.contracts.RegistrationContract;
 import com.example.salude.model.local.dao.RoomLocalDB;
 import com.example.salude.model.local.datasource.LocalDataSource;
 import com.example.salude.model.pojo.Meal;
+import com.example.salude.model.remote.retrofit.callback.RemoteRetrofitCallback;
 import com.example.salude.model.remote.retrofit.client.RemoteRetrofitClient;
 import com.example.salude.model.remote.retrofit.datasource.RemoteDataSource;
 import com.example.salude.model.remote.user.datasource.UserRegAndAuthDataSource;
@@ -85,6 +86,11 @@ public class SaludRepository implements
     @Override
     public LiveData<List<Meal>> getListOfPlannedMeals() {
         return local_plan_source.getListOfPlannedMeals();
+    }
+
+    @Override
+    public void getMealOfTheDay(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf) {
+        remote_source.getMealOfTheDay(cbf);
     }
 
     @Override

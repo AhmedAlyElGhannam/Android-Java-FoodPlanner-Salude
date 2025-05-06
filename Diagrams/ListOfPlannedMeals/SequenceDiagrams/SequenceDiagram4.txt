@@ -1,0 +1,17 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+participant "ListOfPlannedMealsFragment" as Fragment
+participant "ListOfPlannedMealsAdapter" as Adapter
+participant "ViewHolder" as Holder
+
+Fragment -> Adapter: setMeals(List<Meal>)
+Adapter -> Adapter: notifyDataSetChanged()
+Adapter -> Holder: onCreateViewHolder()
+Holder --> Adapter: ViewHolder
+Adapter -> Holder: onBindViewHolder(Meal)
+Holder -> Holder: Binds meal data to views\nSets click listeners
+@enduml

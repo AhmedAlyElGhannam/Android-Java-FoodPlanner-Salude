@@ -1,0 +1,25 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+actor User
+participant "ListOfPlannedMealsFragment" as Fragment
+participant "ListOfPlannedMealsPresenter" as Presenter
+participant "SaludRepository" as Repository
+participant "LocalDataSource" as LocalDB
+participant "Calendar" as Calendar
+
+User -> Fragment: Clicks "Remove from Planned" on a meal
+Fragment -> Fragment: Shows confirmation dialog
+User -> Fragment: Confirms removal
+Fragment -> Presenter: removeMealFromPlanned(Meal)
+Presenter -> Repository: removeFromPlannedMeals(Meal)
+Repository -> LocalDB: removeFromPlannedMeals(Meal)
+LocalDB --> Repository: Success
+Repository --> Presenter: Success
+Presenter --> Fragment: Success
+Fragment -> Calendar: removeMealFromCalendar(Meal)
+Fragment -> User: Shows "Meal Unscheduled" toast
+@enduml

@@ -1,0 +1,21 @@
+@startuml
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+actor User
+participant "ListOfPlannedMealsFragment" as Fragment
+participant "ListOfPlannedMealsPresenter" as Presenter
+participant "SaludRepository" as Repository
+participant "LocalDataSource" as LocalDB
+
+User -> Fragment: Opens Planned Meals Screen
+Fragment -> Presenter: getPlannedMeals()
+Presenter -> Repository: getListOfPlannedMeals()
+Repository -> LocalDB: getListOfPlannedMeals()
+LocalDB --> Repository: LiveData<List<Meal>>
+Repository --> Presenter: LiveData<List<Meal>>
+Presenter -> Fragment: showPlannedMeals(List<Meal>)
+Fragment -> Fragment: adapter.setMeals(meals)\nadapter.notifyDataSetChanged()
+@enduml

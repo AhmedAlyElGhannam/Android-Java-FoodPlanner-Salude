@@ -1,0 +1,66 @@
+@startuml TogglePlanned
+actor User
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+participant "HomeScreenFragment" as View
+participant "HomeScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "LocalDataSource" as Local
+participant "ContentResolver" as Calendar
+participant "SharedPreferences" as SP
+
+User -> View: click calendar button
+alt Guest Mode
+    View -> View: show("Sign in to add to planned meals")
+else Not Guest Mode
+    alt no calendar permissions
+        View -> View: requestPermissions()
+        User -> View: grant permissions
+        View -> View: show("Calendar permissions granted. Tap again to schedule")
+    else has permissions
+        alt meal not planned
+            View -> View: show DatePickerDialog
+            User -> View: select date
+            View -> Presenter: togglePlanned(meal, selectedDate)
+            Presenter -> Model: addToPlannedMeals(meal, selectedDate)
+            Model -> Local: addToPlannedMeals(meal, selectedDate)
+            Local --> Model: save to Room DB
+            Presenter -> View: updateCalendarButton(true)
+            View -> View: set calendar button icon (filled)
+            View -> Presenter: onAddMealToCalendarRequested(meal)
+            Presenter -> Presenter: parse planned date to millis
+            Presenter -> View: performCalendarInsertion(meal, startMillis, endMillis)
+            View -> Presenter: getPrimaryCalendarId()
+            Presenter -> Calendar: query primary calendar
+            Calendar --> Presenter: calendarId
+            View -> Calendar: insert event (meal details)
+            Calendar --> View: eventUri
+            View -> SP: save eventId for meal
+            SP --> View: save
+            View -> View: show("Meal Scheduled for " + selectedDate)
+        else meal planned
+            View -> View: show AlertDialog
+            User -> View: confirm "Yes"
+            View -> Presenter: togglePlanned(meal, null)
+            Presenter -> Model: removeFromPlannedMeals(meal)
+            Model -> Local: removeFromPlannedMeals(meal)
+            Local --> Model: remove from Room DB
+            Presenter -> View: updateCalendarButton(false)
+            View -> View: set calendar button icon (border)
+            View -> SP: get eventId for meal
+            SP --> View: eventId
+            View -> Calendar: delete event
+            Calendar --> View: delete
+            View -> SP: remove eventId
+            SP --> View: save
+            View -> View: show("Meal Unscheduled")
+        end alt
+    end alt
+end alt
+
+@enduml

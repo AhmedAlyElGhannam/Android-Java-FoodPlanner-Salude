@@ -29,10 +29,7 @@ public interface HomeScreenContract {
 
     public interface Presenter {
         public void getMealOfTheDay();
-        public void addMealToFavourites(Meal meal);
         public void removeMealFromFavourites(Meal meal);
-        public void addMealToPlanned(Meal meal);
-        public void removeMealFromPlanned(Meal meal);
         public void checkFavoriteStatus(Meal meal);
         public void checkPlannedStatus(Meal meal);
         public void toggleFavorite(Meal meal);

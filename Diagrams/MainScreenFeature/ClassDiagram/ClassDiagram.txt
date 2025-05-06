@@ -1,0 +1,89 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+' Interfaces
+interface OnNetworkConnectionListener {
+    + onNetworkConnectionSuccess()
+    + onNetworkConnectionFailure()
+}
+
+interface NetworkChangeListener {
+    + onNetworkChanged(isConnected: boolean)
+}
+
+interface OnConnectionRestoredListener {
+    + onConnectionRestored()
+}
+
+interface MainScreenContract {
+    interface View
+    interface Presenter
+    interface Model
+}
+
+' Classes
+class ConnectivityUtil {
+    + isConnected(context: Context): boolean {static}
+}
+
+class NetworkChangeReceiver {
+    - listener: NetworkChangeListener
+    + NetworkChangeReceiver(listener: NetworkChangeListener)
+    + onReceive(context: Context, intent: Intent)
+}
+
+class MainScreenActivity {
+    - bottomNav: BottomNavigationView
+    - networkChangeReceiver: NetworkChangeReceiver
+    - isConnected: boolean
+    - isShowingConnectionFragment: boolean
+    - isOfflineMode: boolean
+    + onCreate(savedInstanceState: Bundle)
+    + onBackPressed()
+    + onNetworkChanged(isConnected: boolean)
+    - showConnectionLostFragment()
+    - showConnectionRestoredAnimation()
+    + onDestroy()
+    + onConnectionRestored()
+    + continueOffline()
+}
+
+' Fragments (simplified representation)
+class ConnectionLostFragment
+class ConnectionRestoredFragment
+class HomeScreenFragment
+class SearchScreenFragment
+class ProfileScreenFragment
+
+' Relationships
+MainScreenActivity ..|> MainScreenContract.View
+MainScreenActivity ..|> NetworkChangeListener
+MainScreenActivity ..|> OnConnectionRestoredListener
+
+NetworkChangeReceiver ..|> NetworkChangeListener
+
+ConnectionRestoredFragment ..> OnConnectionRestoredListener
+
+MainScreenActivity --> NetworkChangeReceiver
+MainScreenActivity --> ConnectionLostFragment
+MainScreenActivity --> ConnectionRestoredFragment
+MainScreenActivity --> HomeScreenFragment
+MainScreenActivity --> SearchScreenFragment
+MainScreenActivity --> ProfileScreenFragment
+
+ConnectivityUtil ..> NetworkChangeReceiver : uses
+
+' Note for implementation details
+note top of MainScreenActivity
+    Implements multiple interfaces:
+    - MainScreenContract.View
+    - NetworkChangeListener
+    - OnConnectionRestoredListener
+end note
+
+@enduml

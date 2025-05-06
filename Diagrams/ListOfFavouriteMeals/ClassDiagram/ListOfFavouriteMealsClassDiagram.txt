@@ -95,7 +95,6 @@ ListOfFavouriteMealsFragment --> ListOfFavouriteMealsPresenter
 ListOfFavouriteMealsPresenter --> SaludRepository
 ListOfFavouriteMealsFragment --> ListOfFavouriteMealsAdapter
 
-ListOfFavouriteMealsAdapter --> Meal
 ListOfFavouriteMealsAdapter --> OnMealItemClickListener
 ListOfFavouriteMealsAdapter --> OnFavouriteClickListener
 

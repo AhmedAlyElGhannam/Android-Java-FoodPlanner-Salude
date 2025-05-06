@@ -1,0 +1,40 @@
+@startuml ToggleFavorite
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+actor User
+participant "HomeScreenFragment" as View
+participant "HomeScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "LocalDataSource" as Local
+
+User -> View: click favorite button
+alt Guest Mode
+    View -> User: show("Sign in to add to favourite meals")
+else Not Guest Mode
+    alt meal is not favorite
+        View -> Presenter: toggleFavorite(meal)
+        Presenter -> Model: addMealToFavourites(meal)
+        Model -> Local: addMealToFavourites(meal)
+        Local --> Model: save to Room DB
+        Presenter -> View: updateFavoriteButton(true)
+        View -> View: set favorite button icon (filled)
+        View -> User: show("Meal Added to Favourites")
+    else meal is favorite
+        View -> View: show AlertDialog
+        User -> View: confirm "Yes"
+        View -> Presenter: toggleFavorite(meal)
+        Presenter -> Model: removeMealFromFavourites(meal)
+        Model -> Local: removeMealFromFavourites(meal)
+        Local --> Model: remove from Room DB
+        Presenter -> View: updateFavoriteButton(false)
+        View -> View: set favorite button icon (border)
+        View -> User: show("Meal Removed from Favourites")
+    end alt
+end alt
+
+@enduml

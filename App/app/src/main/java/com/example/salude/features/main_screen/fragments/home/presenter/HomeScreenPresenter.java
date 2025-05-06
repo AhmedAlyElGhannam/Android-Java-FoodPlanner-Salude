@@ -74,25 +74,8 @@ public class HomeScreenPresenter implements HomeScreenContract.Presenter {
     }
 
     @Override
-    public void addMealToFavourites(Meal meal) {
-        repo.addMealToFavourites(meal);
-    }
-
-    @Override
     public void removeMealFromFavourites(Meal meal) {
         repo.removeMealFromFavourites(meal);
-    }
-
-    @Override
-    public void addMealToPlanned(Meal meal) {
-        repo.addToPlannedMeals(meal, meal.getPlannedMealDate());
-        view.updateFavoriteButton(true);
-    }
-
-    @Override
-    public void removeMealFromPlanned(Meal meal) {
-        repo.removeFromPlannedMeals(meal);
-        view.updateCalendarButton(false);
     }
 
     @Override

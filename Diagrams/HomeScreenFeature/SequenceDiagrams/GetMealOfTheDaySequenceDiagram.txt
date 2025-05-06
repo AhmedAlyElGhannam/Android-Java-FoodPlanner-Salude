@@ -1,0 +1,48 @@
+@startuml FetchMealOfTheDay
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+actor User
+participant "HomeScreenFragment" as View
+participant "HomeScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "SharedPreferences" as SP
+participant "RemoteDataSource" as Remote
+
+User -> View: onViewCreated()
+View -> Presenter: getMealOfTheDay()
+Presenter -> SP: getString("mealDate")
+SP --> Presenter: savedDate
+alt savedDate equals today
+    Presenter -> SP: getString("mealOfTheDay")
+    SP --> Presenter: mealJson
+    Presenter -> Presenter: parse mealJson to Meal
+    Presenter -> View: showMealOfTheDay(meal)
+    View -> View: update UI (meal name, category, image)
+else fetch new meal
+    Presenter -> Model: getMealOfTheDay(callback)
+    Model -> Remote: getMealOfTheDay(callback)
+    Remote --> Model: onSuccess(meals)
+    Model --> Presenter: onSuccess(meals)
+    Presenter -> View: showMealOfTheDay(meal)
+    View -> View: update UI (meal name, category, image)
+    Presenter -> SP: putString("mealOfTheDay", mealJson)
+    Presenter -> SP: putString("mealDate", today)
+    SP --> Presenter: save
+end alt
+View -> Presenter: checkFavoriteStatus(meal)
+Presenter -> Model: getListOfFavouriteMeals()
+Model --> Presenter: LiveData<List<Meal>>
+Presenter -> View: updateFavoriteButton(isFavorite)
+View -> View: update favorite button icon
+View -> Presenter: checkPlannedStatus(meal)
+Presenter -> Model: getListOfPlannedMeals()
+Model --> Presenter: LiveData<List<Meal>>
+Presenter -> View: updateCalendarButton(isPlanned)
+View -> View: update calendar button icon
+
+@enduml

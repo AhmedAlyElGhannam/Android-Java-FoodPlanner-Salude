@@ -1,0 +1,117 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+interface HomeScreenContract {
+        interface View
+        interface Presenter
+        interface Model
+}
+
+interface HomeScreenContract.View {
+    +{abstract} showMealOfTheDay(Meal meal)
+    +{abstract} getViewLifecycleOwner() : LifecycleOwner
+    +{abstract} addMealToCalendar(Meal meal)
+    +{abstract} updateFavoriteButton(boolean isFavorite)
+    +{abstract} updateCalendarButton(boolean isPlanned)
+    +{abstract} removeMealFromCalendar(Meal meal)
+    +{abstract} performCalendarInsertion(Meal meal, long startMillis, long endMillis)
+    +{abstract} onNetworkConnectionFailure()
+    +{abstract} onNetworkConnectionSuccess()
+}
+
+interface HomeScreenContract.Presenter {
+    +{abstract} getMealOfTheDay()
+    +{abstract} removeMealFromFavourites(Meal meal)
+    +{abstract} checkFavoriteStatus(Meal meal)
+    +{abstract} checkPlannedStatus(Meal meal)
+    +{abstract} toggleFavorite(Meal meal)
+    +{abstract} togglePlanned(Meal meal, String selectedDate)
+    +{abstract} onAddMealToCalendarRequested(Meal meal)
+    +{abstract} getPrimaryCalendarId(Context context) : long
+}
+
+interface HomeScreenContract.Model {
+    +{abstract} addMealToFavourites(Meal meal)
+    +{abstract} removeMealFromFavourites(Meal meal)
+    +{abstract} addToPlannedMeals(Meal meal, String date)
+    +{abstract} removeFromPlannedMeals(Meal meal)
+    +{abstract} getListOfFavouriteMeals() : LiveData<List<Meal>>
+    +{abstract} getListOfPlannedMeals() : LiveData<List<Meal>>
+    +{abstract} getMealOfTheDay(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf)
+}
+
+
+' Classes
+
+    class HomeScreenPresenter {
+        - view: HomeScreenContract.View
+        - repo: HomeScreenContract.Model
+        - sharedPreferences: SharedPreferences
+        - context: Context
+        + getMealOfTheDay()
+        + addMealToFavourites(Meal)
+        + removeMealFromFavourites(Meal)
+        + addMealToPlanned(Meal)
+        + removeMealFromPlanned(Meal)
+        + checkFavoriteStatus(Meal)
+        + checkPlannedStatus(Meal)
+        + toggleFavorite(Meal)
+        + togglePlanned(Meal, String)
+        + onAddMealToCalendarRequested(Meal)
+        + getPrimaryCalendarId(Context): long
+    }
+
+
+
+    class HomeScreenFragment {
+        - presenter: HomeScreenContract.Presenter
+        + getViewLifecycleOwner()
+        + showMealOfTheDay(Meal)
+        + updateFavoriteButton(boolean)
+        + updateCalendarButton(boolean)
+        + performCalendarInsertion(Meal, long, long)
+    }
+
+
+
+    class SaludRepository {
+        + getMealOfTheDay(RemoteRetrofitMealCallback)
+        + addMealToFavourites(Meal)
+        + removeMealFromFavourites(Meal)
+        + addToPlannedMeals(Meal, String)
+        + removeFromPlannedMeals(Meal)
+        + getListOfFavouriteMeals(): LiveData<List<Meal>>
+        + getListOfPlannedMeals(): LiveData<List<Meal>>
+    }
+
+
+' Relationships
+HomeScreenPresenter ..|> HomeScreenContract.Presenter
+HomeScreenPresenter --> HomeScreenContract.View
+HomeScreenPresenter --> HomeScreenContract.Model
+
+HomeScreenFragment ..|> HomeScreenContract.View
+HomeScreenFragment --> HomeScreenPresenter
+
+SaludRepository ..|> HomeScreenContract.Model
+
+note top of SaludRepository
+  Implements multiple contracts:
+  - RegistrationContract.Model
+  - LoginContract.Model
+  - MainScreenContract.Model
+  - HomeScreenContract.Model
+  - ProfileScreenContract.Model
+  - SearchScreenContract.Model
+  - MealDetailsContract.Model
+  - ListOfFavouriteMealsContract.Model
+  - ListOfPlannedMealsContract.Model
+end note
+
+@enduml
+

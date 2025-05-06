@@ -225,7 +225,7 @@ public class HomeScreenFragment extends Fragment
         mealNameTxt.setText(meal.getStrMeal());
         mealCategoryTxt.setText(meal.getStrCategory());
         mealCountryTxt.setText(meal.getStrArea());
-        Glide.with(getContext()).load(meal.getStrMealThumb()).into(mealThumbnailImg);
+        Glide.with(requireContext()).load(meal.getStrMealThumb()).into(mealThumbnailImg);
         presenter.checkFavoriteStatus(mealOfTheDay);
         presenter.checkPlannedStatus(mealOfTheDay);
     }

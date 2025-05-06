@@ -34,4 +34,13 @@ public class ProfileScreenPresenter implements ProfileScreenContract.Presenter {
     public void userSignOut() {
         repo.userSignOut();
     }
+
+    @Override
+    public void showUserProfilePhoto() {
+        if (repo.getCurrentUser().getPhotoUrl() != null) {
+            view.showUserProfilePhoto(repo.getCurrentUser().getPhotoUrl().toString());
+        } else {
+            view.showUserProfilePhoto(null);
+        }
+    }
 }

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
 import com.example.salude.R;
 import com.example.salude.contracts.ProfileScreenContract;
 import com.example.salude.features.auth_firebase.login.view.LoginAuthFirebaseActivity;
@@ -38,7 +40,7 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
     Button favMealsBtn;
     Button planMealsBtn;
     Button signOutBtn;
-    ImageView appIconImg;
+    ImageView userProfileImg;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,7 +54,7 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
         favMealsBtn = view.findViewById(R.id.btnFavouriteMeals);
         planMealsBtn = view.findViewById(R.id.btnPlannedMeals);
         signOutBtn = view.findViewById(R.id.btnSignOut);
-        appIconImg = view.findViewById(R.id.ivProfile);
+        userProfileImg = view.findViewById(R.id.ivProfile);
 
         return view;
     }
@@ -65,11 +67,13 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
         usernameTxt.setText("Salut, " + presenter.getUserName());
 
         profileTxt.setText("Profile");
-        appIconImg.setImageResource(R.mipmap.app_icon_prof_foreground);
 
         if (GuestMode.getGuestModeState()) {
             signOutBtn.setText("Sign In");
         }
+
+        presenter.showUserProfilePhoto();
+
 
         favMealsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,5 +140,16 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
                 }
             }
         });
+    }
+
+    @Override
+    public void showUserProfilePhoto(String uri) {
+        if (uri == null) {
+            Log.i("TAG", "showUserProfilePhoto: " + uri);
+            userProfileImg.setImageResource(R.mipmap.app_icon_prof_foreground);
+        }
+        else {
+            Glide.with(requireContext()).load(uri).into(userProfileImg);
+        }
     }
 }

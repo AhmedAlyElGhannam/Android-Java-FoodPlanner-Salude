@@ -1,0 +1,115 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+' Interfaces
+interface ListOfFavouriteMealsContract {
+    + {abstract} showFavouriteMeals(List<Meal> meals)
+    + {abstract} showEmptyState()
+    + {abstract} getViewLifecycleOwner() : LifecycleOwner
+}
+
+interface ListOfFavouriteMealsContract.View {
+    + {abstract} showFavouriteMeals(List<Meal> meals)
+    + {abstract} showEmptyState()
+    + {abstract} getViewLifecycleOwner() : LifecycleOwner
+}
+
+interface ListOfFavouriteMealsContract.Presenter {
+    + {abstract} getFavouriteMeals()
+    + {abstract} removeMealFromFavourites(Meal meal)
+}
+
+interface ListOfFavouriteMealsContract.Model {
+    + {abstract} getListOfFavouriteMeals() : LiveData<List<Meal>>
+    + {abstract} removeMealFromFavourites(Meal meal)
+}
+
+interface OnFavouriteClickListener {
+    + {abstract} onFavouriteClickListener(Meal meal)
+}
+
+interface OnMealItemClickListener {
+    + {abstract} onMealItemClickListener(Meal meal)
+}
+
+' Classes
+class ListOfFavouriteMealsFragment {
+    - presenter: ListOfFavouriteMealsContract.Presenter
+    - adapter: ListOfFavouriteMealsAdapter
+    - mealsRecyclerView: RecyclerView
+    - favMealsid: TextView
+    + onCreateView()
+    + onViewCreated()
+    + showFavouriteMeals(List<Meal> meals)
+    + showEmptyState()
+    + getViewLifecycleOwner() : LifecycleOwner
+    + onFavouriteClickListener(Meal meal)
+    + onMealItemClickListener(Meal meal)
+}
+
+class ListOfFavouriteMealsPresenter {
+    - view: ListOfFavouriteMealsContract.View
+    - repo: ListOfFavouriteMealsContract.Model
+    + getFavouriteMeals()
+    + removeMealFromFavourites(Meal meal)
+}
+
+class SaludRepository {
+    - auth_source: UserRegAndAuthDataSource
+    - local_fav_source: LocalDataSource.RoomLocalFavouriteRepository
+    - local_plan_source: LocalDataSource.RoomLocalPlannedRepository
+    - remote_source: RemoteDataSource
+    + getInstance(Context context) : SaludRepository
+    + getListOfFavouriteMeals() : LiveData<List<Meal>>
+    + removeMealFromFavourites(Meal meal)
+    ' ... other methods ...
+}
+
+class ListOfFavouriteMealsAdapter {
+    - context: Context
+    - meals: List<Meal>
+    - mealListener: OnMealItemClickListener
+    - favListener: OnFavouriteClickListener
+    + setMeals(List<Meal> _meals)
+    + onCreateViewHolder()
+    + onBindViewHolder()
+    + getItemCount() : int
+    + ViewHolder inner class
+}
+
+' Relationships
+ListOfFavouriteMealsFragment ..|> ListOfFavouriteMealsContract.View
+ListOfFavouriteMealsFragment ..|> OnFavouriteClickListener
+ListOfFavouriteMealsFragment ..|> OnMealItemClickListener
+
+ListOfFavouriteMealsPresenter ..|> ListOfFavouriteMealsContract.Presenter
+
+SaludRepository ..|> ListOfFavouriteMealsContract.Model
+
+ListOfFavouriteMealsFragment --> ListOfFavouriteMealsPresenter
+ListOfFavouriteMealsPresenter --> SaludRepository
+ListOfFavouriteMealsFragment --> ListOfFavouriteMealsAdapter
+
+ListOfFavouriteMealsAdapter --> Meal
+ListOfFavouriteMealsAdapter --> OnMealItemClickListener
+ListOfFavouriteMealsAdapter --> OnFavouriteClickListener
+
+note top of SaludRepository
+  Implements multiple contracts:
+  - RegistrationContract.Model
+  - LoginContract.Model
+  - MainScreenContract.Model
+  - HomeScreenContract.Model
+  - ProfileScreenContract.Model
+  - SearchScreenContract.Model
+  - MealDetailsContract.Model
+  - ListOfFavouriteMealsContract.Model
+  - ListOfPlannedMealsContract.Model
+end note
+
+@enduml

@@ -1,0 +1,105 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+
+interface LoginContract.View {
+    +{abstract} void showProgress()
+    +{abstract} void hideProgress()
+    +{abstract} void onSuccessUIAction()
+    +{abstract} void onErrorUIAction(String msg)
+}
+
+interface LoginContract.Presenter {
+    +{abstract} void initiateUserAccountLogin(String email, String password)
+    +{abstract} void initiateGoogleLogin(String userIdToken)
+}
+
+interface LoginContract.Model {
+    +{abstract} FirebaseUser getCurrentUser()
+    +{abstract} void userAccountLogin(String email, String password, OnLoginFinishedListener listener)
+    +{abstract} void userGoogleLogin(String idToken, OnLoginFinishedListener listener)
+}
+
+interface LoginContract.OnLoginFinishedListener {
+    +{abstract} void OnLoginSuccess()
+    +{abstract} void OnLoginFailure(String err)
+}
+
+' Classes
+class LoginAuthFirebaseActivity {
+    -TextInputEditText editTextMail
+    -TextInputEditText editTextPassword
+    -Button googleBtn
+    -Button loginBtn
+    -Button guestBtn
+    -TextView registerTxt
+    -TextView forgotPassTxt
+    -ProgressBar progressBar
+    -LoginAuthFirebasePresenter presenter
+    -FirebaseAuth mAuth
+    -GoogleSignInClient mGoogleSignInClient
+    -static final int RC_SIGN_IN
+    +void onCreate(Bundle savedInstanceState)
+    +void onActivityResult(int requestCode, int resultCode, Intent data)
+    +void onStart()
+    +void showProgress()
+    +void hideProgress()
+    +void onSuccessUIAction()
+    +void onErrorUIAction(String msg)
+}
+
+class LoginAuthFirebasePresenter {
+    -LoginContract.View view
+    -LoginContract.Model repo
+    -GoogleSignInClient mGoogleSignInClient
+    +LoginAuthFirebasePresenter(LoginContract.View, LoginContract.Model, GoogleSignInClient)
+    +void initiateUserAccountLogin(String email, String password)
+    +void initiateGoogleLogin(String userIdToken)
+    +void OnLoginSuccess()
+    +void OnLoginFailure(String err)
+}
+
+class SaludRepository {
+    -static SaludRepository salud_repo
+    -UserRegAndAuthDataSource auth_source
+    -LocalDataSource.RoomLocalFavouriteRepository local_fav_source
+    -LocalDataSource.RoomLocalPlannedRepository local_plan_source
+    -RemoteDataSource remote_source
+    -SaludRepository(Context context)
+    +static synchronized SaludRepository getInstance(Context context)
+    +FirebaseUser getCurrentUser()
+    +void userAccountLogin(String email, String password, OnLoginFinishedListener listener)
+    +void userGoogleLogin(String idToken, OnLoginFinishedListener listener)
+    ' ... other methods omitted for brevity
+}
+
+' Relationships
+LoginContract.View <|-- LoginAuthFirebaseActivity
+LoginContract.Presenter <|-- LoginAuthFirebasePresenter
+LoginContract.Model <|-- SaludRepository
+LoginContract.OnLoginFinishedListener <|-- LoginAuthFirebasePresenter
+
+LoginAuthFirebaseActivity --> LoginAuthFirebasePresenter : uses
+LoginAuthFirebasePresenter --> SaludRepository : uses
+LoginAuthFirebasePresenter --> LoginContract.View : notifies
+SaludRepository ..> LoginContract.OnLoginFinishedListener : calls back
+
+note top of SaludRepository
+  Implements multiple contracts:
+  - RegistrationContract.Model
+  - LoginContract.Model
+  - MainScreenContract.Model
+  - HomeScreenContract.Model
+  - ProfileScreenContract.Model
+  - SearchScreenContract.Model
+  - MealDetailsContract.Model
+  - ListOfFavouriteMealsContract.Model
+  - ListOfPlannedMealsContract.Model
+end note
+
+@enduml

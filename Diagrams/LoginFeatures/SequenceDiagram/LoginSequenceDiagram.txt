@@ -1,0 +1,28 @@
+@startuml LoginSequenceDiagram
+
+actor User
+participant LoginAuthFirebaseActivity as View
+participant LoginAuthFirebasePresenter as Presenter
+participant SaludRepository as Model
+participant UserRegAndAuthDataSource as AuthSource
+
+User -> View: Clicks login button
+View -> Presenter: initiateUserAccountLogin(email, password)
+Presenter -> Model: userAccountLogin(email, password, listener)
+Model -> AuthSource: userAccountLogin(email, password, listener)
+
+alt Success case
+    AuthSource --> Model: OnLoginSuccess()
+    Model --> Presenter: OnLoginSuccess()
+    Presenter --> View: onSuccessUIAction()
+    View -> View: hideProgress()
+    View -> View: Start MainScreenActivity
+else Failure case
+    AuthSource --> Model: OnLoginFailure(err)
+    Model --> Presenter: OnLoginFailure(err)
+    Presenter --> View: onErrorUIAction(msg)
+    View -> View: hideProgress()
+    View -> View: Show error toast
+end
+
+@enduml

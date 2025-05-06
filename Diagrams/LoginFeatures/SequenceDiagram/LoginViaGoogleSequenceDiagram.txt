@@ -1,0 +1,30 @@
+@startuml GoogleLoginSequenceDiagram
+
+actor User
+participant LoginAuthFirebaseActivity as View
+participant LoginAuthFirebasePresenter as Presenter
+participant SaludRepository as Model
+participant UserRegAndAuthDataSource as AuthSource
+participant GoogleSignInClient as Google
+
+User -> View: Clicks Google login button
+View -> Google: getSignInIntent()
+Google --> View: Returns sign-in intent
+View -> Google: startActivityForResult()
+User <-> Google: Google sign-in flow
+Google --> View: onActivityResult()
+
+alt Success case
+    View -> Presenter: initiateGoogleLogin(idToken)
+    Presenter -> Model: userGoogleLogin(idToken, listener)
+    Model -> AuthSource: userGoogleLogin(idToken, listener)
+    AuthSource --> Model: OnLoginSuccess()
+    Model --> Presenter: OnLoginSuccess()
+    Presenter --> View: onSuccessUIAction()
+    View -> View: hideProgress()
+    View -> View: Start MainScreenActivity
+else Failure case
+    View -> View: Log error
+end
+
+@enduml

@@ -1,0 +1,27 @@
+@startuml RegistrationSequenceDiagram
+
+actor User
+participant RegisterAuthFirebaseActivity as Activity
+participant RegisterAuthFirebasePresenter as Presenter
+participant SaludRepository as Repository
+participant UserRegAndAuthDataSource as AuthDataSource
+
+User -> Activity: Enters details and clicks register
+Activity -> Presenter: callRegisterModelAction(name, email, password)
+Presenter -> Activity: showProgress()
+Presenter -> Repository: registerUser(name, email, password, listener)
+Repository -> AuthDataSource: registerUser(name, email, password, listener)
+
+alt Registration Success
+    AuthDataSource -> Presenter: OnRegistrationSuccess()
+    Presenter -> Activity: hideProgress()
+    Presenter -> Activity: onSuccessUIAction()
+    Activity -> User: Navigates to MainScreen
+else Registration Failure
+    AuthDataSource -> Presenter: OnRegistrationFailure(err)
+    Presenter -> Activity: hideProgress()
+    Presenter -> Activity: onErrorUIAction(err)
+    Activity -> User: Shows error toast
+end
+
+@enduml

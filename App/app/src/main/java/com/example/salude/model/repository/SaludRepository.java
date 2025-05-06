@@ -8,6 +8,7 @@ import com.example.salude.contracts.HomeScreenContract;
 import com.example.salude.contracts.ListOfFavouriteMealsContract;
 import com.example.salude.contracts.ListOfPlannedMealsContract;
 import com.example.salude.contracts.LoginContract;
+import com.example.salude.contracts.MainScreenContract;
 import com.example.salude.contracts.MealDetailsContract;
 import com.example.salude.contracts.ProfileScreenContract;
 import com.example.salude.contracts.RegistrationContract;
@@ -26,12 +27,13 @@ import java.util.List;
 public class SaludRepository implements
         RegistrationContract.Model,
         LoginContract.Model,
-        MealDetailsContract.Model,
-        ListOfFavouriteMealsContract.Model,
-        ListOfPlannedMealsContract.Model,
+        MainScreenContract.Model,
         HomeScreenContract.Model,
         ProfileScreenContract.Model,
-        SearchScreenContract.Model {
+        SearchScreenContract.Model,
+        MealDetailsContract.Model,
+        ListOfFavouriteMealsContract.Model,
+        ListOfPlannedMealsContract.Model {
     private static SaludRepository salud_repo;
     private UserRegAndAuthDataSource auth_source;
     private LocalDataSource.RoomLocalFavouriteRepository local_fav_source;

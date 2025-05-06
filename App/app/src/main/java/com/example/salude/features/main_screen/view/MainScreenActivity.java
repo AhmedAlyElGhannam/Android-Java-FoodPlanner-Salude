@@ -17,6 +17,8 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import android.Manifest;
+
+import com.example.salude.contracts.MainScreenContract;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionLostFragment;
 import com.example.salude.features.main_screen.fragments.connection.ConnectionRestoredFragment;
 import com.example.salude.features.main_screen.fragments.home.view.HomeScreenFragment;
@@ -27,7 +29,7 @@ import com.example.salude.utils.network.NetworkChangeReceiver;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class MainScreenActivity extends AppCompatActivity
-        implements NetworkChangeReceiver.NetworkChangeListener,
+        implements MainScreenContract.View, NetworkChangeReceiver.NetworkChangeListener,
         OnConnectionRestoredListener {
 
     BottomNavigationView bottomNav;

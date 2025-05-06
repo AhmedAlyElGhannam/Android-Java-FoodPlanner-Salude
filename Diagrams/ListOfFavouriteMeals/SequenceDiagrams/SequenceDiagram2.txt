@@ -1,0 +1,23 @@
+@startuml RemoveFromFavourites
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+actor User
+participant "ListOfFavouriteMealsFragment" as Fragment
+participant "ListOfFavouriteMealsPresenter" as Presenter
+participant "SaludRepository" as Repository
+participant "RoomLocalFavouriteRepository" as LocalDB
+
+User -> Fragment : Clicks "Remove" on meal
+Fragment -> Fragment : Shows confirmation dialog
+User -> Fragment : Confirms removal
+Fragment -> Presenter : removeMealFromFavourites(meal)
+Presenter -> Repository : removeMealFromFavourites(meal)
+Repository -> LocalDB : removeMealFromFavourites(meal)
+LocalDB --> Repository : (void)
+Repository --> Presenter : (void)
+Presenter --> Fragment : (implicit update via LiveData)
+Fragment -> Fragment : Shows Toast confirmation
+@enduml

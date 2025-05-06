@@ -1,0 +1,16 @@
+@startuml MealItemClick
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+actor User
+participant "ListOfFavouriteMealsFragment" as Fragment
+participant "MealDetailsFragment" as DetailsFragment
+
+User -> Fragment : Clicks on meal item
+Fragment -> Fragment : onMealItemClickListener(meal)
+Fragment -> Fragment : Creates MealDetailsFragment\nwith meal as argument
+Fragment -> Fragment : Replaces current fragment\nwith MealDetailsFragment
+Fragment -> DetailsFragment : (displayed with meal details)
+@enduml

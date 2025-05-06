@@ -1,0 +1,22 @@
+@startuml GetFavouriteMeals
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+actor User
+participant "ListOfFavouriteMealsFragment" as Fragment
+participant "ListOfFavouriteMealsPresenter" as Presenter
+participant "SaludRepository" as Repository
+participant "RoomLocalFavouriteRepository" as LocalDB
+
+User -> Fragment : Opens Favourites List
+Fragment -> Presenter : getFavouriteMeals()
+Presenter -> Repository : getListOfFavouriteMeals()
+Repository -> LocalDB : getListOfFavouriteMeals()
+LocalDB --> Repository : LiveData<List<Meal>>
+Repository --> Presenter : LiveData<List<Meal>>
+Presenter -> Presenter : Observes LiveData
+Presenter -> Fragment : showFavouriteMeals(meals) or showEmptyState()
+Fragment -> Fragment : Updates RecyclerView via Adapter
+@enduml

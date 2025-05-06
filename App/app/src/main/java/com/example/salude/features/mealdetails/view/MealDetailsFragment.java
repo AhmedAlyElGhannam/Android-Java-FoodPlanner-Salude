@@ -259,16 +259,20 @@ public class MealDetailsFragment extends Fragment implements MealDetailsContract
 
     @Override
     public void updateFavoriteButton(boolean isFavorite) {
-        btnFavorite.setImageResource(
-                isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
-        );
+        if (!GuestMode.getGuestModeState()) {
+            btnFavorite.setImageResource(
+                    isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
+            );
+        }
     }
 
     @Override
     public void updateCalendarButton(boolean isPlanned) {
-        btnAddToCalendar.setImageResource(
-                isPlanned ? R.drawable.ic_calendar_filled : R.drawable.ic_calendar_border
-        );
+        if (!GuestMode.getGuestModeState()) {
+            btnAddToCalendar.setImageResource(
+                    isPlanned ? R.drawable.ic_calendar_filled : R.drawable.ic_calendar_border
+            );
+        }
     }
 
     @NonNull

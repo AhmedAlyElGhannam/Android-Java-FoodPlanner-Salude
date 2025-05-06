@@ -202,16 +202,20 @@ public class HomeScreenFragment extends Fragment
 
     @Override
     public void updateFavoriteButton(boolean isFavorite) {
-        addToFavBtn.setImageResource(
-                isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
-        );
+        if (!GuestMode.getGuestModeState()) {
+            addToFavBtn.setImageResource(
+                    isFavorite ? R.drawable.ic_favorite_filled : R.drawable.ic_favorite_border
+            );
+        }
     }
 
     @Override
     public void updateCalendarButton(boolean isPlanned) {
-        addToCalBtn.setImageResource(
-                isPlanned ? R.drawable.ic_calendar_filled : R.drawable.ic_calendar_border
-        );
+        if (!GuestMode.getGuestModeState()) {
+            addToCalBtn.setImageResource(
+                    isPlanned ? R.drawable.ic_calendar_filled : R.drawable.ic_calendar_border
+            );
+        }
     }
 
     @SuppressLint("NotifyDataSetChanged")

@@ -58,6 +58,16 @@ public class LocalDataSource {
                 }
             }).start();
         }
+
+        public List<Meal> getAllMealsSync() {
+            return dao.getAllMealsSync();
+        }
+
+        public void clearAllMeals() {
+            new Thread(() -> {
+                dao.clearAllMeals();
+            }).start();
+        }
     }
 
     public static class RoomLocalPlannedRepository {
@@ -107,6 +117,16 @@ public class LocalDataSource {
                         dao.removeMealFromPlanned(meal);
                     }
                 }
+            }).start();
+        }
+
+        public List<Meal> getAllMealsSync() {
+            return dao.getAllMealsSync();
+        }
+
+        public void clearAllMeals() {
+            new Thread(() -> {
+                dao.clearAllMeals();
             }).start();
         }
     }

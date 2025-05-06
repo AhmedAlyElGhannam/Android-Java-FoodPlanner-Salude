@@ -78,4 +78,7 @@ dependencies {
     // youtube
     implementation("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.0.0")
 
+    // layout scalability (Ali's suggestion)
+    implementation(libs.sdp.android)
+
 }

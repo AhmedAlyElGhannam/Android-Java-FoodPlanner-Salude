@@ -8,16 +8,15 @@
     android:background="@color/white">
 
     <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/splashAnimation"
-        android:layout_width="@dimen/_358sdp"
-        android:layout_height="@dimen/_300sdp"
-        android:layout_marginBottom="296dp"
+        android:id="@+id/connectionRestoredAnimation"
+        android:layout_width="775dp"
+        android:layout_height="714dp"
+        android:layout_marginBottom="44dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.509"
         app:layout_constraintStart_toStartOf="parent"
         app:lottie_autoPlay="true"
         app:lottie_loop="false"
-        app:lottie_rawRes="@raw/splashscreen" />
+        app:lottie_rawRes="@raw/catloading" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

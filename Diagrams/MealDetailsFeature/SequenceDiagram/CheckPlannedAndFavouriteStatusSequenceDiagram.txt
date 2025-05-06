@@ -1,0 +1,22 @@
+@startuml
+actor User
+participant "MealDetailsFragment" as Fragment
+participant "MealDetailsPresenter" as Presenter
+participant "SaludRepository" as Repository
+database "RoomLocalDB" as DB
+
+User -> Fragment: onViewCreated()
+Fragment -> Presenter: checkFavoriteStatus(meal)
+Presenter -> Repository: getListOfFavouriteMeals()
+Repository -> DB: query favorite meals
+DB --> Repository: list of favorite meals
+Repository --> Presenter: LiveData<List<Meal>>
+Presenter -> Fragment: updateFavoriteButton(isFavorite)
+
+Fragment -> Presenter: checkPlannedStatus(meal)
+Presenter -> Repository: getListOfPlannedMeals()
+Repository -> DB: query planned meals
+DB --> Repository: list of planned meals
+Repository --> Presenter: LiveData<List<Meal>>
+Presenter -> Fragment: updateCalendarButton(isPlanned)
+@enduml

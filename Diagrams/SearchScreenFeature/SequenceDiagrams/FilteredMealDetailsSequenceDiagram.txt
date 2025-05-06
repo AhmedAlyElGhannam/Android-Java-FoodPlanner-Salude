@@ -1,0 +1,25 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+actor User
+participant "SearchScreenFragment" as View
+participant "SearchScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "RemoteDataSource" as Remote
+participant "MealDetailsFragment" as DetailsView
+
+User -> View: Selects a filtered meal
+View -> Presenter: getMealByID(mealId)
+Presenter -> Model: getMealByID(callback, mealId)
+Model -> Remote: getMealByID(callback, mealId)
+Remote --> Model: onSuccess(List<Meal>)
+Model --> Presenter: onSuccess(List<Meal>)
+Presenter -> View: showMealDetails(Meal)
+View -> DetailsView: Navigate to MealDetailsFragment with Meal
+DetailsView -> DetailsView: Display meal details
+@enduml

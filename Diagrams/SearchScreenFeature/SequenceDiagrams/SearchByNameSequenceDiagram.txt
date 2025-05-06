@@ -1,0 +1,23 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+actor User
+participant "SearchScreenFragment" as View
+participant "SearchScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "RemoteDataSource" as Remote
+
+User -> View: Enters search query and presses search
+View -> Presenter: getMealByName(query)
+Presenter -> Model: getMealByName(callback, query)
+Model -> Remote: getMealByName(callback, query)
+Remote --> Model: onSuccess(List<Meal>)
+Model --> Presenter: onSuccess(List<Meal>)
+Presenter -> View: showMealWithName(List<Meal>)
+View -> View: Update UI with search results
+@enduml

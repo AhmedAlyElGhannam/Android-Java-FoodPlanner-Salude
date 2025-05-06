@@ -1,0 +1,31 @@
+@startuml
+actor User
+participant "MealDetailsFragment" as Fragment
+participant "MealDetailsPresenter" as Presenter
+participant "SaludRepository" as Repository
+database "RoomLocalDB" as DB
+participant "CalendarProvider" as Calendar
+
+User -> Fragment: click btnAddToCalendar
+alt meal is not planned
+    Fragment -> User: show date picker
+    User -> Fragment: select date
+    Fragment -> Presenter: togglePlanned(meal, selectedDate)
+    Presenter -> Repository: addToPlannedMeals(meal, selectedDate)
+    Repository -> DB: insert meal into planned meals
+    Presenter -> Fragment: addMealToCalendar(meal)
+    Fragment -> Presenter: onAddMealToCalendarRequested(meal)
+    Presenter -> Calendar: insert event into calendar
+    Calendar --> Presenter: event ID
+    Presenter -> Fragment: updateCalendarButton(true)
+else meal is planned
+    Fragment -> User: confirm unplanning
+    User -> Fragment: confirm
+    Fragment -> Presenter: togglePlanned(meal, null)
+    Presenter -> Repository: removeFromPlannedMeals(meal)
+    Repository -> DB: delete meal from planned meals
+    Fragment -> Presenter: removeMealFromCalendar(meal)
+    Presenter -> Calendar: delete event from calendar
+    Presenter -> Fragment: updateCalendarButton(false)
+end
+@enduml

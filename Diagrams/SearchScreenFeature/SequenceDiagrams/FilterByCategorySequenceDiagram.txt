@@ -1,0 +1,23 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+actor User
+participant "SearchScreenFragment" as View
+participant "SearchScreenPresenter" as Presenter
+participant "SaludRepository" as Model
+participant "RemoteDataSource" as Remote
+
+User -> View: Selects a category
+View -> Presenter: getMealsFilteredByCategory(category)
+Presenter -> Model: getMealsFilteredByCategory(callback, category)
+Model -> Remote: getMealsFilteredByCategory(callback, category)
+Remote --> Model: onSuccess(List<FilteredMeal>)
+Model --> Presenter: onSuccess(List<FilteredMeal>)
+Presenter -> View: showFilteredMeals(List<FilteredMeal>)
+View -> View: Update UI with filtered meals
+@enduml

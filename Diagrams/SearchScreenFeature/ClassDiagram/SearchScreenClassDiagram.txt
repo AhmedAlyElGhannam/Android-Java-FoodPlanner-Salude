@@ -1,0 +1,188 @@
+@startuml
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+package "Search Screen" {
+    ' Interfaces from SearchScreenContract
+    interface SearchScreenContract.View {
+        + onMealItemClickListener(Meal meal)
+        + showMealWithName(List<Meal> meals)
+        + showMealDetails(Meal meal)
+        + onFilteredMealItemClickListener(FilteredMeal meal)
+        + onIngredientClickListener(String ingredient)
+        + onCategoryClickListener(String category)
+        + onAreaClickListener(String area)
+        + showFilteredMeals(List<FilteredMeal> filteredMeals)
+        + showMealAreas(List<Area> areas)
+        + showMealIngredients(List<Ingredient> ingredients)
+        + showMealCategories(List<Category> categories)
+    }
+
+    interface SearchScreenContract.Presenter {
+        + getAllCategories()
+        + getAllAreas()
+        + getAllIngredients()
+        + getMealsFilteredByFirstLetter(String query)
+        + getMealByName(String name)
+        + getMealsFilteredByArea(String area)
+        + getMealsFilteredByCategory(String category)
+        + getMealsFilteredByIngredient(String ingredient)
+        + getMealByID(String mealID)
+    }
+
+    interface SearchScreenContract.Model {
+        + getMealByName(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf, String name)
+        + getMealByID(RemoteRetrofitCallback.RemoteRetrofitMealCallback cbf, String id)
+        + getMealAreas(RemoteRetrofitCallback.RemoteRetrofitAreaCallback cbf)
+        + getMealsIngredients(RemoteRetrofitCallback.RemoteRetrofitIngredientCallback cbf)
+        + getMealsCategories(RemoteRetrofitCallback.RemoteRetrofitCategoryCallback cbf)
+        + getMealsFilteredByCategory(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String category)
+        + getMealsFilteredByArea(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String area)
+        + getMealsFilteredByIngredient(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String ingredient)
+        + getMealsFilteredByFirstLetter(RemoteRetrofitCallback.RemoteRetrofitFilteredMealCallback cbf, String letter)
+    }
+
+    ' Listener Interfaces
+    interface OnAreaClickListener {
+        + onAreaClickListener(String area)
+    }
+
+    interface OnCategoryClickListener {
+        + onCategoryClickListener(String category)
+    }
+
+    interface OnIngredientClickListener {
+        + onIngredientClickListener(String ingredient)
+    }
+
+    interface OnFilteredMealItemClickListener {
+        + onFilteredMealItemClickListener(FilteredMeal meal)
+    }
+
+    interface OnMealItemClickListener {
+        + onMealItemClickListener(Meal meal)
+    }
+
+    ' Concrete Classes
+    class SearchScreenFragment implements SearchScreenContract.View, OnAreaClickListener, OnCategoryClickListener, OnIngredientClickListener, OnFilteredMealItemClickListener, OnMealItemClickListener {
+        - searchTxt: TextInputEditText
+        - ingredientChip: Chip
+        - areaChip: Chip
+        - categoryChip: Chip
+        - searchResLabel: TextView
+        - searchResRecyclerView: RecyclerView
+        - areaAdapter: MealAreaAdapter
+        - ingredientsAdapter: MealIngredientsAdapter
+        - categoryAdapter: MealCategoryAdapter
+        - filterAdapter: ListOfFilteredMealsAdapter
+        - searchAdapter: MealSearchResultsAdapter
+        - presenter: SearchScreenPresenter
+    }
+
+    class SearchScreenPresenter implements SearchScreenContract.Presenter {
+        - view: SearchScreenContract.View
+        - repo: SearchScreenContract.Model
+    }
+
+    class SaludRepository implements SearchScreenContract.Model {
+        - auth_source: UserRegAndAuthDataSource
+        - local_fav_source: LocalDataSource.RoomLocalFavouriteRepository
+        - local_plan_source: LocalDataSource.RoomLocalPlannedRepository
+        - remote_source: RemoteDataSource
+    }
+
+    class MealAreaAdapter {
+        - context: Context
+        - areas: List<Area>
+        - area_listener: OnAreaClickListener
+    }
+
+    class ListOfFilteredMealsAdapter {
+        - context: Context
+        - meals: List<FilteredMeal>
+        - filteredListener: OnFilteredMealItemClickListener
+    }
+
+    class MealCategoryAdapter {
+        - context: Context
+        - categories: List<Category>
+        - category_listener: OnCategoryClickListener
+    }
+
+    class MealIngredientsAdapter {
+        - context: Context
+        - ingredients: List<Ingredient>
+        - ingredient_listener: OnIngredientClickListener
+    }
+
+    class MealSearchResultsAdapter {
+        - context: Context
+        - meals: List<Meal>
+        - mealItemClickListener: OnMealItemClickListener
+    }
+
+    ' Relationships
+    SearchScreenFragment --> SearchScreenPresenter : uses
+    SearchScreenPresenter --> SearchScreenContract.View : holds
+    SearchScreenPresenter --> SearchScreenContract.Model : holds
+    SearchScreenFragment --> MealAreaAdapter : has
+    SearchScreenFragment --> MealIngredientsAdapter : has
+    SearchScreenFragment --> MealCategoryAdapter : has
+    SearchScreenFragment --> ListOfFilteredMealsAdapter : has
+    SearchScreenFragment --> MealSearchResultsAdapter : has
+    MealAreaAdapter --> OnAreaClickListener : holds
+    ListOfFilteredMealsAdapter --> OnFilteredMealItemClickListener : holds
+    MealCategoryAdapter --> OnCategoryClickListener : holds
+    MealIngredientsAdapter --> OnIngredientClickListener : holds
+    MealSearchResultsAdapter --> OnMealItemClickListener : holds
+
+    ' Implementation Relationships
+    SearchScreenContract.View <|.. SearchScreenFragment
+    SearchScreenContract.Presenter <|.. SearchScreenPresenter
+    SearchScreenContract.Model <|.. SaludRepository
+    OnAreaClickListener <|.. SearchScreenFragment
+    OnCategoryClickListener <|.. SearchScreenFragment
+    OnIngredientClickListener <|.. SearchScreenFragment
+    OnFilteredMealItemClickListener <|.. SearchScreenFragment
+    OnMealItemClickListener <|.. SearchScreenFragment
+}
+
+package "Pojos" {
+    class Area {
+        - strArea: String
+    }
+
+    class Category {
+        - strCategory: String
+        - strCategoryThumb: String
+    }
+
+    class Ingredient {
+        - strIngredient: String
+        - strImageUrl: String
+    }
+
+    class Meal {
+        - strMeal: String
+        - strMealThumb: String
+    }
+
+    class FilteredMeal {
+        - idMeal: String
+        - strMeal: String
+        - strMealThumb: String
+    }
+
+    ' Associations between Adapters and Pojos
+    MealAreaAdapter --> "0..*" Area : displays
+    MealCategoryAdapter --> "0..*" Category : displays
+    MealIngredientsAdapter --> "0..*" Ingredient : displays
+    ListOfFilteredMealsAdapter --> "0..*" FilteredMeal : displays
+    MealSearchResultsAdapter --> "0..*" Meal : displays
+}
+
+@enduml

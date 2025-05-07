@@ -1,0 +1,60 @@
+@startwbs
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+* Salude! Project
+** Authentication
+*** Firebase Setup
+**** Create Firebase Project
+**** Integrate Firebase into Android
+**** Email & Password Auth
+**** GitHub Auth Provider
+**** Google Login (TODO)
+*** Login/Registration Activities
+**** Splash Screen Setup
+***** Layout + Activity
+***** Transition to Main Activity
+**** Login Contracts/Repositories
+**** Registration Contracts/Repositories
+** Core Features
+*** Main Screen
+**** Bottom Navigation
+**** Home Fragment
+***** Meal of the Day
+***** Fav/Planned Buttons
+**** Search Fragment
+**** Profile Fragment
+*** Meal Details
+**** Layout + Adapters
+**** Presenter/Model
+**** Button Behavior Testing
+*** Database Integration
+**** Room (Local)
+***** DAO Interfaces
+***** Meal POJO
+**** Retrofit (Remote)
+***** Service Setup
+***** API Responses
+** Advanced Features
+*** Internet Connection Handling
+**** Broadcast Receiver
+**** Lottie Animations
+*** Calendar Integration
+**** Permissions
+**** Write to Calendar
+*** Guest Mode
+**** State Management
+**** Functionality Restrictions
+*** Raspberry Pi Support
+**** Landscape Layouts
+**** AOSP Compilation (Extra)
+**** USB Debugging Tests (Extra)
+** Architectural Updates
+*** Unified Repository
+*** MVP Refactoring
+*** Back Button Behavior
+@endwbs

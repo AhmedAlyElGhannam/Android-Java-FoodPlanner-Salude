@@ -49,13 +49,6 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
 
         presenter = new ProfileScreenPresenter(this, SaludRepository.getInstance(requireContext()));
 
-        profileTxt = view.findViewById(R.id.tvProfileTitle);
-        usernameTxt = view.findViewById(R.id.tvUserName);
-        favMealsBtn = view.findViewById(R.id.btnFavouriteMeals);
-        planMealsBtn = view.findViewById(R.id.btnPlannedMeals);
-        signOutBtn = view.findViewById(R.id.btnSignOut);
-        userProfileImg = view.findViewById(R.id.ivProfile);
-
         return view;
     }
 
@@ -63,6 +56,12 @@ public class ProfileScreenFragment extends Fragment implements ProfileScreenCont
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        profileTxt = view.findViewById(R.id.tvProfileTitle);
+        usernameTxt = view.findViewById(R.id.tvUserName);
+        favMealsBtn = view.findViewById(R.id.btnFavouriteMeals);
+        planMealsBtn = view.findViewById(R.id.btnPlannedMeals);
+        signOutBtn = view.findViewById(R.id.btnSignOut);
+        userProfileImg = view.findViewById(R.id.ivProfile);
 
         usernameTxt.setText("Salut, " + presenter.getUserName());
 

@@ -38,6 +38,9 @@ public class MainScreenActivity extends AppCompatActivity
     private boolean isShowingConnectionFragment = false;
     private boolean isOfflineMode = false;
 
+    private final String[] CALENDAR_PERMISSIONS = {Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR};
+    private final int CALENDAR_PERMISSION_REQUEST_CODE = 9001;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,11 +56,8 @@ public class MainScreenActivity extends AppCompatActivity
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED || ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALENDAR)
                 != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_CALENDAR}, 1);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CALENDAR}, 1);
-
+            ActivityCompat.requestPermissions(this, CALENDAR_PERMISSIONS, CALENDAR_PERMISSION_REQUEST_CODE);
         }
-
 
         // network listener shenanigans
         networkChangeReceiver = new NetworkChangeReceiver(this);

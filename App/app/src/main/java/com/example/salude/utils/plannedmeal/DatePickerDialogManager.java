@@ -16,7 +16,7 @@ public class DatePickerDialogManager {
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-        // Create min and max dates (today and today + 6 days)
+        // create min and max dates (today and today + 6 days)
         Calendar minDate = Calendar.getInstance();
         Calendar maxDate = Calendar.getInstance();
         maxDate.add(Calendar.DAY_OF_MONTH, 6);
@@ -29,7 +29,7 @@ public class DatePickerDialogManager {
                 },
                 year, month, day);
 
-        // Set min and max dates
+        // set min and max dates
         datePickerDialog.getDatePicker().setMinDate(minDate.getTimeInMillis());
         datePickerDialog.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
 

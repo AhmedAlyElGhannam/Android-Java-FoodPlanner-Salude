@@ -38,13 +38,6 @@ public interface MealDAO {
         // if meal exists in db
         @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
         boolean isMealInDB(String id);
-
-        @Query("SELECT * FROM meals WHERE isFavouriteMeal = 1")
-        List<Meal> getAllMealsSync();
-
-        @Query("DELETE FROM meals WHERE isFavouriteMeal = 1")
-        void clearAllMeals();
-
     }
 
     @Dao
@@ -72,11 +65,5 @@ public interface MealDAO {
         // if meal exists in db
         @Query("SELECT COUNT(*) > 0 FROM meals WHERE idMeal = :id")
         boolean isMealInDB(String id);
-
-        @Query("SELECT * FROM meals WHERE plannedMealDate IS NOT NULL")
-        List<Meal> getAllMealsSync();
-
-        @Query("DELETE FROM meals WHERE plannedMealDate IS NOT NULL")
-        void clearAllMeals();
     }
 }

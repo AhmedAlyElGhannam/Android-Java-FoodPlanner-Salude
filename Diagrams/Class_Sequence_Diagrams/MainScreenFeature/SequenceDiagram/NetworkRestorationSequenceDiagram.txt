@@ -1,0 +1,26 @@
+@startuml
+title Network Restoration
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+participant "ConnectivityManager" as CM
+participant "NetworkChangeReceiver" as Receiver
+participant "ConnectivityUtil" as Util
+participant "MainScreenActivity" as MainActivity
+participant "ConnectionRestoredFragment" as RestoredFragment
+
+CM -> Receiver: Broadcast Connectivity Action
+Receiver -> Util: isConnected(context)
+Util --> Receiver: true
+Receiver -> MainActivity: onNetworkChanged(true)
+MainActivity -> MainActivity: showConnectionRestoredAnimation()
+MainActivity -> RestoredFragment: replaceFragment()
+RestoredFragment -> RestoredFragment: Play animation
+RestoredFragment -> MainActivity: onAnimationEnd()
+MainActivity -> MainActivity: onConnectionRestored()
+MainActivity -> HomeScreenFragment: refreshData()
+@enduml

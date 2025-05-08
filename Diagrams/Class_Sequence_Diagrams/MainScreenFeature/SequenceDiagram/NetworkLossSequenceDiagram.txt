@@ -1,0 +1,26 @@
+@startuml
+title Network Loss and Continue Offline
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+participant "ConnectivityManager" as CM
+participant "NetworkChangeReceiver" as Receiver
+participant "ConnectivityUtil" as Util
+participant "MainScreenActivity" as MainActivity
+participant "ConnectionLostFragment" as LostFragment
+
+CM -> Receiver: Broadcast Connectivity Action
+Receiver -> Util: isConnected(context)
+Util --> Receiver: false
+Receiver -> MainActivity: onNetworkChanged(false)
+MainActivity -> MainActivity: showConnectionLostFragment()
+MainActivity -> LostFragment: replaceFragment()
+LostFragment -> LostFragment: Display UI with "Continue Offline" button
+User -> LostFragment: Click "Continue Offline"
+LostFragment -> MainActivity: continueOffline()
+MainActivity -> MainActivity: Set isOfflineMode=true, show HomeFragment
+@enduml

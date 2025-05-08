@@ -6,84 +6,54 @@ skinparam class {
     BorderColor #0078D7
 }
 
-' Interfaces
-interface OnNetworkConnectionListener {
-    + onNetworkConnectionSuccess()
-    + onNetworkConnectionFailure()
+
+class ConnectivityUtil {
+    + {static} isConnected(Context context) : boolean
 }
 
 interface NetworkChangeListener {
-    + onNetworkChanged(isConnected: boolean)
+    + onNetworkChanged(boolean isConnected)
+}
+
+class NetworkChangeReceiver {
+    - listener: NetworkChangeListener
+    + NetworkChangeReceiver(NetworkChangeListener listener)
+    + onReceive(Context context, Intent intent)
+}
+
+NetworkChangeReceiver --> NetworkChangeListener : implements >
+
+class MainScreenActivity {
+    - networkChangeReceiver: NetworkChangeReceiver
+    - isConnected: boolean
+    - isShowingConnectionFragment: boolean
+    - isOfflineMode: boolean
+    + onNetworkChanged(boolean isConnected)
+    + onConnectionRestored()
+    + continueOffline()
+}
+
+MainScreenActivity --> NetworkChangeListener : implements >
+MainScreenActivity --> NetworkChangeReceiver : composes
+MainScreenActivity --> ConnectivityUtil : uses
+
+class ConnectionLostFragment {
+    - btnContinueOffline: Button
+}
+
+ConnectionLostFragment --> MainScreenActivity : calls continueOffline()
+
+class ConnectionRestoredFragment {
+    - animationView: LottieAnimationView
+    - connection_listener: OnConnectionRestoredListener
+    + ConnectionRestoredFragment(OnConnectionRestoredListener listener)
 }
 
 interface OnConnectionRestoredListener {
     + onConnectionRestored()
 }
 
-interface MainScreenContract {
-    interface View
-    interface Presenter
-    interface Model
-}
-
-' Classes
-class ConnectivityUtil {
-    + isConnected(context: Context): boolean {static}
-}
-
-class NetworkChangeReceiver {
-    - listener: NetworkChangeListener
-    + NetworkChangeReceiver(listener: NetworkChangeListener)
-    + onReceive(context: Context, intent: Intent)
-}
-
-class MainScreenActivity {
-    - bottomNav: BottomNavigationView
-    - networkChangeReceiver: NetworkChangeReceiver
-    - isConnected: boolean
-    - isShowingConnectionFragment: boolean
-    - isOfflineMode: boolean
-    + onCreate(savedInstanceState: Bundle)
-    + onBackPressed()
-    + onNetworkChanged(isConnected: boolean)
-    - showConnectionLostFragment()
-    - showConnectionRestoredAnimation()
-    + onDestroy()
-    + onConnectionRestored()
-    + continueOffline()
-}
-
-' Fragments (simplified representation)
-class ConnectionLostFragment
-class ConnectionRestoredFragment
-class HomeScreenFragment
-class SearchScreenFragment
-class ProfileScreenFragment
-
-' Relationships
-MainScreenActivity ..|> MainScreenContract.View
-MainScreenActivity ..|> NetworkChangeListener
-MainScreenActivity ..|> OnConnectionRestoredListener
-
-NetworkChangeReceiver ..|> NetworkChangeListener
-
-ConnectionRestoredFragment ..> OnConnectionRestoredListener
-
-MainScreenActivity --> NetworkChangeReceiver
-MainScreenActivity --> ConnectionLostFragment
-MainScreenActivity --> ConnectionRestoredFragment
-MainScreenActivity --> HomeScreenFragment
-MainScreenActivity --> SearchScreenFragment
-MainScreenActivity --> ProfileScreenFragment
-
-ConnectivityUtil ..> NetworkChangeReceiver : uses
-
-' Note for implementation details
-note top of MainScreenActivity
-    Implements multiple interfaces:
-    - MainScreenContract.View
-    - NetworkChangeListener
-    - OnConnectionRestoredListener
-end note
+ConnectionRestoredFragment --> OnConnectionRestoredListener : depends >
+MainScreenActivity --> OnConnectionRestoredListener : implements >
 
 @enduml

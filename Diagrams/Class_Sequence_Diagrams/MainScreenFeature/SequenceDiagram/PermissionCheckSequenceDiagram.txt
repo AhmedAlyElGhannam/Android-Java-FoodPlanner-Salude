@@ -1,0 +1,20 @@
+@startuml
+title Permission Check on Startup
+
+skinparam class {
+    BackgroundColor White
+    ArrowColor #0078D7
+    BorderColor #0078D7
+}
+
+participant "MainScreenActivity" as MainActivity
+participant "ActivityCompat" as Permissions
+
+MainActivity -> Permissions: checkSelfPermission(CALENDAR)
+alt Permissions Granted
+  MainActivity -> MainActivity: Proceed normally
+else Permissions Not Granted
+  MainActivity -> Permissions: requestPermissions(CALENDAR_PERMISSIONS)
+  Permissions -> User: Show permission dialog
+end
+@enduml

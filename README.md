@@ -257,3 +257,60 @@ In the profile screen, the user can choose to view their meals marked as planned
 
 https://github.com/user-attachments/assets/46476790-2dfc-407b-8c1f-a0b2d3f471cb
 
+## Bonus: Android Open Source Project Customization for Raspberry Pi 4B
+### Motivation
+So, the question that comes to mind is **why?** It is just because I wanted to experiment with AOSP so badly and saw the opportunity to test my application on my trusty Pi 4. Here, I will document the process I went through to make it work.
+
+### Build System Specifications
+I built an Android 15 image on my loyal Thinkpad with the specs below. Bare in mind that performance may differ due to multiple reasons such as: temperature---a laptop is more likely to throttle than a PC; disk speed---I built it entirely on an SSD (it ate A LOT of storage) and it took over 5 hours at constant 100% CPU load and over 40GB RAM usage (albeit I was also running Android Studio at the same time); and lastly the performance of your machine---I am running a native/real Ubuntu 22.04 machine, not a VM.
+
+### Setting up AOSP Essentials
+As per [Google's Android documentation](https://source.android.com/docs/setup/start), the following dependencies must be installed:
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig -y
+sudo pip3 install dataclasses jinja2 mako meson ply pyyaml
+sudo apt-get install repo # is a must
+```
+
+### Downloading Android Source Code
+Android's source code is quite ginormous: adding up to over 200GB for Android 15. No `git` repository would be able to hold it all. So, instead: a tool called `repo` comes into play: in essense, `repo` is like a Maestro in a musical concert; does not play but **coordinates** everything. To put it simply, it knows all the blocks it needs to fetch via `git` to build up Android's source code. How does it know what to clone and at what version? Via what is called a **Manifest File**. One can get Google's own manifest file and start downloading but they would be surprized when they see Raspberry Pi 4/5 are not supported. Instead, the manifest file of choice should be [this](https://github.com/raspberry-vanilla/android_local_manifest). The entire process of building a simple image is listed in their README file and this was primarily my source. So, please check it out.
+
+1. Initialize `repo` and give it the Manifest File for Raspberry Pi.
+    ```bash
+    repo init -u https://android.googlesource.com/platform/manifest -b android-15.0.0_r32
+    curl -o .repo/local_manifests/manifest_brcm_rpi.xml -L https://raw.githubusercontent.com/raspberry-vanilla/android_local_manifest/android-15.0/manifest_brcm_rpi.xml --create-dirs
+    ```
+2. Run the following command to let `repo` start fetching. As stated earlier, the source code is over 200GB. So, it will take A LOT when internet is not so reliable. But, given that I downloaded it in ITI where the internet is as fast as it could get in the entire country, I managed to download it in about 1.5 to 2 hours.
+    ```
+    repo sync
+    ```
+
+### Configuring & Building AOSP
+If you are familiar with The Yocto Project, you will find this process quite familiar. Run an environment script, apply your configuration file and run. Since I only made a simplistic image, the process was pretty straight forward.
+
+1. Standing in the directory where you have downloaded AOSP, run:
+    ```bash
+    . build/envsetup.sh
+    ```
+1. Before selecting a configuration file, it is worth noting that there are 3 types of builds one can make using AOSP: an image for TVs, an image for Tablets, and an image for Cars. Here, I decided to create an image for Tablets since the Automotive version did not scale its display well with the screen I was using. The configuration file is applied by passing its name to `lunch`
+    ```bash
+    # lunch aosp_rpi4-bp1a-userdebug
+    # lunch aosp_rpi4_tv-bp1a-userdebug
+    # lunch aosp_rpi4_car-bp1a-userdebug
+    lunch aosp_rpi4-bp1a-userdebug
+    ```
+1. Finally, run the following command to build. Mine took exactly 5 hours and 12 minutes to complete as shown below.
+    ```bash
+    make bootimage systemimage vendorimage -j$(nproc)
+    ```
+
+### Flashing the Image
+1. Luckily, there is a script created specifically for producing a `.img` file for easily flashing the image onto an SD card. Simply:
+    ```bash
+    ./rpi4-mkimg.sh
+    ```
+1. Use a tool like [balenaEtcher](https://etcher.balena.io/) to flash the image. You will find it in `out/target/product/rpi4` named `RaspberryVanillaAOSP15-20250415-rpi4.img`.
+
+### Flashing The App

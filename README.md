@@ -264,6 +264,8 @@ So, the question that comes to mind is **why?** It is just because I wanted to e
 ### Build System Specifications
 I built an Android 15 image on my loyal Thinkpad with the specs below. Bare in mind that performance may differ due to multiple reasons such as: temperature---a laptop is more likely to throttle than a PC; disk speed---I built it entirely on an SSD (it ate A LOT of storage) and it took over 5 hours at constant 100% CPU load and over 40GB RAM usage (albeit I was also running Android Studio at the same time); and lastly the performance of your machine---I am running a native/real Ubuntu 22.04 machine, not a VM.
 
+![](./Assets/specs.png)
+
 ### Setting up AOSP Essentials
 As per [Google's Android documentation](https://source.android.com/docs/setup/start), the following dependencies must be installed:
 ```bash
@@ -306,6 +308,8 @@ If you are familiar with The Yocto Project, you will find this process quite fam
     make bootimage systemimage vendorimage -j$(nproc)
     ```
 
+![](./Assets/time.png)
+
 ### Flashing the Image
 1. Luckily, there is a script created specifically for producing a `.img` file for easily flashing the image onto an SD card. Simply:
     ```bash
@@ -314,3 +318,12 @@ If you are familiar with The Yocto Project, you will find this process quite fam
 1. Use a tool like [balenaEtcher](https://etcher.balena.io/) to flash the image. You will find it in `out/target/product/rpi4` named `RaspberryVanillaAOSP15-20250415-rpi4.img`.
 
 ### Flashing The App
+This process was way easier than I thought. Just follow the following steps:
+1. Connect the Pi to a screen.
+1. Navigate to Settings.
+1. Activate Developer's Options by pressing the Build Number 7 times.
+1. Activate USB debugging **while powering the Pi from your laptop.** Your laptop must have a high-wattage USB port to power it and transfer data simultaneosly.
+1. Open Android Studio and you can see the Pi as a connected device.
+1. Press the `Run` button and it will be flashed!
+
+![](./Assets/device-pi.png)

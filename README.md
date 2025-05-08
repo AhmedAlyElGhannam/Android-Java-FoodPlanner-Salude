@@ -253,5 +253,7 @@ In the profile screen, the user can choose to view their meals marked as planned
 ![](./Diagrams/Class_Sequence_Diagrams/ListOfPlannedMeals/SequenceDiagrams/SequenceDiagram3.png)
 
 
-## Demo
-![](./Assets/Demo.mp4)
+## Video Demo
+
+https://github.com/user-attachments/assets/46476790-2dfc-407b-8c1f-a0b2d3f471cb
+

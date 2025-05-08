@@ -14,7 +14,7 @@ This is the final project of the Android Mobile App Development Using Java & And
 ## Work Breakdown Structure
 The figure below showcases how this big project got dissected into smaller parts and in what order they were handled. You can see the project's [Trello board here](https://trello.com/b/Qjx9fW7i/salude) for more details.
 
-[](./Diagrams/WBS/WBS.png)
+![](./Diagrams/WBS/WBS.png)
 
 ## Used Architecture
 The app was built based on Model-View-Presenter (MVP) architecture: separating UI updates from database logic by a middle-layer which contains all of the non-UI logic and acts as the middleman when it comes to dealing with databases. The project's file structure follows it as seen below, and I will briefly explain the purpose of each:

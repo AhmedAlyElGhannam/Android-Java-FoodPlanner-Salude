@@ -254,3 +254,4 @@ In the profile screen, the user can choose to view their meals marked as planned
 
 
 ## Demo
+file:///home/nemesis/Playground/Github_Repositories/ITI_EmbeddedAndroid/Android-Java-FoodPlanner-Salude/Assets/Demo.mp4

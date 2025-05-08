@@ -1,7 +1,7 @@
 # Android-Java-FoodPlanner-Salude
 
 ## Introduction
-This is the final project of the Android Mobile App Development Using Java & Android Architectural Design Patterns courses taught in Information Technology Institute (ITI)'s 9-Month Professional Training Program -- Embedded Systems Track as a part of the intensive Android Automotive subfield under the supervision of Eng. Ahmed Mazen & Eng. Heba Ismail from Java Education & Technology Services department. Additionally, since I wanted something more challenging, I took a quick detour and compiled AOSP 15 from source for my Raspberry Pi 4B and tested the application on it (more on that later). Finally, if you are interested in seeing the steps I took to produce the app you can find the [Trello Board Link here](https://trello.com/b/Qjx9fW7i/salude). As a reference, until I talk more about it later, here is a quick overview on the app's features:
+This is the final project of the Android Mobile App Development Using Java & Android Architectural Design Patterns courses taught in Information Technology Institute (ITI)'s 9-Month Professional Training Program -- Embedded Systems Track as a part of the intensive Android Automotive subfield under the supervision of Eng. Ahmed Mazen & Eng. Heba Ismail from Java Education & Technology Services department. Additionally, since I wanted something more challenging, I took a quick detour and compiled AOSP 15 from source for my Raspberry Pi 4B and tested the application on it (more on that later). As a reference, until I talk more about it later, here is a quick overview on the app's features:
 
 1. Colourful splashscreen.
 2. User login/registration.
@@ -10,6 +10,11 @@ This is the final project of the Android Mobile App Development Using Java & And
 5. Search meals by Area/Category/Ingredient/Name/First letter.
 6. Schedule meals for up to one week. Scheduled meals are inscribed into the phone's calendar.
 7. Add meals to favourites to easily access them anytime.
+
+## Work Breakdown Structure
+The figure below showcases how this big project got dissected into smaller parts and in what order they were handled. You can see the project's [Trello board here](https://trello.com/b/Qjx9fW7i/salude) for more details.
+
+[WBS](./Diagrams/WBS/WBS.png)
 
 ## Used Architecture
 The app was built based on Model-View-Presenter (MVP) architecture: separating UI updates from database logic by a middle-layer which contains all of the non-UI logic and acts as the middleman when it comes to dealing with databases. The project's file structure follows it as seen below, and I will briefly explain the purpose of each:
@@ -158,5 +163,8 @@ The app was built based on Model-View-Presenter (MVP) architecture: separating U
 > Utils directory contains helper classes/interfaces that does not fit the architecture but are essential for the business logic like: click listener interfaces, guest mode helper class, helper class generating urls for countries' flags, helper classes for network sensing (extending BroadcastReceiver), and a class for showing date-picker dialog when scheduling meals.
 
 ## App Features
+In this section, I will go over each feature: explaining it briefly and showcasing its class diagram and sequence diagrams.
+
+### 
 
 ## Demo

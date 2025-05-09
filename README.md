@@ -327,3 +327,6 @@ This process was way easier than I thought. Just follow the following steps:
 1. Press the `Run` button and it will be flashed!
 
 ![](./Assets/device-pi.png)
+![](./Assets/Pi_Home.png)
+![](./Assets/Pi_app_icon.png)
+![](./Assets/Pi_app_home.png)
